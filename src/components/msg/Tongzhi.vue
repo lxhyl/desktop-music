@@ -11,7 +11,7 @@
         </div>
         <div class="item-msg">
           <p class="item-hf-main">
-            <span class="item-hf-name">{{item.notice.user.nickname}}赞了我</span>
+            <span class="item-hf-name">{{item.notice.user.nickname}}<span style="color:#607D8B;">赞了我</span></span>
             <span class="item-hf-time">{{item.time | toTime}}</span>
           </p>
           <p class="item-my-msg">{{item.notice.comment.content}}</p>
@@ -34,6 +34,7 @@ export default {
       page: 0, //分页
       list: [], //列表
       loading:true,//加载中
+      time:0,//
     };
   },
   created() {},
@@ -43,7 +44,7 @@ export default {
   methods: {
     getTongZhi() {
       this.$axios
-        .get(`http://zhangpengfan.xyz:3000/msg/notices?limit=10&offset=${(this.page -1) *10}`)
+        .get(`http://zhangpengfan.xyz:3000/msg/notices?limit=10&before=${this.time}`)
         .then(res => {
           this.list = res.data.notices;
           for (let i = 0; i < this.list.length; i++) {
@@ -52,7 +53,8 @@ export default {
             }
           }
           console.log(this.list);
-          this.loading = false
+          this.loading = false;
+          console.log(this.time)
         });
     },
     lastPage(){
@@ -63,6 +65,7 @@ export default {
     nextPage(){
       this.loading = true;
       this.page += 1;
+      this.time = this.list[9].time;
       this.getTongZhi();
     }
   }
@@ -106,10 +109,10 @@ export default {
   font-size: 11px;
   color: rgb(45, 96, 155);
   width: 100px;
-  float: left;
+ margin-right: 100px;
 }
 .item-hf-time {
-  margin-left: 100px;
+  float:right;
   font-size: 9px;
   text-align: right;
 }

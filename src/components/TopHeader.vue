@@ -90,6 +90,7 @@
 <script>
 export default {
   name: "TopHeader",
+   inject: ["reload"],
   data() {
     return {
       logoSrc: require("../assets/logo.png"), //logo图片地址
@@ -132,7 +133,7 @@ export default {
             this.accountInfo = res.data;
             this.isLogin = true;
             this.$store.commit('getUserId',res.data.account.id);
-         
+            this.reload();
             document.getElementById("colsePopover").click();
           })
           .catch(() => {
@@ -142,6 +143,7 @@ export default {
     },
     showUserPage() {
       console.log("用户页");
+      this.$router.push('/me')
     },
     routerToPage(e){
          this.routerMsg = e;

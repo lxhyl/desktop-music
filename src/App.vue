@@ -1,8 +1,8 @@
 <template>
   <div id="app">
     <TopHeader />
-    <Left class="left-aide" />
-    <router-view class="main"></router-view>
+    <Left v-if="isRouterAlive" class="left-aide" />
+    <router-view v-if="isRouterAlive" class="main"></router-view>
   </div>
 </template>
 
@@ -14,6 +14,24 @@ export default {
   components: {
     TopHeader,
     Left
+  },
+  provide() {
+    return {
+      reload: this.reload
+    };
+  },
+  data() {
+    return {
+      isRouterAlive: true
+    };
+  },
+  methods: {
+    reload() {
+      this.isRouterAlive = false;
+      this.$nextTick(function() {
+        this.isRouterAlive = true;
+      });
+    }
   }
 };
 </script>
@@ -36,12 +54,13 @@ export default {
 }
 .left-aide {
   width: 200px;
-  height: 620px;
+  height: 618px;
   float: left;
+  background-color: rgb(25, 27, 31);
 }
 .main {
   margin-left: 200px;
-  height: 620px;
+  height: 618px;
 }
 .el-popover {
   background: rgb(45, 47, 51) !important;

@@ -1,18 +1,20 @@
 <template>
   <div>
     <div class="flex-container">
-      <div class="flex-item" v-for="(item,index) in list" :key="index">
-        <div class="item-avatar">
-          <el-avatar :src="item.user.avatarUrl+'?param=30y30'" size="small"></el-avatar>
+      <div v-if="!loading">
+        <div class="flex-item" v-for="(item,index) in list" :key="index">
+          <div class="item-avatar">
+            <el-avatar :src="item.user.avatarUrl+'?param=30y30'" size="small"></el-avatar>
+          </div>
+          <div class="item-hf">
+            <p class="item-hf-main">
+              <span class="item-hf-name">{{item.user.nickname}}</span>
+              <span class="item-hf-time">{{item.time | toTime}}</span>
+            </p>
+            <p class="item-hf-content">回复我：{{item.content}}</p>
+          </div>
+          <p class="me-msg">{{item.beRepliedContent}}</p>
         </div>
-        <div class="item-hf">
-          <p class="item-hf-main">
-            <span class="item-hf-name">{{item.user.nickname}}</span>
-            <span class="item-hf-time">{{item.time | toTime}}</span>
-          </p>
-          <p class="item-hf-content">回复我：{{item.content}}</p>
-        </div>
-        <p class="me-msg">{{item.beRepliedContent}}</p>
       </div>
       <p v-if="loading" style="text-align:center;font-size:16px;color:#dcdde3;">加载中...</p>
     </div>
@@ -99,7 +101,7 @@ export default {
   width: 100%;
   height: 80px;
   position: relative;
-  margin-top:10px;
+  margin-top: 10px;
 }
 .item-avatar {
   width: 30px;
@@ -114,7 +116,7 @@ export default {
   padding: 0;
   line-height: 15px;
 }
-.item-hf-name{
+.item-hf-name {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -124,7 +126,7 @@ export default {
   float: left;
 }
 .item-hf-time {
-  margin-left:100px;
+  margin-left: 100px;
   font-size: 9px;
   text-align: right;
 }
@@ -132,10 +134,10 @@ export default {
   font-size: 10px;
   color: #dcdde3;
 }
-.me-msg{
-  margin-top:5px;
+.me-msg {
+  margin-top: 5px;
   font-size: 12px;
-  margin-left:30px;
-  background-color: rgb(54,56,60);
+  margin-left: 30px;
+  background-color: rgb(54, 56, 60);
 }
 </style>
