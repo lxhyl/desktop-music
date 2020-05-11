@@ -31,6 +31,35 @@ Vue.use(FormItem);
 Vue.use(Link);
 Vue.use(Tag);
 Vue.prototype.$message = Message;
+
+var infiniteScroll =  require('vue-infinite-scroll');
+Vue.use(infiniteScroll);
+
+
+
+//过滤器
+Vue.filter('toTime', function (e) {
+  Date.prototype.Format = function (fmt) {
+    var o = {
+      "M+": this.getMonth() + 1, 
+      "d+": this.getDate(), 
+      "h+": this.getHours(), 
+      "m+": this.getMinutes(), 
+      "s+": this.getSeconds(), 
+      "q+": Math.floor((this.getMonth() + 3) / 3), 
+      "S": this.getMilliseconds() 
+    };
+    if (/(y+)/.test(fmt))
+      fmt = fmt.replace(RegExp.$1, (this.getFullYear() + ""));
+    for (var k in o)
+      if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+    return fmt;
+  }
+  return new Date(e).Format('yy-MM-dd');
+})
+
+
+
 new Vue({
   router,
   store,

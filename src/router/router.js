@@ -5,8 +5,7 @@ Vue.use(Router)
 //个性推荐
 import Gxtj from '../components/main/Gxtj.vue'
 // header消息列表
-// 艾特我
-import Aitewo from '../components/msg/Aitewo.vue'
+
 // 评论的
 import Pinglun from "../components/msg/Pinglun.vue"
 // 私信的
@@ -20,7 +19,6 @@ export default new Router({
             path:'/',
             components:{
               default:Gxtj,
-              aitewo:Aitewo,
               pinglun:Pinglun,
               sixin:Sixin,
               tongzhi:Tongzhi,

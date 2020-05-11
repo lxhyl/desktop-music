@@ -71,7 +71,6 @@
           <p style="text-align:center;">
             <button @click="routerToPage('sixin')" class="msg-router-botton" size="mini" style="margin:0;">私信</button>
             <button @click="routerToPage('pinglun')" class="msg-router-botton" size="mini" style="margin:0;">评论</button>
-            <button @click="routerToPage('aitewo')" class="msg-router-botton" size="mini" style="margin:0;">@我</button>
             <button @click="routerToPage('tongzhi')" class="msg-router-botton" size="mini" style="margin:0;">通知</button>
           </p>
           <router-view v-if="isLogin" :name="routerMsg"></router-view>
@@ -230,7 +229,7 @@ export default {
   border:none;
   outline: none;
   color:#dcdde3 ;
-  font-size: 14px;
+  font-size: 12px;
 }
 .msg-router-botton:hover{
   background-color: rgb(58, 58, 63);
