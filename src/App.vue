@@ -36,7 +36,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -61,6 +61,8 @@ export default {
 .main {
   margin-left: 200px;
   height: 618px;
+   background-color: rgb(25, 27, 31);
+   position: relative;
 }
 .el-popover {
   background: rgb(45, 47, 51) !important;

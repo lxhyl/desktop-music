@@ -52,9 +52,9 @@ export default {
               this.list[i].notice = JSON.parse(this.list[i].notice);
             }
           }
-          console.log(this.list);
+      
           this.loading = false;
-          console.log(this.time)
+         
         });
     },
     lastPage(){

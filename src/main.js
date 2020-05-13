@@ -14,10 +14,12 @@ import router from './router/router';
 //vuex
 import store from './store/index'
 
-
+import Line from 'v-charts/lib/line.common.min.js'
+Vue.component(Line.name, Line);
 
 import 'element-ui/lib/theme-chalk/index.css';
-import { Col,Row,Image,Button,ButtonGroup,Input,Avatar,Popover,Form,FormItem,Link,Message,Tag} from 'element-ui';
+import { Col,Row,Image,Button,ButtonGroup,Input,Avatar,Popover,
+  Form,FormItem,Link,Message,Tag} from 'element-ui';
 Vue.use(Col);
 Vue.use(Row);
 Vue.use(Image);
@@ -30,10 +32,9 @@ Vue.use(Form);
 Vue.use(FormItem);
 Vue.use(Link);
 Vue.use(Tag);
+
 Vue.prototype.$message = Message;
 
-var infiniteScroll =  require('vue-infinite-scroll');
-Vue.use(infiniteScroll);
 
 
 

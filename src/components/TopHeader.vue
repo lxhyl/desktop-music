@@ -73,7 +73,7 @@
             <button @click="routerToPage('pinglun')" class="msg-router-botton" size="mini" style="margin:0;">评论</button>
             <button @click="routerToPage('tongzhi')" class="msg-router-botton" size="mini" style="margin:0;">通知</button>
           </p>
-          <router-view v-if="isLogin" :name="routerMsg"></router-view>
+          <router-view  :name="routerMsg"></router-view>
           <span slot="reference" class="el-icon-message" style="font-size:16px;line-height:50px;"></span>
         </el-popover>
       </el-col>
@@ -129,11 +129,12 @@ export default {
             `http://zhangpengfan.xyz:3000/login/cellphone?phone=${this.loginForm.phone}&password=${this.loginForm.password}`
           )
           .then(res => {
-           
             this.accountInfo = res.data;
             this.isLogin = true;
             this.$store.commit('getUserId',res.data.account.id);
-            this.reload();
+            localStorage.setItem('userid',res.data.account.id);
+            // 
+            // this.reload();
             document.getElementById("colsePopover").click();
           })
           .catch(() => {
@@ -142,8 +143,8 @@ export default {
       }
     },
     showUserPage() {
-      console.log("用户页");
-      this.$router.push('/me')
+     
+      this.$router.push('me')
     },
     routerToPage(e){
          this.routerMsg = e;
@@ -161,7 +162,7 @@ export default {
   height: 50px;
   z-index: 999;
   font-size: 10px;
-  border-bottom: 2px solid rgb(110, 7, 7);
+  border-bottom: 2px solid rgb(184, 37, 37);
 }
 .row-header {
   height: 50px;

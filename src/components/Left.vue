@@ -54,20 +54,18 @@ export default {
     };
   },
   created() {
-    setTimeout(() => {
-      this.userid = this.$store.state.userid;
-    }, 500);
+   this.userid = this.$store.state.userid;
+   this.userid = localStorage.getItem('userid');
   },
   mounted() {
-    setTimeout(()=>{
+    // setTimeout(()=>{
       this.getMusciList();
-    },550)
+    // },550)
   },
   methods: {
     getMusciList(){
       this.$axios.get(`http://zhangpengfan.xyz:3000/user/playlist?uid=${this.userid}`)
       .then(res => {
-        console.log(res);
         let arr = res.data.playlist;
         for(let i = 0;i<arr.length;i++){
         let json = {
