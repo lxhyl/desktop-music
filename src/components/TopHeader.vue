@@ -73,7 +73,10 @@
             <button @click="routerToPage('pinglun')" class="msg-router-botton" size="mini" style="margin:0;">评论</button>
             <button @click="routerToPage('tongzhi')" class="msg-router-botton" size="mini" style="margin:0;">通知</button>
           </p>
-          <router-view  :name="routerMsg"></router-view>
+          <Pinglun v-if="routerMsg == 'pinglun'" />
+            <Sixin v-if="routerMsg == 'sixin'" />
+           <Tongzhi v-if="routerMsg == 'tongzhi'" />
+
           <span slot="reference" class="el-icon-message" style="font-size:16px;line-height:50px;"></span>
         </el-popover>
       </el-col>
@@ -88,9 +91,22 @@
 </template>
 
 <script>
+// header消息列表
+// 评论的
+import Pinglun from "../components/msg/Pinglun.vue"
+// 私信的
+import Sixin from '../components/msg/Sixin.vue'
+// 通知
+import Tongzhi from '../components/msg/Tongzhi.vue'
+
 export default {
   name: "TopHeader",
    inject: ["reload"],
+   components:{
+     Pinglun,
+     Sixin,
+     Tongzhi
+   },
   data() {
     return {
       logoSrc: require("../assets/logo.png"), //logo图片地址
@@ -147,7 +163,9 @@ export default {
       this.$router.push('me')
     },
     routerToPage(e){
+      console.log(e);
          this.routerMsg = e;
+         console.log(this.routerMsg)
     },
     close() {
       window.opener = null;

@@ -1,38 +1,44 @@
 import Vue from 'vue'
 import Router from 'vue-router'
+
+const routerPush = Router.prototype.push
+Router.prototype.push = function push(location) {
+  return routerPush.call(this, location).catch(error=> error)
+}
+
+
 Vue.use(Router)
 
 
-// header消息列表
-// 评论的
-import Pinglun from "../components/msg/Pinglun.vue"
-// 私信的
-import Sixin from '../components/msg/Sixin.vue'
-// 通知
-import Tongzhi from '../components/msg/Tongzhi.vue'
 
 
-
+//发现音乐栏
 //个性推荐
-import Gxtj from '../components/main/Gxtj.vue'
+import FindMusic from '../components/findMusic/Index.vue'
 // 用户主页
-import Me from "../components/Me.vue"
+import Me from "../components/main/Me.vue"
+
+// 歌单列表
+import PlayList from "../components/PlayList.vue"
 export default new Router({
     mode:'hash',
     routes:[
+       
         {
             path:'/',
-            components:{
-              default:Gxtj,
-              pinglun:Pinglun,
-              sixin:Sixin,
-              tongzhi:Tongzhi,
-            }
+            name:"findmusic",
+            component:FindMusic
         },
         {
             path:'/me',
             name:"me",
             component:Me,
+        },
+        {
+            path:'/playlist',
+            name:"playlist",
+            component:PlayList,
         }
+
     ]
 })

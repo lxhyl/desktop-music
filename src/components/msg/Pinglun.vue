@@ -28,6 +28,7 @@
 
 <script>
 export default {
+  name:"msgPL",
   data() {
     return {
       id: null, //用户id

@@ -29,6 +29,7 @@
 
 <script>
 export default {
+  name:"msgTZ",
   data() {
     return {
       page: 0, //分页

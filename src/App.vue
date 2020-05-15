@@ -1,19 +1,30 @@
 <template>
   <div id="app">
+    
     <TopHeader />
-    <Left v-if="isRouterAlive" class="left-aide" />
-    <router-view v-if="isRouterAlive" class="main"></router-view>
+    <Left class="left-aide" />
+    <keep-alive exclude="playlist">
+      <router-view
+        id="style-2"
+        v-if="isRouterAlive"
+        class="main scrollbar-main"
+        style="height:568px;"
+      ></router-view>
+    </keep-alive>
+    <Play v-if="isPlaying" class="play"/>
   </div>
 </template>
 
 <script>
 import TopHeader from "./components/TopHeader";
 import Left from "./components/Left";
+import Play from "./components/Play";
 export default {
   name: "App",
   components: {
     TopHeader,
-    Left
+    Left,
+    Play
   },
   provide() {
     return {
@@ -22,8 +33,12 @@ export default {
   },
   data() {
     return {
-      isRouterAlive: true
+      isRouterAlive: true,
+      isPlaying:false,
     };
+  },
+  created() {
+    this.isPlaying = this.$store.state.isPlaying;
   },
   methods: {
     reload() {
@@ -47,25 +62,53 @@ export default {
   top: 0;
   left: 0;
   width: 1020px;
-  height: 670px;
+  height: 620px;
   margin: auto;
   background: #222225;
   z-index: -1;
 }
 .left-aide {
   width: 200px;
-  height: 618px;
+  height: 568px;
   float: left;
   background-color: rgb(25, 27, 31);
 }
 .main {
   margin-left: 200px;
-  height: 618px;
-   background-color: rgb(25, 27, 31);
-   position: relative;
+  height: 568px;
+  width: 820px;
+  background-color: rgb(25, 27, 31);
+  position: relative;
 }
-.el-popover {
-  background: rgb(45, 47, 51) !important;
-  border: none !important;
+.scrollbar-main {
+  position: relative;
+  height: 568px;
+  width: 820px;
+  background-color: rgb(25, 27, 31);
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
+
+#style-2::-webkit-scrollbar-track {
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  border-radius: 10px;
+  background-color: rgb(25, 27, 31);
+}
+
+#style-2::-webkit-scrollbar {
+  width: 8px;
+  background-color: rgb(25, 27, 31);
+}
+
+#style-2::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  background-color: rgb(47, 49, 52);
+}
+
+.play{
+  width: 1020px;
+  height: 50px;
+  background: #222225;
 }
 </style>

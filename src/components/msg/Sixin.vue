@@ -20,6 +20,7 @@
 
 <script>
 export default {
+  name:"msgSX",
   data() {
     return {
       id: 0, //用户id

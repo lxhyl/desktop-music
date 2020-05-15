@@ -61,7 +61,7 @@
       </div>
     </div>
     <div class="main"  >
-      <ve-line height="340px" width="780px"
+      <ve-line height="340px"
        style="color: rgb(173, 175, 178);"   :data="chartData"></ve-line>
     </div>
   </div>
@@ -69,6 +69,7 @@
 
 <script>
 export default {
+  name:"me",
   data() {
     return {
       userid: null,
@@ -103,7 +104,6 @@ export default {
       this.$axios
         .get(`http://zhangpengfan.xyz:3000/user/playlist?uid=${this.userid}`)
         .then(res => {
-          console.log(res.data);
           let arr = res.data.playlist;
           for(let i =0;i<arr.length;i++){
             // 用户自己创建的歌单
