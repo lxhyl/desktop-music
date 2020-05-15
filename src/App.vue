@@ -2,7 +2,7 @@
   <div id="app">
     
     <TopHeader />
-    <Left class="left-aide" />
+    <Left  v-if="isRouterAlive" class="left-aide" />
     <keep-alive exclude="playlist">
       <router-view
         id="style-2"
@@ -35,10 +35,12 @@ export default {
     return {
       isRouterAlive: true,
       isPlaying:false,
+    
     };
   },
   created() {
     this.isPlaying = this.$store.state.isPlaying;
+   
   },
   methods: {
     reload() {

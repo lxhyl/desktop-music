@@ -42,7 +42,10 @@
                 <button class="el-icon-video-play play-all">播放全部</button>
               </el-col>
               <el-col :span="4">
-                <button class="el-icon-share share">分享({{playList.playlist.shareCount}})</button>
+                <button
+                  @click="sharePlayList"
+                  class="el-icon-share share"
+                >分享({{playList.playlist.shareCount}})</button>
               </el-col>
               <el-col :span="16">
                 <div class="header-search">
@@ -108,14 +111,14 @@ export default {
           // 搜索歌名 搜索不到则搜索歌手
           if (lowName.includes(eLowerCase)) {
             return item;
-          }else {
-             let singerName = '';
-             for(let i=0;i<item.ar.length;i++){
-               singerName += (item.ar[i].name).toLowerCase();
-             }
-             if(singerName.includes(eLowerCase)){
-               return item;
-             }
+          } else {
+            let singerName = "";
+            for (let i = 0; i < item.ar.length; i++) {
+              singerName += item.ar[i].name.toLowerCase();
+            }
+            if (singerName.includes(eLowerCase)) {
+              return item;
+            }
           }
         });
       }
@@ -134,8 +137,24 @@ export default {
       this.$axios
         .get(`${this.$domain}/playlist/detail?id=${this.playListId}`)
         .then(res => {
+          console.log(res.data);
           this.playList = res.data;
           this.getDataOk = true;
+        });
+    },
+    sharePlayList() {
+      this.$axios
+        .get(
+          `${this.$domain}/share/resource?id=${this.playListId}&type=playlist&msg=分享歌单`
+        )
+        .then(res => {
+          console.log(res);
+          this.$message({
+            message: "成功分享歌单到动态",
+            type: "success",
+            duration:2000,
+            showClose:true
+          });
         });
     }
   }
@@ -273,5 +292,4 @@ export default {
   text-align: center;
   font-size: 12px;
 }
-
 </style>

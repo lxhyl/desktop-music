@@ -67,15 +67,30 @@
       </el-col>
       <el-col class="row-header" :span="1">开通VIP</el-col>
       <el-col class="row-header" :span="2" style="text-align:center">
-        <el-popover  style="background:#222225;" placement="bottom" width="280" trigger="click">
+        <el-popover style="background:#222225;" placement="bottom" width="280" trigger="click">
           <p style="text-align:center;">
-            <button @click="routerToPage('sixin')" class="msg-router-botton" size="mini" style="margin:0;">私信</button>
-            <button @click="routerToPage('pinglun')" class="msg-router-botton" size="mini" style="margin:0;">评论</button>
-            <button @click="routerToPage('tongzhi')" class="msg-router-botton" size="mini" style="margin:0;">通知</button>
+            <button
+              @click="routerToPage('sixin')"
+              class="msg-router-botton"
+              size="mini"
+              style="margin:0;"
+            >私信</button>
+            <button
+              @click="routerToPage('pinglun')"
+              class="msg-router-botton"
+              size="mini"
+              style="margin:0;"
+            >评论</button>
+            <button
+              @click="routerToPage('tongzhi')"
+              class="msg-router-botton"
+              size="mini"
+              style="margin:0;"
+            >通知</button>
           </p>
           <Pinglun v-if="routerMsg == 'pinglun'" />
-            <Sixin v-if="routerMsg == 'sixin'" />
-           <Tongzhi v-if="routerMsg == 'tongzhi'" />
+          <Sixin v-if="routerMsg == 'sixin'" />
+          <Tongzhi v-if="routerMsg == 'tongzhi'" />
 
           <span slot="reference" class="el-icon-message" style="font-size:16px;line-height:50px;"></span>
         </el-popover>
@@ -93,20 +108,20 @@
 <script>
 // header消息列表
 // 评论的
-import Pinglun from "../components/msg/Pinglun.vue"
+import Pinglun from "../components/msg/Pinglun.vue";
 // 私信的
-import Sixin from '../components/msg/Sixin.vue'
+import Sixin from "../components/msg/Sixin.vue";
 // 通知
-import Tongzhi from '../components/msg/Tongzhi.vue'
+import Tongzhi from "../components/msg/Tongzhi.vue";
 
 export default {
   name: "TopHeader",
-   inject: ["reload"],
-   components:{
-     Pinglun,
-     Sixin,
-     Tongzhi
-   },
+  inject: ["reload"],
+  components: {
+    Pinglun,
+    Sixin,
+    Tongzhi
+  },
   data() {
     return {
       logoSrc: require("../assets/logo.png"), //logo图片地址
@@ -117,10 +132,12 @@ export default {
         password: undefined
       },
       accountInfo: null, //账号信息
-      routerMsg: "sixin" //消息列表路由
+      routerMsg: "sixin", //消息列表路由
+      firstLogin: null //是否第一次登陆
     };
   },
   created() {
+    this.firstLogin = localStorage.getItem("firstLogin");
     let phone = localStorage.getItem("phone");
     let password = localStorage.getItem("password");
     if (phone && password) {
@@ -147,25 +164,26 @@ export default {
           .then(res => {
             this.accountInfo = res.data;
             this.isLogin = true;
-            this.$store.commit('getUserId',res.data.account.id);
-            localStorage.setItem('userid',res.data.account.id);
-            // 
-            // this.reload();
+            this.$store.commit("getUserId", res.data.account.id);
+            localStorage.setItem("userid", res.data.account.id);
             document.getElementById("colsePopover").click();
+            setTimeout(() => {
+              this.reload();
+            }, 500);
           })
           .catch(() => {
             this.$message("登陆失败，请检查账号密码");
           });
       }
     },
+
     showUserPage() {
-     
-      this.$router.push('me')
+      this.$router.push("me");
     },
-    routerToPage(e){
+    routerToPage(e) {
       console.log(e);
-         this.routerMsg = e;
-         console.log(this.routerMsg)
+      this.routerMsg = e;
+      console.log(this.routerMsg);
     },
     close() {
       window.opener = null;
@@ -245,14 +263,14 @@ export default {
   bottom: 0;
   position: absolute;
 }
-.msg-router-botton{
+.msg-router-botton {
   background-color: rgb(45, 47, 51);
-  border:none;
+  border: none;
   outline: none;
-  color:#dcdde3 ;
+  color: #dcdde3;
   font-size: 12px;
 }
-.msg-router-botton:hover{
+.msg-router-botton:hover {
   background-color: rgb(58, 58, 63);
 }
 </style>
