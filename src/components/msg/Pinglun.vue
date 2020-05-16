@@ -51,7 +51,7 @@ export default {
     getPingLun() {
       this.$axios
         .get(
-          `http://zhangpengfan.xyz:3000/msg/comments?uid=${this.id}&limit=5&before=${this.time}`
+          `${this.$domain}/msg/comments?uid=${this.id}&limit=5&before=${this.time}`
         )
         .then(res => {
           this.list = res.data.comments;
@@ -71,7 +71,7 @@ export default {
         this.page -= 1;
         this.$axios
           .get(
-            `http://zhangpengfan.xyz:3000/msg/comments?uid=${this.id}&limit=5`
+            `${this.$domain}/msg/comments?uid=${this.id}&limit=5`
           )
           .then(res => {
             this.list = res.data.comments;

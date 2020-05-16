@@ -45,7 +45,7 @@ export default {
   methods: {
     getTongZhi() {
       this.$axios
-        .get(`http://zhangpengfan.xyz:3000/msg/notices?limit=10&before=${this.time}`)
+        .get(`${this.$domain}/msg/notices?limit=10&before=${this.time}`)
         .then(res => {
           this.list = res.data.notices;
           for (let i = 0; i < this.list.length; i++) {

@@ -94,7 +94,7 @@ export default {
   methods: {
     getUserInfo() {
       this.$axios
-        .get(`http://zhangpengfan.xyz:3000/user/detail?uid=${this.userid}`)
+        .get(`${this.$domain}/user/detail?uid=${this.userid}`)
         .then(res => {
           this.userInfo = res.data;
           this.getOk = true;
@@ -102,7 +102,7 @@ export default {
     },
     getUserDetail() {
       this.$axios
-        .get(`http://zhangpengfan.xyz:3000/user/playlist?uid=${this.userid}`)
+        .get(`${this.$domain}/user/playlist?uid=${this.userid}`)
         .then(res => {
           let arr = res.data.playlist;
           for(let i =0;i<arr.length;i++){

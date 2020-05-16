@@ -2,7 +2,7 @@
   <div id="app">
     
     <TopHeader />
-    <Left  v-if="isRouterAlive" class="left-aide" />
+    <Left  v-if="isFirstLogin" class="left-aide" />
     <keep-alive exclude="playlist">
       <router-view
         id="style-2"
@@ -28,14 +28,15 @@ export default {
   },
   provide() {
     return {
-      reload: this.reload
+      reload: this.reload,
+      reloadLeft:this.reloadLeft
     };
   },
   data() {
     return {
       isRouterAlive: true,
       isPlaying:false,
-    
+      isFirstLogin:true,
     };
   },
   created() {
@@ -47,6 +48,12 @@ export default {
       this.isRouterAlive = false;
       this.$nextTick(function() {
         this.isRouterAlive = true;
+      });
+    },
+    reloadLeft(){
+        this.isFirstLogin = false;
+      this.$nextTick(function() {
+        this.isFirstLogin = true;
       });
     }
   }

@@ -6,7 +6,7 @@ Vue.config.productionTip = false
 //axios
 import axios from 'axios';
 Vue.prototype.$axios = axios;
-axios.defaults.withCredentials =true;
+axios.defaults.withCredentials = true;
 Vue.prototype.$domain = 'http://zhangpengfan.xyz:3000'
 
 //路由
@@ -19,8 +19,10 @@ import Line from 'v-charts/lib/line.common.min.js'
 Vue.component(Line.name, Line);
 
 import 'element-ui/lib/theme-chalk/index.css';
-import { Col,Row,Image,Button,ButtonGroup,Input,Avatar,Popover,
-  Form,FormItem,Link,Message,Tag} from 'element-ui';
+import {
+  Col, Row, Image, Button, ButtonGroup, Input, Avatar, Popover,
+  Form, FormItem, Link, Message, Tag
+} from 'element-ui';
 Vue.use(Col);
 Vue.use(Row);
 Vue.use(Image);
@@ -44,13 +46,13 @@ Vue.prototype.$message = Message;
 Vue.filter('toTime', function (e) {
   Date.prototype.Format = function (fmt) {
     var o = {
-      "M+": this.getMonth() + 1, 
-      "d+": this.getDate(), 
-      "h+": this.getHours(), 
-      "m+": this.getMinutes(), 
-      "s+": this.getSeconds(), 
-      "q+": Math.floor((this.getMonth() + 3) / 3), 
-      "S": this.getMilliseconds() 
+      "M+": this.getMonth() + 1,
+      "d+": this.getDate(),
+      "h+": this.getHours(),
+      "m+": this.getMinutes(),
+      "s+": this.getSeconds(),
+      "q+": Math.floor((this.getMonth() + 3) / 3),
+      "S": this.getMilliseconds()
     };
     if (/(y+)/.test(fmt))
       fmt = fmt.replace(RegExp.$1, (this.getFullYear() + ""));
@@ -60,14 +62,14 @@ Vue.filter('toTime', function (e) {
   }
   return new Date(e).Format('yy-MM-dd');
 })
-//歌曲时长格式化
 
+//歌曲时长格式化
 Vue.filter('songToTime', function (e) {
-    let m = Math.floor(e/1000/60)
-    let s = (e - m*60*1000).toString().slice(0,2);
-    m =  m > 10 ? m : `0${m}`;
-    s = s > 10 ? s : `0${s}`;
-    return `${m}:${s}`; 
+  let m = Math.floor(e / 1000 / 60);
+  let s = (e - m * 60 * 1000).toString().slice(0, 2);
+  m = m > 10 ? m : `0${m}`;
+  s = s > 10 ? s : `0${s}`;
+  return `${m}:${s}`;
 })
 
 new Vue({

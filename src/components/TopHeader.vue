@@ -116,7 +116,7 @@ import Tongzhi from "../components/msg/Tongzhi.vue";
 
 export default {
   name: "TopHeader",
-  inject: ["reload"],
+  inject: ["reload", "reloadLeft"],
   components: {
     Pinglun,
     Sixin,
@@ -159,17 +159,18 @@ export default {
 
         this.$axios
           .get(
-            `http://zhangpengfan.xyz:3000/login/cellphone?phone=${this.loginForm.phone}&password=${this.loginForm.password}`
+            `${this.$domain}/login/cellphone?phone=${this.loginForm.phone}&password=${this.loginForm.password}`
           )
           .then(res => {
             this.accountInfo = res.data;
             this.isLogin = true;
             this.$store.commit("getUserId", res.data.account.id);
-            localStorage.setItem("userid", res.data.account.id);
+            if (!localStorage.getItem("userid")) {
+              localStorage.setItem("userid", res.data.account.id);
+              this.reloadLeft();
+            }
+
             document.getElementById("colsePopover").click();
-            setTimeout(() => {
-              this.reload();
-            }, 500);
           })
           .catch(() => {
             this.$message("登陆失败，请检查账号密码");
@@ -181,9 +182,7 @@ export default {
       this.$router.push("me");
     },
     routerToPage(e) {
-      console.log(e);
       this.routerMsg = e;
-      console.log(this.routerMsg);
     },
     close() {
       window.opener = null;

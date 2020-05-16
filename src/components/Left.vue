@@ -68,20 +68,14 @@ export default {
   created() {
     this.userid = this.$store.state.userid;
     this.userid = localStorage.getItem("userid");
-    console.log("111");
   },
   mounted() {
-    // setTimeout(()=>{
-     if(this.userid){
-      this.getMusciList();
-     }
-
-    // },550)
+    this.userid && this.getMusciList()
   },
   methods: {
     getMusciList() {
       this.$axios
-        .get(`http://zhangpengfan.xyz:3000/user/playlist?uid=${this.userid}`)
+        .get(`${this.$domain}/user/playlist?uid=${this.userid}`)
         .then(res => {
           let arr = res.data.playlist;
           for (let i = 0; i < arr.length; i++) {

@@ -65,7 +65,12 @@
           <el-col :span="7" class="li-name">专辑</el-col>
           <el-col :span="2" class="li-name">时长</el-col>
         </el-row>
-        <el-row v-for="(item,index) in computedList" :key="index" class="li-container">
+        <el-row
+          v-for="(item,index) in computedList"
+          :key="index"
+          @click.native="playMusic(item.id)"
+          class="li-container"
+        >
           <el-col :span="1" class="li-num">{{index + 1}}</el-col>
           <el-col :span="7" class="li-name">{{item.name}}</el-col>
           <el-col :span="7" class="li-name">{{item.ar[0].name}}</el-col>
@@ -98,9 +103,49 @@ export default {
       }
     }
   },
-  //用计算属性来计算歌单搜索结果
+  //计算属性来计算歌单搜索结果
   computed: {
-    computedList: function() {
+    computedList:function() { 
+     return this.getSearchItem()
+    }
+  },
+  created() {
+    // 从路由参数获取歌单id
+    this.playListId = this.$route.query.id;
+    this.getPlayListInfo();
+  },
+  mounted() {},
+  methods: {
+    //获取歌单信息
+    getPlayListInfo() {
+      this.$axios
+        .get(`${this.$domain}/playlist/detail?id=${this.playListId}`)
+        .then(res => {
+          this.playList = res.data;
+          this.getDataOk = true;
+        });
+    },
+    //分享到动态
+    sharePlayList() {
+      this.$axios
+        .get(
+          `${this.$domain}/share/resource?id=${this.playListId}&type=playlist&msg=分享歌单`
+        )
+        .then(res => {
+          this.$message({
+            message: "成功分享歌单到动态",
+            type: "success",
+            duration: 2000,
+            showClose: true
+          });
+        });
+    },
+    // 播放组件 id为歌曲id
+    playMusic(id) {
+      this.$router.push(`/play?id=${id}`);
+    },
+    //计算搜索匹配项
+    getSearchItem() {
       let e = this.searchName;
       if (e == "") {
         return this.playList.playlist.tracks;
@@ -122,40 +167,6 @@ export default {
           }
         });
       }
-    }
-  },
-  created() {
-    // 从路由参数获取歌单id
-    this.playListId = this.$route.query.id;
-  },
-  mounted() {
-    this.getPlayListInfo();
-  },
-  methods: {
-    //获取歌单信息
-    getPlayListInfo() {
-      this.$axios
-        .get(`${this.$domain}/playlist/detail?id=${this.playListId}`)
-        .then(res => {
-          console.log(res.data);
-          this.playList = res.data;
-          this.getDataOk = true;
-        });
-    },
-    sharePlayList() {
-      this.$axios
-        .get(
-          `${this.$domain}/share/resource?id=${this.playListId}&type=playlist&msg=分享歌单`
-        )
-        .then(res => {
-          console.log(res);
-          this.$message({
-            message: "成功分享歌单到动态",
-            type: "success",
-            duration:2000,
-            showClose:true
-          });
-        });
     }
   }
 };

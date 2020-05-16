@@ -37,7 +37,7 @@ export default {
   methods: {
     //拿用户消息
     getUserMes() {
-      this.$axios.get("http://zhangpengfan.xyz:3000/msg/private").then(res => {
+      this.$axios.get(`${this.$domain}/msg/private`).then(res => {
         this.allMsg = res.data.msgs.concat(res.data.msgs);
         this.list = this.allMsg.slice(0, 10);
         for (let i = 0; i < this.allMsg.length; i++) {
