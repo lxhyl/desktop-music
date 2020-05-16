@@ -66,9 +66,9 @@ Vue.filter('toTime', function (e) {
 //歌曲时长格式化
 Vue.filter('songToTime', function (e) {
   let m = Math.floor(e / 1000 / 60);
-  let s = (e - m * 60 * 1000).toString().slice(0, 2);
-  m = m > 10 ? m : `0${m}`;
-  s = s > 10 ? s : `0${s}`;
+  let s = Math.round((e - m * 60 * 1000)/1000)
+  m = m >= 10 ? m : `0${m}`;
+  s = s >= 10 ? s : `0${s}`;
   return `${m}:${s}`;
 })
 

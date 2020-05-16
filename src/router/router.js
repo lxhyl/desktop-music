@@ -20,8 +20,8 @@ import Me from "../components/main/Me.vue"
 
 // 歌单列表
 import PlayList from "../components/PlayList.vue"
-// 播放组件
-import Play from "../components/Play.vue"
+// 播放详情组件
+import PlayDetail from "../components/main/PlayDetail.vue"
 export default new Router({
     mode:'hash',
     routes:[
@@ -42,9 +42,9 @@ export default new Router({
             component:PlayList,
         },
         {
-            path:'/play',
-            name:'play',
-            component:Play,
+            path:'/playDetail',
+            name:'playDetail',
+            component:PlayDetail,
         }
 
     ]

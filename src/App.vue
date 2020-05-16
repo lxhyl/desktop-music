@@ -1,9 +1,8 @@
 <template>
   <div id="app">
-    
     <TopHeader />
-    <Left  v-if="isFirstLogin" class="left-aide" />
-    <keep-alive exclude="playlist">
+    <Left v-if="isFirstLogin" class="left-aide" />
+    <keep-alive exclude="playlist,playDetail">
       <router-view
         id="style-2"
         v-if="isRouterAlive"
@@ -11,7 +10,8 @@
         style="height:568px;"
       ></router-view>
     </keep-alive>
-    <Play v-if="isPlaying" class="play"/>
+
+    <Play v-if="this.$store.state.isPlaying" class="play" />
   </div>
 </template>
 
@@ -29,20 +29,18 @@ export default {
   provide() {
     return {
       reload: this.reload,
-      reloadLeft:this.reloadLeft
+      reloadLeft: this.reloadLeft,
+      reloadPlay: this.reloadPlay
     };
   },
   data() {
     return {
       isRouterAlive: true,
-      isPlaying:false,
-      isFirstLogin:true,
+      isPlaying: false,
+      isFirstLogin: true
     };
   },
-  created() {
-    this.isPlaying = this.$store.state.isPlaying;
-   
-  },
+  created() {},
   methods: {
     reload() {
       this.isRouterAlive = false;
@@ -50,10 +48,16 @@ export default {
         this.isRouterAlive = true;
       });
     },
-    reloadLeft(){
-        this.isFirstLogin = false;
+    reloadLeft() {
+      this.isFirstLogin = false;
       this.$nextTick(function() {
         this.isFirstLogin = true;
+      });
+    },
+    reloadPlay() {
+      this.isPlaying = true;
+      this.$nextTick(function() {
+        this.isPlaying = false;
       });
     }
   }
@@ -115,7 +119,7 @@ export default {
   background-color: rgb(47, 49, 52);
 }
 
-.play{
+.play {
   width: 1020px;
   height: 50px;
   background: #222225;

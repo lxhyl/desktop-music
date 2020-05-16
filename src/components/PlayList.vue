@@ -63,7 +63,7 @@
           <el-col :span="7" class="li-name">音乐标题</el-col>
           <el-col :span="7" class="li-name">歌手</el-col>
           <el-col :span="7" class="li-name">专辑</el-col>
-          <el-col :span="2" class="li-name">时长</el-col>
+          <el-col :span="2" class="li-name" style="text-align:center;">时长</el-col>
         </el-row>
         <el-row
           v-for="(item,index) in computedList"
@@ -75,13 +75,15 @@
           <el-col :span="7" class="li-name">{{item.name}}</el-col>
           <el-col :span="7" class="li-name">{{item.ar[0].name}}</el-col>
           <el-col :span="7" class="li-name">{{item.al.name}}</el-col>
-          <el-col :span="2" class="li-name">{{item.dt | songToTime}}</el-col>
+          <el-col :span="2" class="li-name" style="text-align:center;">{{item.dt | songToTime}}</el-col>
         </el-row>
       </div>
     </div>
     <div v-else class="loading">加载中。。。</div>
   </div>
 </template>
+
+
 
 <script>
 export default {
@@ -105,8 +107,8 @@ export default {
   },
   //计算属性来计算歌单搜索结果
   computed: {
-    computedList:function() { 
-     return this.getSearchItem()
+    computedList: function() {
+      return this.getSearchItem();
     }
   },
   created() {
@@ -131,7 +133,7 @@ export default {
         .get(
           `${this.$domain}/share/resource?id=${this.playListId}&type=playlist&msg=分享歌单`
         )
-        .then(res => {
+        .then(() => {
           this.$message({
             message: "成功分享歌单到动态",
             type: "success",
@@ -142,7 +144,12 @@ export default {
     },
     // 播放组件 id为歌曲id
     playMusic(id) {
-      this.$router.push(`/play?id=${id}`);
+      this.$router.push(`/playDetail?id=${id}`);
+      this.$store.commit("getMusicId", id);
+      // 如果无播放框 就显示
+      if (!this.$store.state.isPlaying) {
+        this.$store.commit("changePlayState", true);
+      }
     },
     //计算搜索匹配项
     getSearchItem() {
@@ -268,7 +275,7 @@ export default {
 }
 .li-name {
   font-size: 10px;
-  text-align: center;
+  text-align: left;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;

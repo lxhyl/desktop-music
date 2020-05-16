@@ -1,5 +1,6 @@
 <template>
-  <div v-if="getOk" class="page">
+  <div  class="page">
+    <div v-if="getOk">
     <div class="header">
       <div class="header-avatar">
         <img :src="userInfo.profile.avatarUrl" />
@@ -63,6 +64,10 @@
     <div class="main"  >
       <ve-line height="340px"
        style="color: rgb(173, 175, 178);"   :data="chartData"></ve-line>
+    </div>
+    </div>
+    <div v-else class="loading">
+       加载中
     </div>
   </div>
 </template>
