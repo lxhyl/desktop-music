@@ -88,7 +88,7 @@
 <script>
 export default {
   name: "playlist",
-  inject: ["reload"],
+  inject: ["reload","reloadPlay"],
   data() {
     return {
       playListId: null, //歌单id
@@ -145,11 +145,10 @@ export default {
     // 播放组件 id为歌曲id
     playMusic(id) {
       this.$router.push(`/playDetail?id=${id}`);
+      // 更新音乐ID
       this.$store.commit("getMusicId", id);
-      // 如果无播放框 就显示
-      if (!this.$store.state.isPlaying) {
-        this.$store.commit("changePlayState", true);
-      }
+      // 刷新PLAY组件
+       this.reloadPlay();
     },
     //计算搜索匹配项
     getSearchItem() {

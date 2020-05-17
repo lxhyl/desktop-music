@@ -21,7 +21,7 @@ Vue.component(Line.name, Line);
 import 'element-ui/lib/theme-chalk/index.css';
 import {
   Col, Row, Image, Button, ButtonGroup, Input, Avatar, Popover,
-  Form, FormItem, Link, Message, Tag
+  Form, FormItem, Link, Message, Tag,Slider
 } from 'element-ui';
 Vue.use(Col);
 Vue.use(Row);
@@ -35,6 +35,7 @@ Vue.use(Form);
 Vue.use(FormItem);
 Vue.use(Link);
 Vue.use(Tag);
+Vue.use(Slider);
 
 Vue.prototype.$message = Message;
 

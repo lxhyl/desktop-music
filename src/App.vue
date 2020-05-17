@@ -55,9 +55,9 @@ export default {
       });
     },
     reloadPlay() {
-      this.isPlaying = true;
+      this.$store.commit("changePlayState", false);
       this.$nextTick(function() {
-        this.isPlaying = false;
+        this.$store.commit("changePlayState", true);
       });
     }
   }

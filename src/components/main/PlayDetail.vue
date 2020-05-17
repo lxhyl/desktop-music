@@ -30,7 +30,9 @@ export default {
       this.$axios
         .get(`${this.$domain}/song/detail?ids=${this.musicid}`)
         .then(res => {
-          console.log(res);
+         //更新VUEX的音乐信息
+          this.$store.commit('getMusicInfo',res.data);
+        
         });
     }
   }
