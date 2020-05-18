@@ -36,15 +36,10 @@
           :span="1"
         >{{this.$store.state.musicInfo.songs[0].dt | songToTime}}</el-col>
         <el-col class="item" style="line-height:50px;text-align:right;" :span="1">
-           <img class="volume"  :src="volumeImgUrl">
+          <img class="volume" :src="volumeImgUrl" />
         </el-col>
         <el-col class="item" :span="2">
-         
-          <el-slider v-model="volume"
-           @change="volumeChange"
-           :max="maxVolume"
-           :step="stepVolume"
-          ></el-slider>
+          <el-slider v-model="volume" @change="volumeChange" :max="maxVolume" :step="stepVolume"></el-slider>
         </el-col>
         <el-col class="item item-icon" style="text-align:right;" :span="2">
           <span class="el-icon-caret-left"></span>
@@ -82,9 +77,9 @@ export default {
       isPlaying: true, // 是否在播放
       timer: null, // 1s定时器 加载歌曲进度
       volume: 1, //音量
-      maxVolume:1,// 最大音量
-      stepVolume:0.1,//调节音量步长
-      volumeImgUrl:require('../assets/volume.png') // 喇叭图片
+      maxVolume: 1, // 最大音量
+      stepVolume: 0.1, //调节音量步长
+      volumeImgUrl: require("../assets/volume.png") // 喇叭图片
     };
   },
   computed: {
@@ -100,6 +95,12 @@ export default {
   },
   mounted() {
     this.musicid && this.getSongUrl();
+    let volumeTimer = setInterval(() => {
+       if(this.$refs.audio){
+         this.$refs.audio.volume = this.volume;
+         clearInterval(volumeTimer);
+       }
+    },500)
   },
   methods: {
     //获取音乐存储地址
@@ -148,12 +149,13 @@ export default {
     oneSecondTime() {
       let _this = this;
       this.timer = setInterval(() => {
+      
           _this.time += 1;
+        
       }, 1000);
     },
     // 音量改变时
-    volumeChange(e){
-    
+    volumeChange(e) {
       this.$refs.audio.volume = e;
     }
   }
@@ -184,10 +186,10 @@ export default {
   text-align: center;
   font-size: 30px;
 }
-.volume{
+.volume {
   height: 20px;
   width: 20px;
   position: relative;
-  top:5px;
+  top: 5px;
 }
 </style>
