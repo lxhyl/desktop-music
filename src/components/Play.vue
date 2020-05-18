@@ -1,8 +1,7 @@
 <template>
   <div>
-    
     <div v-if="this.$store.state.musicInfo">
-      <el-row style="height:50px;">
+      <el-row style="height:50px;margin-left:5px;">
         <el-col :span="1" class="item">
           <el-avatar
             shape="square"
@@ -21,24 +20,50 @@
         <el-col
           style="color:rgb(124, 124, 124);font-size:10px;text-align:center;"
           class="item"
-          :span="2"
+          :span="1"
         >{{nowtime}}</el-col>
         <el-col :span="9" class="item">
-          <el-slider v-model="time" :format-tooltip="formatTooltip" :max="musicAllTime"></el-slider>
+          <el-slider
+            v-model="time"
+            :format-tooltip="formatTooltip"
+            :max="musicAllTime"
+            @change="userChangeTime"
+          ></el-slider>
         </el-col>
         <el-col
-          style="color:rgb(124, 124, 124);font-size:10px;"
+          style="color:rgb(124, 124, 124);font-size:10px;text-align:center;"
           class="item"
           :span="1"
         >{{this.$store.state.musicInfo.songs[0].dt | songToTime}}</el-col>
-        <el-col class="item" :span="3">3</el-col>
-        <el-col class="item" :span="2">1</el-col>
-        <el-col class="item" :span="2">1</el-col>
-        <el-col class="item" :span="2">1</el-col>
+        <el-col class="item" style="line-height:50px;text-align:right;" :span="1">
+           <img class="volume"  :src="volumeImgUrl">
+        </el-col>
+        <el-col class="item" :span="2">
+         
+          <el-slider v-model="volume"
+           @change="volumeChange"
+           :max="maxVolume"
+           :step="stepVolume"
+          ></el-slider>
+        </el-col>
+        <el-col class="item item-icon" style="text-align:right;" :span="2">
+          <span class="el-icon-caret-left"></span>
+        </el-col>
+        <el-col class="item item-icon" :span="2
+        
+        ">
+          <span v-if="isPlaying" @click="stop" class="el-icon-video-pause"></span>
+          <span v-else @click="play" class="el-icon-video-play"></span>
+        </el-col>
+        <el-col class="item item-icon" style="text-align:left;" :span="2">
+          <span class="el-icon-caret-right"></span>
+        </el-col>
+        <el-col :span="1" class="item item-icon">
+          <span class="el-icon-s-unfold"></span>
+        </el-col>
       </el-row>
     </div>
-     <audio v-if="getDataOk" :src="musicUrl" 
-     style="width:0;height:0;"></audio>
+    <audio ref="audio" v-if="getDataOk" autoplay :src="musicUrl" style="width:0;height:0;"></audio>
   </div>
 </template>
 
@@ -51,13 +76,18 @@ export default {
     return {
       getDataOk: false, //是否获取到数据
       musicid: null, // 音乐id
-      time:0,//播放进度 单位s
+      time: 0, //播放进度 单位s
       nowtime: 0, // 播放进度 格式化后的时间
-      musicUrl:null,//音乐文件存储地址
+      musicUrl: null, //音乐文件存储地址
+      isPlaying: true, // 是否在播放
+      timer: null, // 1s定时器 加载歌曲进度
+      volume: 1, //音量
+      maxVolume:1,// 最大音量
+      stepVolume:0.1,//调节音量步长
+      volumeImgUrl:require('../assets/volume.png') // 喇叭图片
     };
   },
   computed: {
-    
     // 计算音乐总时长
     musicAllTime: function() {
       let ms = this.$store.state.musicInfo.songs[0].dt;
@@ -79,6 +109,7 @@ export default {
         .then(res => {
           this.musicUrl = res.data.data[0].url;
           this.getDataOk = true;
+          this.oneSecondTime();
         });
     },
     //格式化进度条显示数字
@@ -89,8 +120,41 @@ export default {
       m = m >= 10 ? m : `0${m}`;
       s = s >= 10 ? s : `0${s}`;
       let str = `${m}:${s}`;
-      this.nowtime = str
+      this.nowtime = str;
       return str;
+    },
+    //暂停
+    stop() {
+      this.$refs.audio.pause();
+      this.isPlaying = false;
+      clearInterval(this.timer);
+      this.timer = null;
+    },
+    //播放
+    play() {
+      this.$refs.audio.play();
+      this.isPlaying = true;
+      this.oneSecondTime();
+    },
+    // 手动改变进度条
+    userChangeTime(e) {
+      this.time = e;
+      this.$refs.audio.currentTime = e;
+      if (this.$refs.audio.paused) {
+        this.$refs.audio.play();
+      }
+    },
+    //定时器
+    oneSecondTime() {
+      let _this = this;
+      this.timer = setInterval(() => {
+          _this.time += 1;
+      }, 1000);
+    },
+    // 音量改变时
+    volumeChange(e){
+    
+      this.$refs.audio.volume = e;
     }
   }
 };
@@ -115,5 +179,15 @@ export default {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+.item-icon {
+  text-align: center;
+  font-size: 30px;
+}
+.volume{
+  height: 20px;
+  width: 20px;
+  position: relative;
+  top:5px;
 }
 </style>

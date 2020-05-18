@@ -63,7 +63,6 @@ Vue.filter('toTime', function (e) {
   }
   return new Date(e).Format('yy-MM-dd');
 })
-
 //歌曲时长格式化
 Vue.filter('songToTime', function (e) {
   let m = Math.floor(e / 1000 / 60);

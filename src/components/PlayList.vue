@@ -60,10 +60,10 @@
       <div class="container">
         <el-row class="li-container">
           <el-col :span="1" class="li-num">序号</el-col>
-          <el-col :span="7" class="li-name">音乐标题</el-col>
-          <el-col :span="7" class="li-name">歌手</el-col>
-          <el-col :span="7" class="li-name">专辑</el-col>
-          <el-col :span="2" class="li-name" style="text-align:center;">时长</el-col>
+          <el-col :span="7" class="li-name" style="color:rgb(124, 124, 124);">音乐标题</el-col>
+          <el-col :span="7" class="li-name" style="color:rgb(124, 124, 124);">歌手</el-col>
+          <el-col :span="7" class="li-name" style="color:rgb(124, 124, 124);">专辑</el-col>
+          <el-col :span="2" class="li-name" style="text-align:center;color:rgb(124, 124, 124);">时长</el-col>
         </el-row>
         <el-row
           v-for="(item,index) in computedList"
