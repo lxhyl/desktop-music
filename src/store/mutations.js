@@ -15,5 +15,9 @@ export default {
     //获取音乐信息
     getMusicInfo(state,value){
        state.musicInfo = value;
+    },
+    //更新音乐播放时长
+    getMusicPlayTime(state,value){
+      state.musicPlayTime = value
     }
 }

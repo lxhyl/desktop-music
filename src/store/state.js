@@ -4,6 +4,7 @@ const state = {
      isPlaying:false, // 是否显示播放组件
      login:false, //是否登录
      musicInfo:null, // 音乐信息
+     musicPlayTime:0,//音乐播放时长
 }
 export default state
 

@@ -76,7 +76,7 @@ export default {
       musicUrl: null, //音乐文件存储地址
       isPlaying: true, // 是否在播放
       timer: null, // 1s定时器 加载歌曲进度
-      volume: 1, //音量
+      volume: 0.5, //音量
       maxVolume: 1, // 最大音量
       stepVolume: 0.1, //调节音量步长
       volumeImgUrl: require("../assets/volume.png") // 喇叭图片
@@ -95,12 +95,9 @@ export default {
   },
   mounted() {
     this.musicid && this.getSongUrl();
-    let volumeTimer = setInterval(() => {
-       if(this.$refs.audio){
-         this.$refs.audio.volume = this.volume;
-         clearInterval(volumeTimer);
-       }
-    },500)
+    setInterval(()=>{
+        console.log(this.$refs.audio.played);
+    },1000)
   },
   methods: {
     //获取音乐存储地址
@@ -111,6 +108,10 @@ export default {
           this.musicUrl = res.data.data[0].url;
           this.getDataOk = true;
           this.oneSecondTime();
+          //DOM更新后  获取audio标签 初始化音量
+          this.$nextTick(() => {
+             this.$refs.audio.volume = this.volume;
+          })
         });
     },
     //格式化进度条显示数字
@@ -149,9 +150,7 @@ export default {
     oneSecondTime() {
       let _this = this;
       this.timer = setInterval(() => {
-      
           _this.time += 1;
-        
       }, 1000);
     },
     // 音量改变时
