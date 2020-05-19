@@ -147,7 +147,8 @@ export default {
       routerMsg: "sixin", //消息列表路由
       firstLogin: null, //是否第一次登陆
       searchKey: "", //搜索关键词
-      hotSearchControl: false //是否显示热搜组件
+      hotSearchControl: false, //是否显示热搜组件
+      searchDebounceTimer: null //搜索框防抖
     };
   },
   computed: {
@@ -164,11 +165,20 @@ export default {
   //监听searchKey 搜索关键词
   watch: {
     searchKey: function(n) {
+      // 防抖  200ms延时
       if (n == "") {
         this.$store.commit("changeSearchPopover", true);
         this.hotSearchControl = true;
+      }
+      if (this.searchDebounceTimer != null) {
+        clearTimeout(this.searchDebounceTimer);
+        this.searchDebounceTimer = null;
       } else {
-        this.$store.commit("changeSearchPopover", false);
+        this.searchDebounceTimer = setTimeout(() => {
+          if (n !== ""){
+            this.$store.commit("changeSearchPopover", false);
+          }
+        }, 200);
       }
     }
   },
