@@ -42,20 +42,27 @@
           <el-slider v-model="volume" @change="volumeChange" :max="maxVolume" :step="stepVolume"></el-slider>
         </el-col>
         <el-col class="item item-icon" style="text-align:right;" :span="2">
-          <span v-if="this.$store.state.playLists.length > 1" 
-          @click="playLastMusic()" 
-          class="el-icon-caret-left"></span>
+          <span
+            v-if="this.$store.state.playLists.length > 1"
+            @click="playLastMusic()"
+            class="el-icon-caret-left"
+          ></span>
         </el-col>
         <el-col class="item item-icon" :span="2">
           <span v-if="isPlaying" @click="stop" class="el-icon-video-pause"></span>
           <span v-else @click="play" class="el-icon-video-play"></span>
         </el-col>
         <el-col class="item item-icon" style="text-align:left;" :span="2">
-          <span v-if="this.$store.state.playLists.length > 1" @click="playNextMusic()" class="el-icon-caret-right"></span>
+          <span
+            v-if="this.$store.state.playLists.length > 1"
+            @click="playNextMusic()"
+            class="el-icon-caret-right"
+          ></span>
         </el-col>
         <el-col :span="1" class="item item-icon" style="color:rgb(173, 175, 178);">
           <el-popover trigger="click" width="300" placement="top" offset="150">
             <div class="scrollbar-main" id="style-2">
+              <el-row></el-row>
               <el-row>
                 <el-col class="li-name" style="color:rgb(124, 124, 124);" :span="18">音乐标题</el-col>
                 <el-col :span="3" class="li-name" style="color:rgb(124, 124, 124);">歌手</el-col>
@@ -96,7 +103,7 @@ export default {
       time: 0, //播放进度 单位s
       nowtime: 0, // 播放进度 格式化后的时间
       musicUrl: null, //音乐文件存储地址
-      isPlaying: true, // 是否在播放
+      isPlaying: false, // 是否在播放
       timer: null, // 1s定时器 加载歌曲进度
       volume: 0.5, //音量
       maxVolume: 1, // 最大音量
@@ -156,9 +163,11 @@ export default {
     },
     //播放
     play() {
-      this.$refs.audio.play();
-      this.isPlaying = true;
-      this.oneSecondTime();
+      if (this.$refs.audio) {
+        this.$refs.audio.play();
+        this.isPlaying = true;
+        this.oneSecondTime();
+      }
     },
     // 手动改变进度条
     userChangeTime(e) {
@@ -171,6 +180,7 @@ export default {
     //定时器
     oneSecondTime() {
       let _this = this;
+      this.isPlaying = true;
       this.timer = setInterval(() => {
         if (this.$refs.audio) {
           if (_this.$refs.audio.readyState) {
@@ -286,9 +296,12 @@ export default {
   line-height: 25px;
   margin: 0 15px;
 }
+.li-container:nth-child(odd) {
+  background-color: #222225;
+}
 .scrollbar-main {
   position: relative;
-  height: 300px;
+  height: 400px;
   width: 300px;
   overflow-y: scroll;
   overflow-x: hidden;
@@ -310,4 +323,5 @@ export default {
   -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
   background-color: rgb(25, 27, 31);
 }
+
 </style>
