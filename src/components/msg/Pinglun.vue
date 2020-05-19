@@ -123,11 +123,11 @@ export default {
   white-space: nowrap;
   font-size: 11px;
   color: rgb(45, 96, 155);
-  width: 100px;
+  width: 90px;
   float: left;
 }
 .item-hf-time {
-  margin-left: 100px;
+  margin-left: 90px;
   font-size: 9px;
   text-align: right;
 }

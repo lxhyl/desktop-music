@@ -9,13 +9,19 @@
             class="music-pic"
           ></el-avatar>
         </el-col>
-        <el-col :span="2">
-          <span class="name-arname">{{this.$store.state.musicInfo.songs[0].name}}</span>
-          <br />
-          <span
+        <el-col :span="2" style="height:50px;">
+          <span 
+          class="name-arname"
+          style="line-height:30px;"
+          >
+          {{this.$store.state.musicInfo.songs[0].name}}
+          </span>
+         
+          <p
             class="name-arname"
-            style="color:rgb(124, 124, 124);"
-          >{{this.$store.state.musicInfo.songs[0].ar[0].name}}</span>
+            style="color:rgb(124, 124, 124);height:20px;"
+          >{{this.$store.state.musicInfo.songs[0].ar[0].name}}
+          </p>
         </el-col>
         <el-col
           style="color:rgb(124, 124, 124);font-size:10px;text-align:center;"
@@ -95,7 +101,7 @@
 export default {
   name: "play",
   inject: ["reloadPlay"],
-  //  刷新组件
+  //  刷新播放组件
   data() {
     return {
       getDataOk: false, //是否获取到数据
@@ -180,10 +186,11 @@ export default {
     //定时器
     oneSecondTime() {
       let _this = this;
-      this.isPlaying = true;
+   
       this.timer = setInterval(() => {
         if (this.$refs.audio) {
           if (_this.$refs.audio.readyState) {
+               this.isPlaying = true;
             _this.time += 1;
           }
           // 如果音乐播放结束 自动播放下一首音乐
@@ -265,13 +272,17 @@ export default {
   top: 5px;
 }
 .name-arname {
+  margin: 0;
+  padding: 0;
   height: 25px;
-  line-height: 25px;
-  font-size: 10px;
+  line-height: 20px;
+  font-size: 11px;
+  width:80px;
   display: inline-block;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+ 
 }
 .item-icon {
   text-align: center;

@@ -13,7 +13,21 @@
       </el-col>
       <el-col class="row-header" :span="10">
         <div class="header-search">
-          <input placeholder="搜索音乐，视频，歌词，电台" class="search-input" />
+          <el-popover
+          placement="bottom"
+          trigger="manual"
+          v-model="searchVisible"
+          width="300"
+          >
+          <hot-search/>
+          <input 
+            type="text"
+            slot="reference"
+            @focus="searchVisible = true"
+            @blur="searchVisible = false"
+            placeholder="搜索音乐，视频，歌词，电台" 
+            class="search-input" />
+          </el-popover>
           <span class="search-icon el-icon-search"></span>
           <span id="colsePopover"></span>
         </div>
@@ -113,14 +127,16 @@ import Pinglun from "../components/msg/Pinglun.vue";
 import Sixin from "../components/msg/Sixin.vue";
 // 通知
 import Tongzhi from "../components/msg/Tongzhi.vue";
-
+// 热搜
+import HotSearch from "./search/HotSearch.vue"
 export default {
   name: "TopHeader",
   inject: ["reload", "reloadLeft"],
   components: {
     Pinglun,
     Sixin,
-    Tongzhi
+    Tongzhi,
+    HotSearch,
   },
   data() {
     return {
@@ -133,7 +149,8 @@ export default {
       },
       accountInfo: null, //账号信息
       routerMsg: "sixin", //消息列表路由
-      firstLogin: null //是否第一次登陆
+      firstLogin: null,//是否第一次登陆
+      searchVisible:false,//是否显示搜索框
     };
   },
   created() {
