@@ -18,6 +18,10 @@ export default {
     },
     //更新音乐播放时长
     getMusicPlayTime(state,value){
-      state.musicPlayTime = value
+      state.musicPlayTime = value;
+    },
+    // 更新音乐列表
+    getPlayLists(state,lists){
+       state.playLists= lists;
     }
 }

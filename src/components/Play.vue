@@ -42,19 +42,41 @@
           <el-slider v-model="volume" @change="volumeChange" :max="maxVolume" :step="stepVolume"></el-slider>
         </el-col>
         <el-col class="item item-icon" style="text-align:right;" :span="2">
-          <span class="el-icon-caret-left"></span>
+          <span v-if="this.$store.state.playLists.length > 1" 
+          @click="playLastMusic()" 
+          class="el-icon-caret-left"></span>
         </el-col>
-        <el-col class="item item-icon" :span="2
-        
-        ">
+        <el-col class="item item-icon" :span="2">
           <span v-if="isPlaying" @click="stop" class="el-icon-video-pause"></span>
           <span v-else @click="play" class="el-icon-video-play"></span>
         </el-col>
         <el-col class="item item-icon" style="text-align:left;" :span="2">
-          <span class="el-icon-caret-right"></span>
+          <span v-if="this.$store.state.playLists.length > 1" @click="playNextMusic()" class="el-icon-caret-right"></span>
         </el-col>
-        <el-col :span="1" class="item item-icon">
-          <span class="el-icon-s-unfold"></span>
+        <el-col :span="1" class="item item-icon" style="color:rgb(173, 175, 178);">
+          <el-popover trigger="click" width="300" placement="top" offset="150">
+            <div class="scrollbar-main" id="style-2">
+              <el-row>
+                <el-col class="li-name" style="color:rgb(124, 124, 124);" :span="18">音乐标题</el-col>
+                <el-col :span="3" class="li-name" style="color:rgb(124, 124, 124);">歌手</el-col>
+                <el-col
+                  :span="3"
+                  class="li-name"
+                  style="text-align:center;color:rgb(124, 124, 124);"
+                >时长</el-col>
+              </el-row>
+              <el-row
+                v-for="(item,index) in this.$store.state.playLists"
+                :key="index"
+                @click.native="playListsMusic(item.id)"
+              >
+                <el-col :span="15" class="li-name">{{item.name}}</el-col>
+                <el-col :span="6" class="li-name" style="text-align:center;">{{item.ar}}</el-col>
+                <el-col :span="3" class="li-name">{{item.time | songToTime}}</el-col>
+              </el-row>
+            </div>
+            <span slot="reference" class="el-icon-s-unfold"></span>
+          </el-popover>
         </el-col>
       </el-row>
     </div>
@@ -66,7 +88,7 @@
 export default {
   name: "play",
   inject: ["reloadPlay"],
-  // 监听路由  刷新组件
+  //  刷新组件
   data() {
     return {
       getDataOk: false, //是否获取到数据
@@ -95,9 +117,13 @@ export default {
   },
   mounted() {
     this.musicid && this.getSongUrl();
-    setInterval(()=>{
-        console.log(this.$refs.audio.played);
-    },1000)
+    // 当audio就绪 初始化音量
+    let volumeTimer = setInterval(() => {
+      if (this.$refs.audio) {
+        this.$refs.audio.volume = this.volume;
+        clearInterval(volumeTimer);
+      }
+    }, 100);
   },
   methods: {
     //获取音乐存储地址
@@ -108,10 +134,6 @@ export default {
           this.musicUrl = res.data.data[0].url;
           this.getDataOk = true;
           this.oneSecondTime();
-          //DOM更新后  获取audio标签 初始化音量
-          this.$nextTick(() => {
-             this.$refs.audio.volume = this.volume;
-          })
         });
     },
     //格式化进度条显示数字
@@ -150,12 +172,72 @@ export default {
     oneSecondTime() {
       let _this = this;
       this.timer = setInterval(() => {
-          _this.time += 1;
+        if (this.$refs.audio) {
+          if (_this.$refs.audio.readyState) {
+            _this.time += 1;
+          }
+          // 如果音乐播放结束 自动播放下一首音乐
+          // 清除定时器
+          if (this.$refs.audio.ended) {
+            clearInterval(_this.timer);
+            this.playNextMusic();
+          }
+        }
       }, 1000);
     },
     // 音量改变时
     volumeChange(e) {
       this.$refs.audio.volume = e;
+    },
+    // 获取上一首音乐
+    getLastMusic() {
+      let nowId = this.musicid;
+      let lists = this.$store.state.playLists;
+      for (let i = 0; i < lists.length; i++) {
+        if (lists[i].id == nowId) {
+          if (i == 0) {
+            return lists[lists.length - 1].id;
+          } else {
+            return lists[i - 1].id;
+          }
+        }
+      }
+    },
+    //获取下一首音乐
+    getNextMusic() {
+      let nowId = this.musicid;
+      let lists = this.$store.state.playLists;
+      for (let i = 0; i < lists.length; i++) {
+        if (lists[i].id == nowId) {
+          if (i == lists.length - 1) {
+            return lists[0].id;
+          } else {
+            return lists[i + 1].id;
+          }
+        }
+      }
+    },
+    // 播放下一首音乐
+    playNextMusic() {
+      let id = this.getNextMusic();
+      this.$router.push(`/playDetail?id=${id}`);
+      // 更新音乐ID
+      this.$store.commit("getMusicId", id);
+      this.reloadPlay();
+    },
+    // 播放上一首音乐
+    playLastMusic() {
+      let id = this.getLastMusic();
+      this.$router.push(`/playDetail?id=${id}`);
+      // 更新音乐ID
+      this.$store.commit("getMusicId", id);
+      this.reloadPlay();
+    },
+    // 点击播放音乐列表音乐
+    playListsMusic(id) {
+      this.$router.push(`/playDetail?id=${id}`);
+      this.$store.commit("getMusicId", id);
+      this.reloadPlay();
     }
   }
 };
@@ -190,5 +272,42 @@ export default {
   width: 20px;
   position: relative;
   top: 5px;
+}
+.li-name {
+  font-size: 10px;
+  text-align: left;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  line-height: 25px;
+}
+.li-container {
+  height: 25px;
+  line-height: 25px;
+  margin: 0 15px;
+}
+.scrollbar-main {
+  position: relative;
+  height: 300px;
+  width: 300px;
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
+
+#style-2::-webkit-scrollbar-track {
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  border-radius: 10px;
+  background-color: rgb(45, 47, 51);
+}
+
+#style-2::-webkit-scrollbar {
+  width: 8px;
+  background-color: rgb(45, 47, 51);
+}
+
+#style-2::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  background-color: rgb(25, 27, 31);
 }
 </style>

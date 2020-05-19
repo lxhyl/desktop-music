@@ -39,7 +39,7 @@
             <br />
             <el-row class="header-main-two">
               <el-col :span="4">
-                <button class="el-icon-video-play play-all">播放全部</button>
+                <button @click="playAllLists" class="el-icon-video-play play-all">播放全部</button>
               </el-col>
               <el-col :span="4">
                 <button
@@ -147,6 +147,8 @@ export default {
       this.$router.push(`/playDetail?id=${id}`);
       // 更新音乐ID
       this.$store.commit("getMusicId", id);
+      // 将歌单更新到vuex state
+      this.playAllLists();
       // 刷新PLAY组件
        this.reloadPlay();
     },
@@ -173,7 +175,22 @@ export default {
           }
         });
       }
-    }
+    },
+    // 播放全部音乐
+    playAllLists(){
+      let result = [];
+      let musicList = this.playList.playlist.tracks;
+      for(let i =0;i<musicList.length;i++){
+        let obj = {
+          name:musicList[i].name,
+          ar:musicList[i].ar[0].name,
+          time:musicList[i].dt,
+          id:musicList[i].id
+        }
+        result.push(obj);
+      }
+      this.$store.commit('getPlayLists',result);
+    },
   }
 };
 </script>
