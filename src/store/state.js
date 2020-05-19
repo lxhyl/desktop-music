@@ -6,6 +6,8 @@ const state = {
      musicInfo:null, // 音乐信息
      musicPlayTime:0,//音乐播放时长
      playLists:null,//播放列表
+     searchPopover:false,//是否显示搜索弹出框
+     searchKey:'',//搜索关键词
 }
 export default state
 

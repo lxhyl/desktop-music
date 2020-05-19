@@ -23,5 +23,13 @@ export default {
     // 更新音乐列表
     getPlayLists(state,lists){
        state.playLists= lists;
+    },
+    //打开关闭搜索弹框
+    changeSearchPopover(state,value){
+       state.searchPopover = value;
+    },
+    // 改变搜索词
+    setSearchKey(state,value){
+      state.searchKey = value;
     }
 }

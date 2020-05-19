@@ -13,21 +13,16 @@
       </el-col>
       <el-col class="row-header" :span="10">
         <div class="header-search">
-          <el-popover
-          placement="bottom"
-          trigger="manual"
-          v-model="searchVisible"
-          width="300"
-          >
-          <hot-search/>
-          <input 
-            type="text"
-            slot="reference"
-            v-model="searchKey"
-            @focus="searchVisible = true"
-            @blur="closeSearch"
-            placeholder="搜索音乐，视频，歌词，电台" 
-            class="search-input" />
+          <el-popover placement="bottom" trigger="manual" v-model="searchPopover" width="300">
+            <hot-search v-if="hotSearchControl" />
+            <input
+              type="text"
+              slot="reference"
+              v-model="searchKey"
+              @focus="openSearchPopover"
+              placeholder="搜索音乐，视频，歌词，电台"
+              class="search-input"
+            />
           </el-popover>
           <span class="search-icon el-icon-search"></span>
           <span id="colsePopover"></span>
@@ -129,7 +124,7 @@ import Sixin from "../components/msg/Sixin.vue";
 // 通知
 import Tongzhi from "../components/msg/Tongzhi.vue";
 // 热搜
-import HotSearch from "./search/HotSearch.vue"
+import HotSearch from "./search/HotSearch.vue";
 export default {
   name: "TopHeader",
   inject: ["reload", "reloadLeft"],
@@ -137,7 +132,7 @@ export default {
     Pinglun,
     Sixin,
     Tongzhi,
-    HotSearch,
+    HotSearch
   },
   data() {
     return {
@@ -150,10 +145,32 @@ export default {
       },
       accountInfo: null, //账号信息
       routerMsg: "sixin", //消息列表路由
-      firstLogin: null,//是否第一次登陆
-      searchVisible:false,//是否显示搜索框
-      searchKey:'',//搜索关键词
+      firstLogin: null, //是否第一次登陆
+      searchKey: "", //搜索关键词
+      hotSearchControl: false //是否显示热搜组件
     };
+  },
+  computed: {
+    //获取VUEX中 是否显示搜索弹框
+    searchPopover: {
+      get: function() {
+        return this.$store.state.searchPopover;
+      },
+      set: function(e) {
+        this.$store.state.searchPopover = e;
+      }
+    }
+  },
+  //监听searchKey 搜索关键词
+  watch: {
+    searchKey: function(n) {
+      if (n == "") {
+        this.$store.commit("changeSearchPopover", true);
+        this.hotSearchControl = true;
+      } else {
+        this.$store.commit("changeSearchPopover", false);
+      }
+    }
   },
   created() {
     this.firstLogin = localStorage.getItem("firstLogin");
@@ -203,13 +220,19 @@ export default {
     routerToPage(e) {
       this.routerMsg = e;
     },
+    //关闭页面
     close() {
       window.opener = null;
       window.open("about:blank", "_top").close();
     },
+    //打开搜索弹出框
+    openSearchPopover() {
+      this.$store.commit("changeSearchPopover", true);
+      this.hotSearchControl = true;
+    },
     //关闭搜索框
-    closeSearch(){
-
+    closeSearch() {
+      this.$store.commit("changeSearchPopover", false);
     }
   }
 };
