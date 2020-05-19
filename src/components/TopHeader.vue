@@ -23,8 +23,9 @@
           <input 
             type="text"
             slot="reference"
+            v-model="searchKey"
             @focus="searchVisible = true"
-            @blur="searchVisible = false"
+            @blur="closeSearch"
             placeholder="搜索音乐，视频，歌词，电台" 
             class="search-input" />
           </el-popover>
@@ -151,6 +152,7 @@ export default {
       routerMsg: "sixin", //消息列表路由
       firstLogin: null,//是否第一次登陆
       searchVisible:false,//是否显示搜索框
+      searchKey:'',//搜索关键词
     };
   },
   created() {
@@ -204,6 +206,10 @@ export default {
     close() {
       window.opener = null;
       window.open("about:blank", "_top").close();
+    },
+    //关闭搜索框
+    closeSearch(){
+
     }
   }
 };
