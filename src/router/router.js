@@ -22,6 +22,8 @@ import Me from "../components/main/Me.vue"
 import PlayList from "../components/PlayList.vue"
 // 播放详情组件
 import PlayDetail from "../components/main/PlayDetail.vue"
+// 搜索结果
+import SearchResult from "../components/main/SearchResult.vue"
 export default new Router({
     mode:'hash',
     routes:[
@@ -45,6 +47,11 @@ export default new Router({
             path:'/playDetail',
             name:'playDetail',
             component:PlayDetail,
+        },
+        {
+            path:'/search',
+            name:'search',
+            component:SearchResult
         }
 
     ]

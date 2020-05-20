@@ -14,7 +14,10 @@
       <el-col class="row-header" :span="10">
         <div class="header-search">
           <el-popover placement="bottom" trigger="manual" v-model="searchPopover" width="300">
+            <!-- 热搜 -->
             <hot-search v-if="hotSearchControl" />
+            <!-- 搜索建议 -->
+            <search v-if="searchControl" />
             <input
               type="text"
               slot="reference"
@@ -24,7 +27,7 @@
               class="search-input"
             />
           </el-popover>
-          <span class="search-icon el-icon-search"></span>
+          <span @click="search" class="search-icon el-icon-search"></span>
           <span id="colsePopover"></span>
         </div>
       </el-col>
@@ -125,6 +128,8 @@ import Sixin from "../components/msg/Sixin.vue";
 import Tongzhi from "../components/msg/Tongzhi.vue";
 // 热搜
 import HotSearch from "./search/HotSearch.vue";
+// 搜索建议
+import Search from "./search/Search.vue"
 export default {
   name: "TopHeader",
   inject: ["reload", "reloadLeft"],
@@ -132,7 +137,8 @@ export default {
     Pinglun,
     Sixin,
     Tongzhi,
-    HotSearch
+    HotSearch,
+    Search,
   },
   data() {
     return {
@@ -148,7 +154,8 @@ export default {
       firstLogin: null, //是否第一次登陆
       searchKey: "", //搜索关键词
       hotSearchControl: false, //是否显示热搜组件
-      searchDebounceTimer: null //搜索框防抖
+      searchDebounceTimer: null, //搜索框防抖
+      searchControl:false,//是否显示搜索提示组件
     };
   },
   computed: {
@@ -165,18 +172,26 @@ export default {
   //监听searchKey 搜索关键词
   watch: {
     searchKey: function(n) {
-      // 防抖  200ms延时
+      // 搜索框防抖  200ms延时
       if (n == "") {
         this.$store.commit("changeSearchPopover", true);
-        this.hotSearchControl = true;
+       this.searchControl = false;
+     
+     this.hotSearchControl = true;
+         
       }
       if (this.searchDebounceTimer != null) {
         clearTimeout(this.searchDebounceTimer);
         this.searchDebounceTimer = null;
       } else {
         this.searchDebounceTimer = setTimeout(() => {
-          if (n !== ""){
-            this.$store.commit("changeSearchPopover", false);
+          if (n !== "") {
+            this.$store.commit("setSearchKey",n);
+            this.hotSearchControl = false;
+             this.searchControl = false;
+            this.$nextTick(()=>{
+              this.searchControl = true;
+            })
           }
         }, 200);
       }
@@ -243,6 +258,11 @@ export default {
     //关闭搜索框
     closeSearch() {
       this.$store.commit("changeSearchPopover", false);
+    },
+    //搜索
+    search(){
+        this.$store.commit("changeSearchPopover", false);
+       this.$router.push(`/search?keyword=${this.searchKey}`)
     }
   }
 };

@@ -2,7 +2,7 @@
   <div id="app">
     <TopHeader />
     <Left v-if="isFirstLogin" class="left-aide" />
-    <keep-alive exclude="playlist,playDetail">
+    <keep-alive exclude="playlist,playDetail,searchResult">
       <router-view
         id="style-2"
         v-if="isRouterAlive"

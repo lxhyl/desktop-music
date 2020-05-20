@@ -16,7 +16,8 @@ export default {
   },
   data() {
     return {
-      musicid: null
+      musicid: null,
+      musicInfo:null,
     };
   },
   created() {
@@ -32,7 +33,8 @@ export default {
         .then(res => {
          //更新VUEX的音乐信息
           this.$store.commit('getMusicInfo',res.data);
-        
+          this.musicInfo = res.data;
+          console.log(this.musicInfo);
         });
     }
   }

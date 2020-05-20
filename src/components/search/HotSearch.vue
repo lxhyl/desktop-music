@@ -13,9 +13,11 @@
         </el-col>
       </el-row>
     </div>
-    <div class="hot-search">
+    <div class="hot-search" v-if="hotSearch.length > 0">
       <p>热搜榜</p>
-      <div v-for="(item,index) in hotSearch" :key="index" class="item">
+      <div v-for="(item,index) in hotSearch" 
+      @click="search(item.searchWord)"
+      :key="index" class="item">
         <span class="item-index">{{index + 1}}</span>
         <div class="item-main">
           <p  >
@@ -31,11 +33,13 @@
         </div>
       </div>
     </div>
+    <p style="text-align:center;">加载中...</p>
   </div>
 </template>
 
 <script>
 export default {
+  name:"hotsearch",
   data() {
     return {
       history: [], //搜索历史
@@ -58,6 +62,10 @@ export default {
     },
     colseSearch() {
       this.$store.commit("changeSearchPopover", false);
+    },
+    search(e){
+        this.$store.commit("changeSearchPopover", false);
+        this.$router.push(`/search?keyword=${e}`);
     }
   }
 };
