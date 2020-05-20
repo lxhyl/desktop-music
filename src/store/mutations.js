@@ -20,6 +20,10 @@ export default {
     getMusicPlayTime(state,value){
       state.musicPlayTime = value;
     },
+    //改变音量
+    setMusicVolume(state,value){
+      state.musicVolume = value
+    },
     // 更新音乐列表
     getPlayLists(state,lists){
        state.playLists= lists;

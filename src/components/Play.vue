@@ -10,18 +10,15 @@
           ></el-avatar>
         </el-col>
         <el-col :span="2" style="height:50px;">
-          <span 
-          class="name-arname"
-          style="line-height:30px;"
-          >
-          {{this.$store.state.musicInfo.songs[0].name}}
-          </span>
-         
+          <span
+            class="name-arname"
+            style="line-height:30px;"
+          >{{this.$store.state.musicInfo.songs[0].name}}</span>
+
           <p
             class="name-arname"
             style="color:rgb(124, 124, 124);height:20px;"
-          >{{this.$store.state.musicInfo.songs[0].ar[0].name}}
-          </p>
+          >{{this.$store.state.musicInfo.songs[0].ar[0].name}}</p>
         </el-col>
         <el-col
           style="color:rgb(124, 124, 124);font-size:10px;text-align:center;"
@@ -111,7 +108,7 @@ export default {
       musicUrl: null, //音乐文件存储地址
       isPlaying: false, // 是否在播放
       timer: null, // 1s定时器 加载歌曲进度
-      volume: 0.5, //音量
+      volume: this.$store.state.musicVolume, //音量
       maxVolume: 1, // 最大音量
       stepVolume: 0.1, //调节音量步长
       volumeImgUrl: require("../assets/volume.png") // 喇叭图片
@@ -133,7 +130,7 @@ export default {
     // 当audio就绪 初始化音量
     let volumeTimer = setInterval(() => {
       if (this.$refs.audio) {
-        this.$refs.audio.volume = this.volume;
+        this.$refs.audio.volume = this.$store.state.musicVolume;
         clearInterval(volumeTimer);
       }
     }, 100);
@@ -186,11 +183,11 @@ export default {
     //定时器
     oneSecondTime() {
       let _this = this;
-   
+
       this.timer = setInterval(() => {
         if (this.$refs.audio) {
           if (_this.$refs.audio.readyState) {
-               this.isPlaying = true;
+            this.isPlaying = true;
             _this.time += 1;
           }
           // 如果音乐播放结束 自动播放下一首音乐
@@ -205,6 +202,7 @@ export default {
     // 音量改变时
     volumeChange(e) {
       this.$refs.audio.volume = e;
+      this.$store.commit("setMusicVolume", e);
     },
     // 获取上一首音乐
     getLastMusic() {
@@ -237,10 +235,13 @@ export default {
     // 播放下一首音乐
     playNextMusic() {
       let id = this.getNextMusic();
-      this.$router.push(`/playDetail?id=${id}`);
+
       // 更新音乐ID
       this.$store.commit("getMusicId", id);
       this.reloadPlay();
+      if (this.$route.name == "playDetail") {
+        this.$router.push(`/playDetail?id=${id}`);
+      }
     },
     // 播放上一首音乐
     playLastMusic() {
@@ -277,12 +278,11 @@ export default {
   height: 25px;
   line-height: 20px;
   font-size: 11px;
-  width:80px;
+  width: 80px;
   display: inline-block;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
- 
 }
 .item-icon {
   text-align: center;
@@ -334,5 +334,4 @@ export default {
   -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
   background-color: rgb(25, 27, 31);
 }
-
 </style>

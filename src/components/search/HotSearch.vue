@@ -33,7 +33,7 @@
         </div>
       </div>
     </div>
-    <p style="text-align:center;">加载中...</p>
+    <p v-else style="text-align:center;">加载中...</p>
   </div>
 </template>
 
