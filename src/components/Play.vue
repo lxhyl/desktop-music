@@ -111,7 +111,8 @@ export default {
       volume: this.$store.state.musicVolume, //音量
       maxVolume: 1, // 最大音量
       stepVolume: 0.1, //调节音量步长
-      volumeImgUrl: require("../assets/volume.png") // 喇叭图片
+      volumeImgUrl: require("../assets/volume.png"), // 喇叭图片
+      lyricTimer: null //歌词计时器
     };
   },
   computed: {
@@ -168,6 +169,7 @@ export default {
     play() {
       if (this.$refs.audio) {
         this.$refs.audio.play();
+      
         this.isPlaying = true;
         this.oneSecondTime();
       }
@@ -178,6 +180,7 @@ export default {
       this.$refs.audio.currentTime = e;
       if (this.$refs.audio.paused) {
         this.$refs.audio.play();
+        this.isPlaying = true;
       }
     },
     //定时器
@@ -185,8 +188,9 @@ export default {
       let _this = this;
 
       this.timer = setInterval(() => {
-        if (this.$refs.audio) {
-          if (_this.$refs.audio.readyState) {
+        let ref = this.$refs.audio;
+        if (ref) {
+          if (ref.readyState) {
             this.isPlaying = true;
             _this.time += 1;
           }
@@ -198,6 +202,18 @@ export default {
           }
         }
       }, 1000);
+
+      this.lyricTimer = setInterval(() => {
+        let ref = this.$refs.audio;
+        if (ref) {
+          if (ref.readyState) {
+            this.$store.commit("getMusicPlayTime",_this.$refs.audio.currentTime);
+          }
+           if (this.$refs.audio.ended) {
+            clearInterval(_this.lyricTimer);
+          }
+        }
+      }, 200);
     },
     // 音量改变时
     volumeChange(e) {
