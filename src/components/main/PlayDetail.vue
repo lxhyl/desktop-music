@@ -4,7 +4,7 @@
       <img :src="musicInfo.songs[0].al.picUrl" />
     </div>
     <div class="main-danmu">
-      <canvas ref="canvas" id="canvas" width="500" height="300"></canvas>
+      <canvas ref="canvas" id="canvas" width="820" height="300"></canvas>
     </div>
     <div class="lyric" id="lyric">
       {{nowLyric}}
@@ -39,19 +39,33 @@ export default {
           }
         }
       }
+    },
+    //监听显示的弹幕条数
+    comments:function(n){
+      if(n.length < 10){
+        this.comments.push(this.allComments.splice(0,1)[0]);
+      }
+    },
+    //监听全部弹幕，如果为空，就获取新评论
+    allComments:function(n){
+      if(n.length == 0){
+        this.getComment();
+      }
     }
   },
   data() {
     return {
-      musicid: null,//音乐ID
-      musicInfo: null,//音乐信息
+      musicid: null, //音乐ID
+      musicInfo: null, //音乐信息
       getDataOk: false, //是否拿到数据
       lyric: [], //歌词
       nowLyric: "", //现在唱到的歌词
       timer: null, //歌词定时器
       canvas: null, //canvas
+      allComments:[],//所有评论
       comments: [], //canvas绘制的评论
-      offset: 0 //评论分页
+      offset: 0, //评论分页
+      canvasTimer: null //canvas绘制
     };
   },
   computed: {
@@ -68,7 +82,10 @@ export default {
     this.getComment();
     setTimeout(() => {
       this.canvas = this.$refs.canvas;
-    },1000);
+      this.canvasTimer = setInterval(() => {
+        this.draw();
+      }, 30);
+    }, 1000);
   },
   methods: {
     getSongDetail() {
@@ -109,8 +126,8 @@ export default {
     getComment() {
       this.$axios
         .get(
-          `${this.$domain}/comment/music?id=${this.musicid}&offset=${this
-            .offset * 20}`
+          `${this.$domain}/comment/music?id=${this.musicid}&limit=100&offset=${this
+            .offset * 100}`
         )
         .then(res => {
           let arr = res.data.comments;
@@ -120,20 +137,49 @@ export default {
             let g = Math.floor(Math.random() * 256);
             let b = Math.floor(Math.random() * 256);
             let c = `rgb(${r},${g},${b})`;
-            let t = Math.floor(Math.random() * 290 + 10);
-            let l = 500 - i;
+            let t = Math.floor(Math.random() * 270 + 15);
+            let v = Math.floor(Math.random()*3+1);
+            let l = 820 - i;
+            let canvas = document.createElement('canvas');
+            let ctx = canvas.getContext('2d');
+            let w = ctx.measureText(content).width;
             let json = {
               content,
               c,
               t,
-              l
+              l,
+              v,
+              w,
             };
-            this.comments.push(json);
+            this.allComments.push(json);
+            
+          }
+          if(this.offset == 0){
+            this.comments = this.allComments.splice(0,3);
           }
           this.offset += 1;
         });
     },
-    draw() {}
+    draw() {
+    
+      let ctx = this.canvas.getContext("2d");
+      ctx.font = "20px Microsoft YaHei";
+      ctx.clearRect(0, 0, 820, 290);
+      for (let i = 0; i < this.comments.length; i++) {
+        ctx.fillStyle = this.comments[i].c;
+        ctx.fillText(
+          this.comments[i].content,
+          this.comments[i].l,
+          this.comments[i].t
+        );    
+        this.comments[i].l  -= this.comments[i].v;
+        if(this.comments[i].w*2 + this.comments[i].l <= 0){
+          this.comments.splice(i,1);
+          i--;
+        }
+      }
+     
+    }
   }
 };
 </script>
@@ -143,7 +189,7 @@ export default {
   width: 300px;
   height: 300px;
   text-align: center;
-  float: left;
+  position: absolute;
 }
 .left > img {
   position: relative;
@@ -171,9 +217,10 @@ export default {
   }
 }
 .main-danmu {
-  margin-left: 300px;
-  width: 520px;
+  margin-left: 0px;
+  width: 820px;
   height: 300px;
+  z-index: 999;
 }
 .lyric {
   width: 300px;
