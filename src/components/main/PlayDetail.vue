@@ -4,7 +4,7 @@
       <img :src="musicInfo.songs[0].al.picUrl" />
     </div>
     <div class="main-danmu">
-      <canvas width="500" height="300"></canvas>
+      <canvas ref="canvas" id="canvas" width="500" height="300"></canvas>
     </div>
     <div class="lyric" id="lyric">
       {{nowLyric}}
@@ -27,8 +27,8 @@ export default {
     //监听现在播放的时长，歌词跳转
     nowPlayTime: function(n) {
       let playTime = n * 1000;
-      for (let i = 0; i < this.lyric.length-1; i++) {
-        document.getElementById(i).style.color = 'rgb(124, 124, 124)';
+      for (let i = 0; i < this.lyric.length - 1; i++) {
+        document.getElementById(i).style.color = "rgb(124, 124, 124)";
         let last = this.lyric[i].time;
         let next = this.lyric[i + 1].time;
         if (last < playTime && playTime < next) {
@@ -43,12 +43,15 @@ export default {
   },
   data() {
     return {
-      musicid: null,
-      musicInfo: null,
+      musicid: null,//音乐ID
+      musicInfo: null,//音乐信息
       getDataOk: false, //是否拿到数据
       lyric: [], //歌词
       nowLyric: "", //现在唱到的歌词
-      timer: null,//歌词定时器
+      timer: null, //歌词定时器
+      canvas: null, //canvas
+      comments: [], //canvas绘制的评论
+      offset: 0 //评论分页
     };
   },
   computed: {
@@ -62,6 +65,10 @@ export default {
   mounted() {
     this.musicid && this.getSongDetail();
     this.musicid && this.getLyric();
+    this.getComment();
+    setTimeout(() => {
+      this.canvas = this.$refs.canvas;
+    },1000);
   },
   methods: {
     getSongDetail() {
@@ -86,8 +93,9 @@ export default {
             let ms = parseInt(time.substr(6));
             time = m * 60 * 1000 + s * 1000 + ms;
             let lrc;
-            arr[i][10] == "]" ? lrc = arr[i].substr(11) : lrc = arr[i].substr(10);
-            
+            arr[i][10] == "]"
+              ? (lrc = arr[i].substr(11))
+              : (lrc = arr[i].substr(10));
             let json = {
               time,
               lrc,
@@ -97,7 +105,35 @@ export default {
           }
         }
       });
-    }
+    },
+    getComment() {
+      this.$axios
+        .get(
+          `${this.$domain}/comment/music?id=${this.musicid}&offset=${this
+            .offset * 20}`
+        )
+        .then(res => {
+          let arr = res.data.comments;
+          for (let i = 0; i < arr.length; i++) {
+            let content = arr[i].content;
+            let r = Math.floor(Math.random() * 256);
+            let g = Math.floor(Math.random() * 256);
+            let b = Math.floor(Math.random() * 256);
+            let c = `rgb(${r},${g},${b})`;
+            let t = Math.floor(Math.random() * 290 + 10);
+            let l = 500 - i;
+            let json = {
+              content,
+              c,
+              t,
+              l
+            };
+            this.comments.push(json);
+          }
+          this.offset += 1;
+        });
+    },
+    draw() {}
   }
 };
 </script>
@@ -147,10 +183,13 @@ export default {
 .lyric > p {
   font-size: 12px;
   text-align: center;
-  color:rgb(124, 124, 124);
+  color: rgb(124, 124, 124);
 }
 
 .lyric::-webkit-scrollbar {
   display: none;
+}
+canvas {
+  font-size: 16px;
 }
 </style>

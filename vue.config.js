@@ -1,4 +1,6 @@
-const CompressionPlugin = require("compression-webpack-plugin")
+const CompressionPlugin = require("compression-webpack-plugin");
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
+
 module.exports = {
 
     lintOnSave: false,//取消ES6语法校验
@@ -23,7 +25,10 @@ module.exports = {
 
         }
     },
-
+    plugins:[
+        new BundleAnalyzerPlugin()
+    ],
+    
     configureWebpack: config => {
         if (process.env.NODE_ENV === 'production') {
             config.optimization.minimizer[0].options.terserOptions.compress.drop_console = true
@@ -37,6 +42,5 @@ module.exports = {
                 ]
             }
         }
-
     }
 }
