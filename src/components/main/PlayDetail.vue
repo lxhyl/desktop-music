@@ -10,6 +10,38 @@
       {{nowLyric}}
       <p v-for="(item,index) in lyric" :key="index" :id="index">{{item.lrc}}</p>
     </div>
+    <div class="danmu-setting">
+      <p style="text-align:center;">弹幕设置</p>
+
+      <el-row class="cow">
+        <el-col class="text" :span="8">同时显示的弹幕条数{{canvasItemNum}}</el-col>
+        <el-col :span="16">
+          <el-slider
+           v-model="canvasItemNum" 
+           :min="itemNumMin" 
+           :max="itemNumMax"
+           @change="userChangeNum"
+           ></el-slider>
+        </el-col>
+      </el-row>
+
+      <el-row class="cow">
+        <el-col class="text" :span="8">速度(每帧间隔时间){{canvasItemV}}</el-col>
+        <el-col :span="16">
+          <el-slider v-model="canvasItemV"
+           :min="itemVMin" :max="itemVMax" 
+           @change="userChangeV"></el-slider>
+        </el-col>
+      </el-row>
+      <el-row class="cow">
+        <el-col class="text" :span="8">发送弹幕(评论)</el-col>
+        <el-col :span="16" class="pinglun">
+          <el-input @keyup.enter="send" v-model="pinglun" type="text" placeholder="请输入">
+            <el-button @click="send" slot="append">发送</el-button>
+          </el-input>
+        </el-col>
+      </el-row>
+    </div>
   </div>
 </template>
 
@@ -28,7 +60,10 @@ export default {
     nowPlayTime: function(n) {
       let playTime = n * 1000;
       for (let i = 0; i < this.lyric.length - 1; i++) {
-        document.getElementById(i).style.color = "rgb(124, 124, 124)";
+        if (document.getElementById(i)) {
+          document.getElementById(i).style.color = "rgb(124, 124, 124)";
+        }
+
         let last = this.lyric[i].time;
         let next = this.lyric[i + 1].time;
         if (last < playTime && playTime < next) {
@@ -41,14 +76,13 @@ export default {
       }
     },
     //监听显示的弹幕条数
-    comments:function(n){
-      if(n.length < 10){
-        this.comments.push(this.allComments.splice(0,1)[0]);
+    comments: function(n) {
+      if (n.length < this.canvasItemNum) {
+        this.comments.push(this.allComments.splice(0, 1)[0]);
       }
     },
-    //监听全部弹幕，如果为空，就获取新评论
-    allComments:function(n){
-      if(n.length == 0){
+    allComments: function(n) {
+      if (n.length < 35) {
         this.getComment();
       }
     }
@@ -62,10 +96,17 @@ export default {
       nowLyric: "", //现在唱到的歌词
       timer: null, //歌词定时器
       canvas: null, //canvas
-      allComments:[],//所有评论
+      allComments: [], //所有评论
       comments: [], //canvas绘制的评论
       offset: 0, //评论分页
-      canvasTimer: null //canvas绘制
+      canvasTimer: null, //canvas绘制
+      canvasItemNum: 10, // 屏幕显示的弹幕数
+      itemNumMin: 1, //最少同时显示弹幕
+      itemNumMax: 35, //最多同时显示的弹幕
+      canvasItemV: 30, //弹幕速度
+      itemVMin: 10, //最快速度
+      itemVMax: 40, //最慢速度
+      pinglun: "" //评论内容
     };
   },
   computed: {
@@ -75,6 +116,13 @@ export default {
   },
   created() {
     this.musicid = this.$route.query.id;
+    if (localStorage.getItem("canvasItemV")) {
+      this.canvasItemV = Number(localStorage.getItem("canvasItemV"));
+    }
+    if(localStorage.getItem('canvasItemN')){
+      this.canvasItemNum =Number(localStorage.getItem('canvasItemN'));
+    }
+
   },
   mounted() {
     this.musicid && this.getSongDetail();
@@ -84,7 +132,7 @@ export default {
       this.canvas = this.$refs.canvas;
       this.canvasTimer = setInterval(() => {
         this.draw();
-      }, 30);
+      }, this.canvasItemV);
     }, 1000);
   },
   methods: {
@@ -126,8 +174,7 @@ export default {
     getComment() {
       this.$axios
         .get(
-          `${this.$domain}/comment/music?id=${this.musicid}&limit=100&offset=${this
-            .offset * 100}`
+          `${this.$domain}/comment/music?id=${this.musicid}&limit=50&offset=${this.offset}`
         )
         .then(res => {
           let arr = res.data.comments;
@@ -138,10 +185,10 @@ export default {
             let b = Math.floor(Math.random() * 256);
             let c = `rgb(${r},${g},${b})`;
             let t = Math.floor(Math.random() * 270 + 15);
-            let v = Math.floor(Math.random()*3+1);
+            let v = Math.floor(Math.random() * 4 + 1);
             let l = 820 - i;
-            let canvas = document.createElement('canvas');
-            let ctx = canvas.getContext('2d');
+            let canvas = document.createElement("canvas");
+            let ctx = canvas.getContext("2d");
             let w = ctx.measureText(content).width;
             let json = {
               content,
@@ -149,19 +196,17 @@ export default {
               t,
               l,
               v,
-              w,
+              w
             };
             this.allComments.push(json);
-            
           }
-          if(this.offset == 0){
-            this.comments = this.allComments.splice(0,3);
+          if (this.offset == 0) {
+            this.comments = this.allComments.splice(0, this.canvasItemNum);
           }
           this.offset += 1;
         });
     },
     draw() {
-    
       let ctx = this.canvas.getContext("2d");
       ctx.font = "20px Microsoft YaHei";
       ctx.clearRect(0, 0, 820, 290);
@@ -171,14 +216,47 @@ export default {
           this.comments[i].content,
           this.comments[i].l,
           this.comments[i].t
-        );    
-        this.comments[i].l  -= this.comments[i].v;
-        if(this.comments[i].w*2 + this.comments[i].l <= 0){
-          this.comments.splice(i,1);
+        );
+        this.comments[i].l -= this.comments[i].v;
+        if (this.comments[i].w * 2 + this.comments[i].l <= 0) {
+          this.comments.splice(i, 1);
           i--;
         }
       }
-     
+    },
+    //改变速度
+    userChangeV(e) {
+      localStorage.setItem("canvasItemV", e);
+      clearInterval(this.canvasTimer);
+      this.canvasTimer = setInterval(() => {
+        this.draw();
+      }, e);
+    },
+    //改变弹幕数量
+    userChangeNum(e){
+      localStorage.setItem('canvasItemN',e);
+    },
+    //发送弹幕 评论
+    send() {
+      if (this.pinglun == "") {
+        return;
+      } else {
+        let content = `我的评论:${this.pinglun}`;
+        let canvas = document.createElement("canvas");
+        let ctx = canvas.getContext("2d");
+        let w = ctx.measureText(content).width;
+         let t = Math.floor(Math.random() * 270 + 15);
+        let obj = {
+          content,
+          c: "#ffffff",
+          t,
+          l: 820,
+          v: 1,
+          w
+        };
+        this.comments.push(obj);
+        this.pinglun = "";
+      }
     }
   }
 };
@@ -226,6 +304,7 @@ export default {
   width: 300px;
   height: 268px;
   overflow: scroll;
+  float: left;
 }
 .lyric > p {
   font-size: 12px;
@@ -236,7 +315,38 @@ export default {
 .lyric::-webkit-scrollbar {
   display: none;
 }
-canvas {
-  font-size: 16px;
+.danmu-setting {
+  height: 268px;
+  margin-left: 350px;
+  margin-right: 10px;
+}
+p {
+  height: 30px;
+  margin: 0;
+  color: rgb(124, 124, 124);
+  font-size: 12px;
+}
+.cow {
+  height: 40px;
+  color: rgb(124, 124, 124);
+  font-size: 12px;
+}
+.text {
+  position: relative;
+  top: 10px;
+  height: 40px;
+  line-height: 30px;
+}
+.pinglun {
+  position: relative;
+  top: 10px;
+
+  line-height: 30px;
+}
+.pinglun > input {
+  border: none;
+  outline: none;
+  height: 25px;
+  border-radius: 5px;
 }
 </style>
