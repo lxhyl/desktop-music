@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div  class="flex-container">
+    <div class="flex-container">
       <div class="flex-item" v-for="(item,index) in list" :key="index">
         <div class="item-left">
           <el-avatar
@@ -11,31 +11,34 @@
         </div>
         <div class="item-msg">
           <p class="item-hf-main">
-            <span class="item-hf-name">{{item.notice.user.nickname}}<span style="color:#607D8B;">赞了我</span></span>
+            <span class="item-hf-name">
+              {{item.notice.user.nickname}}
+              <span style="color:#607D8B;">赞了我</span>
+            </span>
             <span class="item-hf-time">{{item.time | toTime}}</span>
           </p>
-          <p class="item-my-msg">{{item.notice.comment.content}}</p>
+          <p v-if="item.notice.comment" class="item-my-msg">{{item.notice.comment.content}}</p>
         </div>
-      
       </div>
-         <p v-if="loading" style="text-align:center;font-size:16px;color:#dcdde3;">加载中...</p>
+      <p v-if="loading" style="text-align:center;font-size:16px;color:#dcdde3;">加载中...</p>
     </div>
     <p style="text-align:center;margin:0;">
       <el-link v-if="page >= 1" @click="lastPage">上一页</el-link>
-      <el-link  @click="nextPage">下一页</el-link>
+      <el-link @click="nextPage">下一页</el-link>
     </p>
   </div>
 </template>
 
 <script>
 export default {
-  name:"msgTZ",
+  name: "msgTZ",
   data() {
     return {
       page: 0, //分页
       list: [], //列表
-      loading:true,//加载中
-      time:0,//
+      loading: true, //加载中
+      time: 0, //此页最后时间
+      lastTime: [0] //前面页时间
     };
   },
   created() {},
@@ -44,8 +47,13 @@ export default {
   },
   methods: {
     getTongZhi() {
+      this.list = [];
       this.$axios
-        .get(`${this.$domain}/msg/notices?limit=10&before=${this.time}`)
+        .get(
+          `${this.$domain}/msg/notices?limit=10&lasttime=${
+            this.lastTime[this.page]
+          }`
+        )
         .then(res => {
           this.list = res.data.notices;
           for (let i = 0; i < this.list.length; i++) {
@@ -53,17 +61,16 @@ export default {
               this.list[i].notice = JSON.parse(this.list[i].notice);
             }
           }
-      
+          this.lastTime.push(this.list[this.list.length - 1].time)
           this.loading = false;
-         
         });
     },
-    lastPage(){
-       this.loading = true;
-       this.page -= 1;
-       this.getTongZhi();
+    lastPage() {
+      this.loading = true;
+      this.page -= 1;
+      this.getTongZhi();
     },
-    nextPage(){
+    nextPage() {
       this.loading = true;
       this.page += 1;
       this.time = this.list[9].time;
@@ -110,10 +117,10 @@ export default {
   font-size: 11px;
   color: rgb(45, 96, 155);
   width: 100px;
- margin-right: 100px;
+  margin-right: 100px;
 }
 .item-hf-time {
-  float:right;
+  float: right;
   font-size: 9px;
   text-align: right;
 }

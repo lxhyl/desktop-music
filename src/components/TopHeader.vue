@@ -228,6 +228,7 @@ export default {
             this.$store.commit("getUserId", res.data.account.id);
             if (!localStorage.getItem("userid")) {
               localStorage.setItem("userid", res.data.account.id);
+              localStorage.setItem("anotherUserId", res.data.account.id);
               this.reloadLeft();
             }
 
@@ -238,9 +239,10 @@ export default {
           });
       }
     },
-
     showUserPage() {
-      this.$router.push("me");
+      let myId = localStorage.getItem('userid');
+      localStorage.setItem("anotherUserId",myId);
+      this.$router.push(`/me?id=${localStorage.getItem('userid')}`);
     },
     routerToPage(e) {
       this.routerMsg = e;

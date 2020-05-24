@@ -76,7 +76,8 @@
 
 <script>
 export default {
-  name: "me",
+  name: "Me",
+  inject: ["reload"],
   data() {
     this.chartSettings = {
       stack: { 歌单: ["歌曲数", "播放量"] },
@@ -92,9 +93,16 @@ export default {
       }
     };
   },
+  watch: {
+    $route(to, from) {
+      if (to.fullPath !== from.fullPath) {
+        this.reload();
+      }
+    }
+  },
   created() {
-    this.userid = this.$store.state.userid;
-    this.userid = localStorage.getItem("userid");
+    // this.userid = this.$store.state.userid;
+    this.userid = localStorage.getItem("anotherUserId");
   },
   mounted() {
     this.getUserInfo();

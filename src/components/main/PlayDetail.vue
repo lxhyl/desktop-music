@@ -5,9 +5,46 @@
     </div>
     <div class="main-danmu">
       <canvas v-if="showCanvas" ref="canvas" id="canvas" width="820" height="300"></canvas>
+      <div v-else class="no-canvas">
+        <div v-if="getSameDataOk" style="height:300px;width:250px;float:left;">
+          <p style="width:300px;height:20px;line-height:20px;font-sie:14px;">相似歌曲</p>
+          <div
+            class="same-item same-song"
+            v-for="(item,index) in sameSongs"
+            :key="index"
+            @click="playSameSong(item.id,index)"
+          >
+            <div class="same-pic">
+              <img :src="item.picUrl" />
+            </div>
+            <div class="same-text">
+              <p class="same-name" style="color:white;">{{item.name}}</p>
+              <p class="same-art">{{item.artists}}</p>
+            </div>
+          </div>
+        </div>
+        <div class="user">
+          <p style="width:300px;height:20px;line-height:20px;font-sie:14px;">喜欢这首歌的人</p>
+          <el-row
+            style="height:50px;margin-top:5px;"
+            v-for="(item,index) in sameUsers"
+            :key="index"
+            @click.native="toUserPage(item.id)"
+          >
+            <el-col :span="4" class="user-pic-con">
+              <img class="user-pic" :src="item.avar" />
+            </el-col>
+            <el-col :span="10" class="user-name">
+              {{item.name}}
+              <span v-if="item.gender == 1" class="el-icon-male male"></span>
+              <span v-if="item.gender == 2" class="el-icon-female female"></span>
+            </el-col>
+            <el-col :span="10" class="user-why">{{item.time}}</el-col>
+          </el-row>
+        </div>
+      </div>
     </div>
     <div class="lyric" id="lyric">
-      {{nowLyric}}
       <p v-for="(item,index) in lyric" :key="index" :id="index">{{item.lrc}}</p>
     </div>
     <div class="danmu-setting">
@@ -45,7 +82,7 @@
       </el-row>
 
       <el-row class="cow">
-        <el-col class="text" :span="8">速度(每帧间隔时间){{canvasItemV}}</el-col>
+        <el-col class="text" :span="8">速度(每帧间隔时间){{canvasItemV}}ms</el-col>
         <el-col :span="16">
           <el-slider v-model="canvasItemV" :min="itemVMin" :max="itemVMax" @change="userChangeV"></el-slider>
         </el-col>
@@ -71,12 +108,14 @@
 <script>
 export default {
   name: "playDetail",
-  inject: ["reload"],
+  inject: ["reload", "reloadPlay"],
   // 监听路由  刷新组件
   watch: {
     $route(to, from) {
       if (to.fullPath !== from.fullPath) {
+       
         this.reload();
+        
       }
     },
     //监听现在播放的时长，歌词跳转
@@ -123,6 +162,7 @@ export default {
       }
     },
     //监听是否显示弹幕
+    // 不显示就推荐相似音乐 用户
     showCanvas: function(n) {
       if (n) {
         if (this.stopOrMove) {
@@ -138,10 +178,13 @@ export default {
             this.draw();
           });
         }
-
       } else {
         clearInterval(this.canvasTimer);
         this.canvas = null;
+        //获取相似歌曲
+        this.getSameSong();
+        //获取最近听过这首歌的用户
+        this.getListenedUser();
       }
     }
   },
@@ -151,14 +194,12 @@ export default {
       musicInfo: null, //音乐信息
       getDataOk: false, //是否拿到数据
       lyric: [], //歌词
-      nowLyric: "", //现在唱到的歌词
-      timer: null, //歌词定时器
       stopOrMove: true, //canvas弹幕 运动or暂停
       canvas: null, //canvas
       allComments: [], //所有评论
       comments: [], //canvas绘制的评论
       offset: 0, //评论分页
-      canvasTimer: null, //canvas绘制
+      canvasTimer: null, //canvas绘制定时器
       canvasItemNum: 10, // 屏幕显示的弹幕数
       itemNumMin: 1, //最少同时显示弹幕
       itemNumMax: 35, //最多同时显示的弹幕
@@ -166,7 +207,10 @@ export default {
       itemVMin: 10, //最快速度
       itemVMax: 40, //最慢速度
       pinglun: "", //评论内容
-      showCanvas: true //是否显示弹幕
+      showCanvas: true, //是否显示弹幕
+      sameSongs: [], //相似音乐
+      sameUsers: [], //最近听过这首歌的用户
+      getSameDataOk: false //是否获取到音乐或数据
     };
   },
   computed: {
@@ -255,17 +299,19 @@ export default {
             let v = Math.floor(Math.random() * 4 + 1);
             let l = 820 - i;
             let canvas = document.createElement("canvas");
+            if(canvas){
             let ctx = canvas.getContext("2d");
             let w = ctx.measureText(content).width;
             let json = {
-              content,
-              c,
-              t,
-              l,
-              v,
-              w
+              content, //内容
+              c, // 弹幕颜色
+              t, //顶部偏移
+              l, //左部偏移
+              v, // 速度
+              w //弹幕宽度
             };
             this.allComments.push(json);
+            }
           }
           if (this.offset == 0) {
             this.comments = this.allComments.splice(0, this.canvasItemNum);
@@ -274,6 +320,9 @@ export default {
         });
     },
     draw() {
+      if(!this.canvas){
+           return
+      }
       let ctx = this.canvas.getContext("2d");
       ctx.font = "20px Microsoft YaHei";
       ctx.clearRect(0, 0, 820, 290);
@@ -310,20 +359,92 @@ export default {
       } else {
         let content = `我的评论:${this.pinglun}`;
         let canvas = document.createElement("canvas");
-        let ctx = canvas.getContext("2d");
-        let w = ctx.measureText(content).width;
-        let t = Math.floor(Math.random() * 270 + 15);
-        let obj = {
-          content,
-          c: "#ffffff",
-          t,
-          l: 820,
-          v: 1,
-          w
-        };
-        this.comments.push(obj);
-        this.pinglun = "";
+        if (canvas) {
+          let ctx = canvas.getContext("2d");
+          let w = ctx.measureText(content).width;
+          let t = Math.floor(Math.random() * 270 + 15);
+          let obj = {
+            content,
+            c: "#ffffff",
+            t,
+            l: 820,
+            v: 1,
+            w
+          };
+          this.comments.push(obj);
+          this.pinglun = "";
+        }
       }
+    },
+    //获取相似歌曲
+    getSameSong() {
+      this.sameSongs = [];
+      this.$axios
+        .get(`${this.$domain}/simi/song?id=${this.musicid}`)
+        .then(res => {
+          let arr = res.data.songs;
+          for (let i = 0; i < arr.length; i++) {
+            let name = arr[i].name;
+            let artists = arr[i].artists[0].name;
+            let picUrl = arr[i].album.picUrl;
+            let id = arr[i].id;
+            let dt = arr[i].dt;
+            let obj = {
+              id,
+              name,
+              artists,
+              picUrl,
+              dt
+            };
+            this.sameSongs.push(obj);
+          }
+          this.getSameDataOk = true;
+        });
+    },
+    //播放推荐歌曲
+    playSameSong(id, index) {
+      let playList = this.$store.state.playLists;
+
+      let obj = {
+        name: this.sameSongs[index].name,
+        ar: this.sameSongs[index].artists,
+        time: this.sameSongs[index].dt,
+        id: this.sameSongs[index].id
+      };
+      playList.push(obj);
+      this.$store.commit("getPlayLists", playList);
+      this.$router.replace(`/playDetail?id=${id}`);
+      this.$store.commit("getMusicId", id);
+      this.reloadPlay();
+    },
+    //最近听过这首歌的用户
+    getListenedUser() {
+      this.sameUsers = [];
+      this.$axios
+        .get(`${this.$domain}/simi/user?id=${this.musicid}`)
+        .then(res => {
+          let arr = res.data.userprofiles;
+          for (let i = 0; i < arr.length; i++) {
+            let name = arr[i].nickname;
+            let time = arr[i].recommendReason;
+            let id = arr[i].userId;
+            let avar = arr[i].avatarUrl;
+            let gender = arr[i].gender;
+            let obj = {
+              name,
+              time,
+              id,
+              avar,
+              gender
+            };
+            this.sameUsers.push(obj);
+          }
+        });
+    },
+    //跳转用户页
+    toUserPage(id) {
+      localStorage.setItem("anotherUserId", id);
+      this.$router.replace(`/me?id=${id}`);
     }
   }
 };
@@ -415,5 +536,75 @@ p {
   outline: none;
   height: 25px;
   border-radius: 5px;
+}
+.no-canvas {
+  margin-left: 300px;
+  height: 290px;
+}
+.same-song {
+  float: left;
+  width: 250px;
+  height: 300px;
+}
+.same-item {
+  margin-top: 5px;
+  height: 50px;
+  width: 250px;
+}
+.same-pic {
+  float: left;
+  height: 30px;
+  width: 30px;
+}
+.same-pic > img {
+  height: 30px;
+  width: 30px;
+}
+.same-text {
+  margin-left: 30px;
+  height: 30px;
+}
+.same-text > p {
+  height: 20px;
+  font-size: 12px;
+  line-height: 15px;
+  width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.user {
+  margin-left: 250px;
+  width: 250px;
+  height: 300px;
+}
+.user-name {
+  font-size: 11px;
+  line-height: 30px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.user-pic-con {
+  height: 50px;
+  line-height: 50px;
+}
+.user-pic {
+  width: 30px;
+  height: 30px;
+  border-radius: 100%;
+}
+.male {
+  font-size: 16px;
+  color: rgb(19, 101, 142);
+}
+.female {
+  font-size: 16px;
+  color: rgb(175, 112, 163);
+}
+.user-why {
+  height: 50px;
+  line-height: 30px;
+  font-size: 12px;
 }
 </style>

@@ -2,7 +2,7 @@
   <div id="app">
     <TopHeader />
     <Left v-if="isFirstLogin" class="left-aide" />
-    <keep-alive exclude="playlist,playDetail,searchResult">
+    <keep-alive exclude="playlist,playDetail,searchResult,Me">
       <router-view
         id="style-2"
         v-if="isRouterAlive"
@@ -32,6 +32,11 @@ export default {
       reloadLeft: this.reloadLeft,
       reloadPlay: this.reloadPlay
     };
+  },
+  watch:{
+     $route(to, from) {
+         console.log(to,from);
+    },
   },
   data() {
     return {
