@@ -4,7 +4,7 @@
       <img :src="musicInfo.songs[0].al.picUrl" />
     </div>
     <div class="main-danmu">
-      <canvas ref="canvas" id="canvas" width="820" height="300"></canvas>
+      <canvas v-if="showCanvas" ref="canvas" id="canvas" width="820" height="300"></canvas>
     </div>
     <div class="lyric" id="lyric">
       {{nowLyric}}
@@ -12,32 +12,55 @@
     </div>
     <div class="danmu-setting">
       <p style="text-align:center;">弹幕设置</p>
-
+      <el-row class="cow">
+        <el-col class="text" :span="8">是否显示弹幕</el-col>
+        <el-col :span="16" style="line-height:40px;">
+          <el-switch
+            v-model="showCanvas"
+            inactive-color="rgb(124, 124, 124)"
+            active-color="rgb(184, 37, 37)"
+          ></el-switch>
+        </el-col>
+      </el-row>
+      <el-row class="cow">
+        <el-col class="text" :span="8">暂停(运动)</el-col>
+        <el-col :span="16" style="line-height:40px;">
+          <el-switch
+            v-model="stopOrMove"
+            inactive-color="rgb(124, 124, 124)"
+            active-color="rgb(184, 37, 37)"
+          ></el-switch>
+        </el-col>
+      </el-row>
       <el-row class="cow">
         <el-col class="text" :span="8">同时显示的弹幕条数{{canvasItemNum}}</el-col>
         <el-col :span="16">
           <el-slider
-           v-model="canvasItemNum" 
-           :min="itemNumMin" 
-           :max="itemNumMax"
-           @change="userChangeNum"
-           ></el-slider>
+            v-model="canvasItemNum"
+            :min="itemNumMin"
+            :max="itemNumMax"
+            @change="userChangeNum"
+          ></el-slider>
         </el-col>
       </el-row>
 
       <el-row class="cow">
         <el-col class="text" :span="8">速度(每帧间隔时间){{canvasItemV}}</el-col>
         <el-col :span="16">
-          <el-slider v-model="canvasItemV"
-           :min="itemVMin" :max="itemVMax" 
-           @change="userChangeV"></el-slider>
+          <el-slider v-model="canvasItemV" :min="itemVMin" :max="itemVMax" @change="userChangeV"></el-slider>
         </el-col>
       </el-row>
       <el-row class="cow">
         <el-col class="text" :span="8">发送弹幕(评论)</el-col>
         <el-col :span="16" class="pinglun">
-          <el-input @keyup.enter="send" v-model="pinglun" type="text" placeholder="请输入">
-            <el-button @click="send" slot="append">发送</el-button>
+          <el-input
+            v-model="pinglun"
+            type="text"
+            size="mini"
+            v-on:keyup.enter="send"
+            placeholder="请输入"
+          >
+            <el-button size="mini" @click="send" slot="append">发送</el-button>
           </el-input>
         </el-col>
       </el-row>
@@ -85,6 +108,41 @@ export default {
       if (n.length < 35) {
         this.getComment();
       }
+    },
+    // 监听是否暂停弹幕
+    stopOrMove: function(n) {
+      if (n) {
+        if (this.showCanvas) {
+          this.canvasTimer = setInterval(() => {
+            this.draw();
+          }, this.canvasItemV);
+        }
+      } else {
+        clearInterval(this.canvasTimer);
+        this.canvasTimer = null;
+      }
+    },
+    //监听是否显示弹幕
+    showCanvas: function(n) {
+      if (n) {
+        if (this.stopOrMove) {
+          this.$nextTick(() => {
+            this.canvas = this.$refs.canvas;
+            this.canvasTimer = setInterval(() => {
+              this.draw();
+            }, this.canvasItemV);
+          });
+        } else {
+          this.$nextTick(() => {
+            this.canvas = this.$refs.canvas;
+            this.draw();
+          });
+        }
+
+      } else {
+        clearInterval(this.canvasTimer);
+        this.canvas = null;
+      }
     }
   },
   data() {
@@ -95,6 +153,7 @@ export default {
       lyric: [], //歌词
       nowLyric: "", //现在唱到的歌词
       timer: null, //歌词定时器
+      stopOrMove: true, //canvas弹幕 运动or暂停
       canvas: null, //canvas
       allComments: [], //所有评论
       comments: [], //canvas绘制的评论
@@ -106,7 +165,8 @@ export default {
       canvasItemV: 30, //弹幕速度
       itemVMin: 10, //最快速度
       itemVMax: 40, //最慢速度
-      pinglun: "" //评论内容
+      pinglun: "", //评论内容
+      showCanvas: true //是否显示弹幕
     };
   },
   computed: {
@@ -119,10 +179,9 @@ export default {
     if (localStorage.getItem("canvasItemV")) {
       this.canvasItemV = Number(localStorage.getItem("canvasItemV"));
     }
-    if(localStorage.getItem('canvasItemN')){
-      this.canvasItemNum =Number(localStorage.getItem('canvasItemN'));
+    if (localStorage.getItem("canvasItemN")) {
+      this.canvasItemNum = Number(localStorage.getItem("canvasItemN"));
     }
-
   },
   mounted() {
     this.musicid && this.getSongDetail();
@@ -134,6 +193,14 @@ export default {
         this.draw();
       }, this.canvasItemV);
     }, 1000);
+    // 监听键盘 如果按的是enter键，就发送弹幕
+    document.addEventListener("keyup", e => {
+      if (e.keyCode == 13) {
+        this.send();
+      } else {
+        return;
+      }
+    });
   },
   methods: {
     getSongDetail() {
@@ -233,8 +300,8 @@ export default {
       }, e);
     },
     //改变弹幕数量
-    userChangeNum(e){
-      localStorage.setItem('canvasItemN',e);
+    userChangeNum(e) {
+      localStorage.setItem("canvasItemN", e);
     },
     //发送弹幕 评论
     send() {
@@ -245,7 +312,7 @@ export default {
         let canvas = document.createElement("canvas");
         let ctx = canvas.getContext("2d");
         let w = ctx.measureText(content).width;
-         let t = Math.floor(Math.random() * 270 + 15);
+        let t = Math.floor(Math.random() * 270 + 15);
         let obj = {
           content,
           c: "#ffffff",
@@ -340,7 +407,7 @@ p {
 .pinglun {
   position: relative;
   top: 10px;
-
+  height: 30px;
   line-height: 30px;
 }
 .pinglun > input {
