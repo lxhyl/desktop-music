@@ -23,7 +23,7 @@
             </div>
           </div>
         </div>
-        <div class="user">
+        <div v-if="getUsersOk" class="user">
           <p style="width:300px;height:20px;line-height:20px;font-sie:14px;">喜欢这首歌的人</p>
           <el-row
             style="height:50px;margin-top:5px;"
@@ -113,9 +113,7 @@ export default {
   watch: {
     $route(to, from) {
       if (to.fullPath !== from.fullPath) {
-       
         this.reload();
-        
       }
     },
     //监听现在播放的时长，歌词跳转
@@ -164,6 +162,7 @@ export default {
     //监听是否显示弹幕
     // 不显示就推荐相似音乐 用户
     showCanvas: function(n) {
+      localStorage.setItem("showCanvas", n);
       if (n) {
         if (this.stopOrMove) {
           this.$nextTick(() => {
@@ -207,10 +206,11 @@ export default {
       itemVMin: 10, //最快速度
       itemVMax: 40, //最慢速度
       pinglun: "", //评论内容
-      showCanvas: true, //是否显示弹幕
+      showCanvas: null, //是否显示弹幕
       sameSongs: [], //相似音乐
       sameUsers: [], //最近听过这首歌的用户
-      getSameDataOk: false //是否获取到音乐或数据
+      getSameDataOk: false, //是否获取到音乐或数据
+      getUsersOk: false //是否获取到最近听歌的用户
     };
   },
   computed: {
@@ -226,6 +226,12 @@ export default {
     if (localStorage.getItem("canvasItemN")) {
       this.canvasItemNum = Number(localStorage.getItem("canvasItemN"));
     }
+   
+    this.showCanvas = localStorage.getItem("showCanvas");
+    if(this.showCanvas !== true && this.showCanvas !== false){
+         this.showCanvas = true;
+    }
+ 
   },
   mounted() {
     this.musicid && this.getSongDetail();
@@ -296,21 +302,21 @@ export default {
             let b = Math.floor(Math.random() * 256);
             let c = `rgb(${r},${g},${b})`;
             let t = Math.floor(Math.random() * 270 + 15);
-            let v = Math.floor(Math.random() * 4 + 1);
+            let v = Math.random() * 3 + 1;
             let l = 820 - i;
             let canvas = document.createElement("canvas");
-            if(canvas){
-            let ctx = canvas.getContext("2d");
-            let w = ctx.measureText(content).width;
-            let json = {
-              content, //内容
-              c, // 弹幕颜色
-              t, //顶部偏移
-              l, //左部偏移
-              v, // 速度
-              w //弹幕宽度
-            };
-            this.allComments.push(json);
+            if (canvas) {
+              let ctx = canvas.getContext("2d");
+              let w = ctx.measureText(content).width;
+              let json = {
+                content, //内容
+                c, // 弹幕颜色
+                t, //顶部偏移
+                l, //左部偏移
+                v, // 速度
+                w //弹幕宽度
+              };
+              this.allComments.push(json);
             }
           }
           if (this.offset == 0) {
@@ -320,8 +326,8 @@ export default {
         });
     },
     draw() {
-      if(!this.canvas){
-           return
+      if (!this.canvas) {
+        return;
       }
       let ctx = this.canvas.getContext("2d");
       ctx.font = "20px Microsoft YaHei";
@@ -439,12 +445,13 @@ export default {
             };
             this.sameUsers.push(obj);
           }
+          this.getUsersOk = true;
         });
     },
     //跳转用户页
     toUserPage(id) {
       localStorage.setItem("anotherUserId", id);
-      this.$router.replace(`/me?id=${id}`);
+      this.$router.push(`/me?id=${id}`);
     }
   }
 };

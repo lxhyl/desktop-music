@@ -122,9 +122,10 @@ export default {
         .get(`${this.$domain}/user/playlist?uid=${this.userid}`)
         .then(res => {
           let arr = res.data.playlist;
+        
           for (let i = 0; i < arr.length; i++) {
             // 用户自己创建的歌单
-            if (!arr[i].subscribed) {
+            if (arr[i].creator.userId == this.userid) {
               let json = {
                 歌单名: arr[i].name,
                 歌曲数: arr[i].trackCount,

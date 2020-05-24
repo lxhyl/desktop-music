@@ -8,6 +8,7 @@
             :src="this.$store.state.musicInfo.songs[0].al.picUrl"
             class="music-pic"
           ></el-avatar>
+          <div @click="openDetail" class="el-icon-rank open-detail"></div>
         </el-col>
         <el-col :span="2" style="height:50px;">
           <span
@@ -124,7 +125,7 @@ export default {
   },
   watch: {},
   created() {
-    this.musicid = this.$route.query.id;
+    this.musicid = this.$store.state.musicid;
   },
   mounted() {
     this.musicid && this.getSongUrl();
@@ -169,7 +170,7 @@ export default {
     play() {
       if (this.$refs.audio) {
         this.$refs.audio.play();
-      
+
         this.isPlaying = true;
         this.oneSecondTime();
       }
@@ -202,14 +203,17 @@ export default {
           }
         }
       }, 1000);
-
+       // 200ms更新一次音乐已播放时长
       this.lyricTimer = setInterval(() => {
         let ref = this.$refs.audio;
         if (ref) {
           if (ref.readyState) {
-            this.$store.commit("getMusicPlayTime",_this.$refs.audio.currentTime);
+            this.$store.commit(
+              "getMusicPlayTime",
+              _this.$refs.audio.currentTime
+            );
           }
-           if (this.$refs.audio.ended) {
+          if (this.$refs.audio.ended) {
             clearInterval(_this.lyricTimer);
           }
         }
@@ -221,6 +225,7 @@ export default {
       this.$store.commit("setMusicVolume", e);
     },
     // 获取上一首音乐
+      //  返回歌曲id
     getLastMusic() {
       let nowId = this.musicid;
       let lists = this.$store.state.playLists;
@@ -235,6 +240,7 @@ export default {
       }
     },
     //获取下一首音乐
+    //  返回歌曲id
     getNextMusic() {
       let nowId = this.musicid;
       let lists = this.$store.state.playLists;
@@ -252,26 +258,51 @@ export default {
     playNextMusic() {
       let id = this.getNextMusic();
 
-      // 更新音乐ID
-      this.$store.commit("getMusicId", id);
-      this.reloadPlay();
-      if (this.$route.name == "playDetail") {
-        this.$router.push(`/playDetail?id=${id}`);
-      }
+      this.$axios
+        .get(`${this.$domain}/song/detail?ids=${id}`)
+        .then(res => {
+          //更新VUEX的音乐信息
+          this.$store.commit("getMusicInfo", res.data);
+          // 更新音乐ID
+          this.$store.commit("getMusicId", id);
+          this.reloadPlay();
+          if (this.$route.name == "playDetail") {
+            this.$router.replace(`/playDetail?id=${id}`);
+          }
+        })
+        .catch(() => {
+          this.$message("网络出问题啦");
+        });
     },
     // 播放上一首音乐
     playLastMusic() {
       let id = this.getLastMusic();
-      this.$router.push(`/playDetail?id=${id}`);
-      // 更新音乐ID
-      this.$store.commit("getMusicId", id);
-      this.reloadPlay();
+      this.$axios
+        .get(`${this.$domain}/song/detail?ids=${id}`)
+        .then(res => {
+          //更新VUEX的音乐信息
+          this.$store.commit("getMusicInfo", res.data);
+          if (this.$route.name == "playDetail") {
+            this.$router.replace(`/playDetail?id=${id}`);
+          }
+          // 更新音乐ID
+          this.$store.commit("getMusicId", id);
+          this.reloadPlay();
+        })
+        .catch(() => {
+          this.$message("网络出问题啦");
+        });
     },
     // 点击播放音乐列表音乐
     playListsMusic(id) {
       this.$router.push(`/playDetail?id=${id}`);
       this.$store.commit("getMusicId", id);
       this.reloadPlay();
+    },
+    //点击图片 显示音乐详情
+    openDetail() {
+      let id = this.musicid;
+      this.$router.push(`/playDetail?id=${id}`);
     }
   }
 };
@@ -287,6 +318,19 @@ export default {
   width: 40px;
   position: relative;
   top: 5px;
+}
+.open-detail {
+  height: 40px;
+  width: 40px;
+  position: absolute;
+  left: 0;
+  font-size: 0px;
+  top: 5px;
+  z-index: 999;
+}
+.open-detail:hover {
+  font-size: 40px;
+  color: rgb(184, 37, 37);
 }
 .name-arname {
   margin: 0;

@@ -10,6 +10,7 @@
         style="height:568px;"
       ></router-view>
     </keep-alive>
+  
 
     <Play v-if="this.$store.state.isPlaying" class="play" />
   </div>
@@ -33,11 +34,7 @@ export default {
       reloadPlay: this.reloadPlay
     };
   },
-  watch:{
-     $route(to, from) {
-         console.log(to,from);
-    },
-  },
+  watch: {},
   data() {
     return {
       isRouterAlive: true,
@@ -128,5 +125,12 @@ export default {
   width: 1020px;
   height: 50px;
   background: #222225;
+}
+.zhanwei {
+  margin-left: 200px;
+  height: 568px;
+  width: 820px;
+  background-color: rgb(25, 27, 31);
+  position: relative;
 }
 </style>
