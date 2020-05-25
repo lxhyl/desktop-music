@@ -45,7 +45,10 @@
       </div>
     </div>
     <div class="lyric" id="lyric">
-      <p v-for="(item,index) in lyric" :key="index" :id="index">{{item.lrc}}</p>
+      <div v-if="!nolyric">
+        <p v-for="(item,index) in lyric" :key="index" :id="index">{{item.lrc}}</p>
+      </div>
+      <div v-else class="no-lyric">纯音乐，请您欣赏</div>
     </div>
     <div class="danmu-setting">
       <p style="text-align:center;">弹幕设置</p>
@@ -90,15 +93,13 @@
       <el-row class="cow">
         <el-col class="text" :span="8">发送弹幕(评论)</el-col>
         <el-col :span="16" class="pinglun">
-          <el-input
+          <input
             v-model="pinglun"
             type="text"
-            size="mini"
+            class="send-pinglun"
             v-on:keyup.enter="send"
             placeholder="请输入"
-          >
-            <el-button size="mini" @click="send" slot="append">发送</el-button>
-          </el-input>
+          />
         </el-col>
       </el-row>
     </div>
@@ -193,6 +194,7 @@ export default {
       musicInfo: null, //音乐信息
       getDataOk: false, //是否拿到数据
       lyric: [], //歌词
+      nolyric: false, //是否是纯音乐
       stopOrMove: true, //canvas弹幕 运动or暂停
       canvas: null, //canvas
       allComments: [], //所有评论
@@ -226,7 +228,7 @@ export default {
     if (localStorage.getItem("canvasItemN")) {
       this.canvasItemNum = Number(localStorage.getItem("canvasItemN"));
     }
-   
+
     this.showCanvas = localStorage.getItem("showCanvas");
   },
   mounted() {
@@ -262,6 +264,10 @@ export default {
     //获取解析歌词
     getLyric() {
       this.$axios.get(`${this.$domain}/lyric?id=${this.musicid}`).then(res => {
+        if (res.data.nolyric) {
+          this.nolyric = true;
+          return;
+        }
         let arr = res.data.lrc.lyric.split("\n");
         for (let i = 0; i < arr.length; i++) {
           if (arr[i].length) {
@@ -301,14 +307,13 @@ export default {
             let v = Math.random() * 3 + 1;
             let l = 820 - i;
             let obj = {
-                content, //内容
-                c, // 弹幕颜色
-                t, //顶部偏移
-                l, //左部偏移
-                v, // 速度
-               };
+              content, //内容
+              c, // 弹幕颜色
+              t, //顶部偏移
+              l, //左部偏移
+              v // 速度
+            };
             this.allComments.push(obj);
-          
           }
           if (this.offset == 0) {
             this.comments = this.allComments.splice(0, this.canvasItemNum);
@@ -340,7 +345,6 @@ export default {
       }
     },
 
-
     //改变速度
     userChangeV(e) {
       localStorage.setItem("canvasItemV", e);
@@ -357,24 +361,24 @@ export default {
     send() {
       if (this.pinglun == "") {
         return;
-      } else {
-        let content = `我的评论:${this.pinglun}`;
-        let canvas = document.createElement("canvas");
-        if (canvas) {
-          let ctx = canvas.getContext("2d");
-          let w = ctx.measureText(content).width;
-          let t = Math.floor(Math.random() * 270 + 15);
-          let obj = {
-            content,
-            c: "#ffffff",
-            t,
-            l: 820,
-            v: 1,
-            w
-          };
-          this.comments.push(obj);
-          this.pinglun = "";
-        }
+      }
+      this.showCanvas = true;
+      let content = `我的评论:${this.pinglun}`;
+      let canvas = document.createElement("canvas");
+      if (canvas) {
+        let ctx = canvas.getContext("2d");
+        let w = ctx.measureText(content).width;
+        let t = Math.floor(Math.random() * 270 + 15);
+        let obj = {
+          content,
+          c: "#ffffff",
+          t,
+          l: 820,
+          v: 1,
+          w
+        };
+        this.comments.push(obj);
+        this.pinglun = "";
       }
     },
     //获取相似歌曲
@@ -608,5 +612,28 @@ p {
   height: 50px;
   line-height: 30px;
   font-size: 12px;
+}
+.no-lyric {
+  line-height: 268px;
+  width: 300px;
+  text-align: center;
+}
+.send-pinglun {
+  background-color: rgb(124, 124, 124);
+  color: white;
+   font-size: 12px;
+   padding-left: 5px;
+}
+.send-pinglun::-webkit-input-placeholder {
+  color: white;
+   font-size: 12px;
+}
+.send-pinglun::-ms-input-placeholder {
+  color: white;
+   font-size: 12px;
+}
+.send-pinglun::-moz-input-placeholder {
+  color: white;
+   font-size: 12px;
 }
 </style>
