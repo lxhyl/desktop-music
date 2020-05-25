@@ -228,10 +228,6 @@ export default {
     }
    
     this.showCanvas = localStorage.getItem("showCanvas");
-    if(this.showCanvas !== true && this.showCanvas !== false){
-         this.showCanvas = true;
-    }
- 
   },
   mounted() {
     this.musicid && this.getSongDetail();
@@ -304,20 +300,15 @@ export default {
             let t = Math.floor(Math.random() * 270 + 15);
             let v = Math.random() * 3 + 1;
             let l = 820 - i;
-            let canvas = document.createElement("canvas");
-            if (canvas) {
-              let ctx = canvas.getContext("2d");
-              let w = ctx.measureText(content).width;
-              let json = {
+            let obj = {
                 content, //内容
                 c, // 弹幕颜色
                 t, //顶部偏移
                 l, //左部偏移
                 v, // 速度
-                w //弹幕宽度
-              };
-              this.allComments.push(json);
-            }
+               };
+            this.allComments.push(obj);
+          
           }
           if (this.offset == 0) {
             this.comments = this.allComments.splice(0, this.canvasItemNum);
@@ -325,6 +316,7 @@ export default {
           this.offset += 1;
         });
     },
+
     draw() {
       if (!this.canvas) {
         return;
@@ -340,12 +332,15 @@ export default {
           this.comments[i].t
         );
         this.comments[i].l -= this.comments[i].v;
-        if (this.comments[i].w * 2 + this.comments[i].l <= 0) {
+        let w = ctx.measureText(this.comments[i].content).width;
+        if (w * 2 + this.comments[i].l <= 0) {
           this.comments.splice(i, 1);
           i--;
         }
       }
     },
+
+
     //改变速度
     userChangeV(e) {
       localStorage.setItem("canvasItemV", e);

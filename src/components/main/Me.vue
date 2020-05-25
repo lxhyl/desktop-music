@@ -8,7 +8,9 @@
         <div class="userinfo">
           <div class="userinfo-main">
             <el-row style="height:40px;line-height:40px;">
-              <el-col :span="6" style="font-size:20px;">{{userInfo.profile.nickname}}</el-col>
+              <el-col :span="6" style="font-size:20px;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;">
+                {{userInfo.profile.nickname}}
+                </el-col>
               <el-col :span="1" style="font-size:20px;">
                 <span
                   v-if="userInfo.profile.gender == 1"
