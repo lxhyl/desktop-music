@@ -4,5 +4,3 @@
 #### 后台
 [网易云音乐](https://github.com/Binaryify/NeteaseCloudMusicApi)
 
-#### 所用技术:
-* js,vue,vuex,axios,vue-router

@@ -46,7 +46,12 @@
     </div>
     <div class="lyric" id="lyric">
       <div v-if="!nolyric">
-        <p v-for="(item,index) in lyric" :key="index" :id="index">{{item.lrc}}</p>
+        <p
+          v-for="(item,index) in lyric"
+          :key="index"
+          :id="index"
+          style="text-align:center;"
+        >{{item.lrc}}</p>
       </div>
       <div v-else class="no-lyric">纯音乐，请您欣赏</div>
     </div>
@@ -119,12 +124,12 @@ export default {
     },
     //监听现在播放的时长，歌词跳转
     nowPlayTime: function(n) {
+
       let playTime = n * 1000;
       for (let i = 0; i < this.lyric.length - 1; i++) {
         if (document.getElementById(i)) {
           document.getElementById(i).style.color = "rgb(124, 124, 124)";
         }
-
         let last = this.lyric[i].time;
         let next = this.lyric[i + 1].time;
         if (last < playTime && playTime < next) {
@@ -136,21 +141,24 @@ export default {
         }
       }
     },
+
     //监听显示的弹幕条数
     comments: function(n) {
       if (n.length < this.canvasItemNum) {
         this.comments.push(this.allComments.splice(0, 1)[0]);
       }
     },
+
     allComments: function(n) {
       if (n.length < 35) {
         this.getComment();
       }
     },
+
     // 监听是否暂停弹幕
     stopOrMove: function(n) {
       if (n) {
-        if (this.showCanvas) {
+        if (this.showCanvas){
           this.canvasTimer = setInterval(() => {
             this.draw();
           }, this.canvasItemV);
@@ -163,16 +171,20 @@ export default {
     //监听是否显示弹幕
     // 不显示就推荐相似音乐 用户
     showCanvas: function(n) {
-      localStorage.setItem("showCanvas", n);
+      localStorage.setItem('showCanvas',n);
+      console.log(n);
       if (n) {
         if (this.stopOrMove) {
+          clearInterval(this.canvasTimer);
           this.$nextTick(() => {
             this.canvas = this.$refs.canvas;
             this.canvasTimer = setInterval(() => {
               this.draw();
             }, this.canvasItemV);
+            
           });
         } else {
+          clearInterval(this.canvasTimer);
           this.$nextTick(() => {
             this.canvas = this.$refs.canvas;
             this.draw();
@@ -186,6 +198,7 @@ export default {
         //获取最近听过这首歌的用户
         this.getListenedUser();
       }
+
     }
   },
   data() {
@@ -212,7 +225,7 @@ export default {
       sameSongs: [], //相似音乐
       sameUsers: [], //最近听过这首歌的用户
       getSameDataOk: false, //是否获取到音乐或数据
-      getUsersOk: false //是否获取到最近听歌的用户
+      getUsersOk: false,//是否获取到最近听歌的用户
     };
   },
   computed: {
@@ -221,6 +234,7 @@ export default {
     }
   },
   created() {
+
     this.musicid = this.$route.query.id;
     if (localStorage.getItem("canvasItemV")) {
       this.canvasItemV = Number(localStorage.getItem("canvasItemV"));
@@ -228,19 +242,25 @@ export default {
     if (localStorage.getItem("canvasItemN")) {
       this.canvasItemNum = Number(localStorage.getItem("canvasItemN"));
     }
-
-    this.showCanvas = localStorage.getItem("showCanvas");
+    if(localStorage.getItem("showCanvas") === 'false'){
+      this.showCanvas = false;
+    }else {
+      this.showCanvas = true;
+    }
   },
   mounted() {
     this.musicid && this.getSongDetail();
     this.musicid && this.getLyric();
     this.getComment();
-    setTimeout(() => {
-      this.canvas = this.$refs.canvas;
-      this.canvasTimer = setInterval(() => {
-        this.draw();
-      }, this.canvasItemV);
-    }, 1000);
+    if (this.showCanvas === true) {
+      setTimeout(() => {
+        this.canvas = this.$refs.canvas;
+        this.canvasTimer = setInterval(() => {
+          this.draw();
+        }, this.canvasItemV);
+      }, 1000);
+    }
+  
     // 监听键盘 如果按的是enter键，就发送弹幕
     document.addEventListener("keyup", e => {
       if (e.keyCode == 13) {
@@ -621,19 +641,19 @@ p {
 .send-pinglun {
   background-color: rgb(124, 124, 124);
   color: white;
-   font-size: 12px;
-   padding-left: 5px;
+  font-size: 12px;
+  padding-left: 5px;
 }
 .send-pinglun::-webkit-input-placeholder {
   color: white;
-   font-size: 12px;
+  font-size: 12px;
 }
 .send-pinglun::-ms-input-placeholder {
   color: white;
-   font-size: 12px;
+  font-size: 12px;
 }
 .send-pinglun::-moz-input-placeholder {
   color: white;
-   font-size: 12px;
+  font-size: 12px;
 }
 </style>
