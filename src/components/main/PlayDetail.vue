@@ -1,5 +1,6 @@
 <template>
-  <div v-if="getDataOk">
+  <div>
+    <div  v-if="getDataOk">
     <div class="left">
       <img :src="musicInfo.songs[0].al.picUrl" />
     </div>
@@ -108,6 +109,8 @@
         </el-col>
       </el-row>
     </div>
+    </div>
+    <p v-else style="text-align:center;">加载中...</p>
   </div>
 </template>
 
@@ -290,21 +293,19 @@ export default {
           return;
         }
         let arr = res.data.lrc.lyric.split("\n");
-
         for (let i = 0; i < arr.length; i++) {
           if (arr[i].length) {
             let right = arr[i].indexOf("]");
             let time = arr[i].substr(1, right - 1);
-
             let m = time.substr(0, 2);
             let s = time.substr(3, 2);
             let ms = parseInt(time.substr(6));
             time = m * 60 * 1000 + s * 1000 + ms;
             let lrc = arr[i].substr(right + 1);
             let json = {
-              time,
-              lrc,
-              i
+              time, //时间 单位ms
+              lrc,  // 歌词
+              i    // 索引
             };
             this.lyric.push(json);
           }
