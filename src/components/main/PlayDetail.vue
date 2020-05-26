@@ -124,18 +124,16 @@ export default {
     },
     //监听现在播放的时长，歌词跳转
     nowPlayTime: function(n) {
-         
-      let playTime = n * 1000; 
-     
+      let playTime = n * 1000;
+
       for (let i = 0; i < this.lyric.length - 1; i++) {
         if (document.getElementById(i)) {
           document.getElementById(i).style.color = "rgb(124, 124, 124)";
         }
         let last = this.lyric[i].time;
         let next = this.lyric[i + 1].time;
-     
+
         if (last < playTime && playTime < next) {
-     
           let item = document.getElementById(i);
           if (item) {
             item.scrollIntoView();
@@ -160,8 +158,9 @@ export default {
 
     // 监听是否暂停弹幕
     stopOrMove: function(n) {
+      clearInterval(this.canvasTimer);
       if (n) {
-        if (this.showCanvas){
+        if (this.showCanvas) {
           this.canvasTimer = setInterval(() => {
             this.draw();
           }, this.canvasItemV);
@@ -174,8 +173,8 @@ export default {
     //监听是否显示弹幕
     // 不显示就推荐相似音乐 用户
     showCanvas: function(n) {
-      localStorage.setItem('showCanvas',n);
-   
+      localStorage.setItem("showCanvas", n);
+      clearInterval(this.canvasTimer);
       if (n) {
         if (this.stopOrMove) {
           clearInterval(this.canvasTimer);
@@ -184,7 +183,6 @@ export default {
             this.canvasTimer = setInterval(() => {
               this.draw();
             }, this.canvasItemV);
-            
           });
         } else {
           clearInterval(this.canvasTimer);
@@ -201,7 +199,6 @@ export default {
         //获取最近听过这首歌的用户
         this.getListenedUser();
       }
-
     }
   },
   data() {
@@ -228,7 +225,7 @@ export default {
       sameSongs: [], //相似音乐
       sameUsers: [], //最近听过这首歌的用户
       getSameDataOk: false, //是否获取到音乐或数据
-      getUsersOk: false,//是否获取到最近听歌的用户
+      getUsersOk: false //是否获取到最近听歌的用户
     };
   },
   computed: {
@@ -237,7 +234,6 @@ export default {
     }
   },
   created() {
-
     this.musicid = this.$route.query.id;
     if (localStorage.getItem("canvasItemV")) {
       this.canvasItemV = Number(localStorage.getItem("canvasItemV"));
@@ -245,9 +241,9 @@ export default {
     if (localStorage.getItem("canvasItemN")) {
       this.canvasItemNum = Number(localStorage.getItem("canvasItemN"));
     }
-    if(localStorage.getItem("showCanvas") === 'false'){
+    if (localStorage.getItem("showCanvas") === "false") {
       this.showCanvas = false;
-    }else {
+    } else {
       this.showCanvas = true;
     }
   },
@@ -255,15 +251,17 @@ export default {
     this.musicid && this.getSongDetail();
     this.musicid && this.getLyric();
     this.getComment();
-    if (this.showCanvas === true) {
+    if (this.showCanvas === true && this.stopOrMove === true) {
       setTimeout(() => {
         this.canvas = this.$refs.canvas;
-        this.canvasTimer = setInterval(() => {
-          this.draw();
-        }, this.canvasItemV);
+        if (!this.canvasTimer) {
+          this.canvasTimer = setInterval(() => {
+            this.draw();
+          }, this.canvasItemV);
+        }
       }, 1000);
     }
-  
+
     // 监听键盘 如果按的是enter键，就发送弹幕
     document.addEventListener("keyup", e => {
       if (e.keyCode == 13) {
@@ -292,17 +290,17 @@ export default {
           return;
         }
         let arr = res.data.lrc.lyric.split("\n");
-      
+
         for (let i = 0; i < arr.length; i++) {
           if (arr[i].length) {
-            let right = arr[i].indexOf(']');
-            let time = arr[i].substr(1, right-1);
-          
+            let right = arr[i].indexOf("]");
+            let time = arr[i].substr(1, right - 1);
+
             let m = time.substr(0, 2);
             let s = time.substr(3, 2);
             let ms = parseInt(time.substr(6));
             time = m * 60 * 1000 + s * 1000 + ms;
-            let lrc = arr[i].substr(right+1);
+            let lrc = arr[i].substr(right + 1);
             let json = {
               time,
               lrc,
@@ -311,7 +309,6 @@ export default {
             this.lyric.push(json);
           }
         }
-     
       });
     },
     getComment() {
