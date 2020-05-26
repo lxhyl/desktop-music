@@ -1,59 +1,94 @@
 <!DOCTYPE html>
 <html lang="zh">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width,initial-scale=1.0">
-    <link rel="icon" href="<%= BASE_URL %>favicon.ico">
-    <title>网易云 | by Lxhyl</title>
-    <style>
-      .el-popover {
-  background-color: rgb(45, 47, 51) !important;
-  border: none !important;
-  padding-right: 0 !important;
-}
-.el-message{
-  background-color: rgb(45, 47, 51) !important;
-  border: none !important;
-  color: white;
-}
-.loading {
-  width: 300px;
-  font-size: 20px;
-  position: relative;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  margin: auto;
-  text-align: center;
-}
-.el-slider{
-  position: relative;
-  height: 30px;
-  line-height: 30px;
-  top:5px;
-}
-.el-slider__runway{
-  background-color: rgb(69, 69, 70) !important;
-}
-.el-slider__bar{
-  background-color: rgb(184, 37, 37) !important;
-}
-.el-slider__button{
-  width:10px !important;
-  height: 10px !important;
-  border-color: white !important;
-  color: rgb(184, 37, 37) !important;
-}
 
-    </style>
-  </head>
-  <body>
-    <noscript>
-      <strong>We're sorry but <%= htmlWebpackPlugin.options.title %> doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
-    </noscript>
-    <div id="app"></div>
-    <!-- built files will be auto injected -->
-  </body>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <link rel="icon" href="<%= BASE_URL %>favicon.ico">
+  <title>网易云 | by Lxhyl</title>
+  <style>
+    .el-popover {
+      background-color: rgb(45, 47, 51) !important;
+      border: none !important;
+      padding-right: 0 !important;
+    }
+
+    .el-message {
+      background-color: rgb(45, 47, 51) !important;
+      border: none !important;
+      color: white;
+    }
+
+    .loading {
+      width: 300px;
+      font-size: 20px;
+      position: relative;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      margin: auto;
+      text-align: center;
+    }
+
+    .el-slider {
+      position: relative;
+      height: 30px;
+      line-height: 30px;
+      top: 5px;
+    }
+
+    .el-slider__runway {
+      background-color: rgb(69, 69, 70) !important;
+    }
+
+    .el-slider__bar {
+      background-color: rgb(184, 37, 37) !important;
+    }
+
+    .el-slider__button {
+      width: 10px !important;
+      height: 10px !important;
+      border-color: white !important;
+      color: rgb(184, 37, 37) !important;
+    }
+
+    .gjp {
+      position: absolute;
+      right: 0;
+      left: 0;
+      width: 1020px;
+      height: 620px;
+      margin: 0 auto;
+      animation: gjpmove 1500ms linear infinite;
+    }
+
+    @keyframes gjpmove {
+      from {
+        opacity: 1.0;
+      }
+
+      50% {
+        opacity: 0.2;
+      }
+
+      to {
+        opacity: 1.0;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <noscript>
+    <strong>We're sorry but <%= htmlWebpackPlugin.options.title %> doesn't work properly without JavaScript enabled.
+      Please enable it to continue.</strong>
+  </noscript>
+  <div id="app">
+    <img class="gjp" src="./gjp.png">
+  </div>
+  <!-- built files will be auto injected -->
+</body>
+
 </html>
