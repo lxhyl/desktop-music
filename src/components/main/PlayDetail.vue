@@ -124,15 +124,18 @@ export default {
     },
     //监听现在播放的时长，歌词跳转
     nowPlayTime: function(n) {
-
-      let playTime = n * 1000;
+         
+      let playTime = n * 1000; 
+     
       for (let i = 0; i < this.lyric.length - 1; i++) {
         if (document.getElementById(i)) {
           document.getElementById(i).style.color = "rgb(124, 124, 124)";
         }
         let last = this.lyric[i].time;
         let next = this.lyric[i + 1].time;
+     
         if (last < playTime && playTime < next) {
+     
           let item = document.getElementById(i);
           if (item) {
             item.scrollIntoView();
@@ -172,7 +175,7 @@ export default {
     // 不显示就推荐相似音乐 用户
     showCanvas: function(n) {
       localStorage.setItem('showCanvas',n);
-      console.log(n);
+   
       if (n) {
         if (this.stopOrMove) {
           clearInterval(this.canvasTimer);
@@ -289,17 +292,17 @@ export default {
           return;
         }
         let arr = res.data.lrc.lyric.split("\n");
+      
         for (let i = 0; i < arr.length; i++) {
           if (arr[i].length) {
-            let time = arr[i].substr(1, 9);
+            let right = arr[i].indexOf(']');
+            let time = arr[i].substr(1, right-1);
+          
             let m = time.substr(0, 2);
-            let s = time.substr(3, 5);
+            let s = time.substr(3, 2);
             let ms = parseInt(time.substr(6));
             time = m * 60 * 1000 + s * 1000 + ms;
-            let lrc;
-            arr[i][10] == "]"
-              ? (lrc = arr[i].substr(11))
-              : (lrc = arr[i].substr(10));
+            let lrc = arr[i].substr(right+1);
             let json = {
               time,
               lrc,
@@ -308,6 +311,7 @@ export default {
             this.lyric.push(json);
           }
         }
+     
       });
     },
     getComment() {
