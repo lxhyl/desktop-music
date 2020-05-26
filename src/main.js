@@ -22,7 +22,7 @@ import 'element-ui/lib/theme-chalk/index.css';
 import {
   Col, Row, Image, Button, ButtonGroup, Input, Avatar, Popover,
   Form, FormItem, Link, Message, Tag,Slider,Timeline,
-  TimelineItem,Switch
+  TimelineItem,Switch,Divider
 } from 'element-ui';
 Vue.use(Col);
 Vue.use(Row);
@@ -40,6 +40,7 @@ Vue.use(Slider);
 Vue.use(Timeline);
 Vue.use(TimelineItem);
 Vue.use(Switch);
+Vue.use(Divider);
 Vue.prototype.$message = Message;
 
 
@@ -66,6 +67,7 @@ Vue.filter('toTime', function (e) {
   }
   return new Date(e).Format('yy-MM-dd');
 })
+
 //歌曲时长格式化
 Vue.filter('songToTime', function (e) {
   let m = Math.floor(e / 1000 / 60);

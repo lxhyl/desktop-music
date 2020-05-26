@@ -136,7 +136,7 @@ export default {
         let last = this.lyric[i].time;
         let next = this.lyric[i + 1].time;
 
-        if (last < playTime && playTime < next) {
+        if (last <= playTime && playTime < next) {
           let item = document.getElementById(i);
           if (item) {
             item.scrollIntoView();

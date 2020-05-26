@@ -168,9 +168,8 @@ export default {
     },
     //播放
     play() {
-      if (this.$refs.audio) {
+      if (this.$refs.audio.readyState) {
         this.$refs.audio.play();
-
         this.isPlaying = true;
         this.oneSecondTime();
       }
@@ -179,21 +178,25 @@ export default {
     userChangeTime(e) {
       this.time = e;
       this.$refs.audio.currentTime = e;
-      if (this.$refs.audio.paused) {
-        this.$refs.audio.play();
-        this.isPlaying = true;
+      if (this.$refs.audio.readyState) {
+        if (this.$refs.audio.paused) {
+          this.$refs.audio.play();
+          this.isPlaying = true;
+        }
       }
     },
     //定时器
     oneSecondTime() {
       let _this = this;
-
+       
       this.timer = setInterval(() => {
         let ref = this.$refs.audio;
         if (ref) {
           if (ref.readyState) {
             this.isPlaying = true;
             _this.time += 1;
+          } else {
+            this.isPlaying = false;
           }
           // 如果音乐播放结束 自动播放下一首音乐
           // 清除定时器
@@ -203,7 +206,7 @@ export default {
           }
         }
       }, 1000);
-       // 200ms更新一次音乐已播放时长
+      // 200ms更新一次音乐已播放时长
       this.lyricTimer = setInterval(() => {
         let ref = this.$refs.audio;
         if (ref) {
@@ -225,7 +228,7 @@ export default {
       this.$store.commit("setMusicVolume", e);
     },
     // 获取上一首音乐
-      //  返回歌曲id
+    //  返回歌曲id
     getLastMusic() {
       let nowId = this.musicid;
       let lists = this.$store.state.playLists;

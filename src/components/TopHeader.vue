@@ -23,6 +23,7 @@
               slot="reference"
               v-model="searchKey"
               @focus="openSearchPopover"
+              @keyup.enter="search"
               placeholder="搜索音乐，视频，歌词，电台"
               class="search-input"
             />
