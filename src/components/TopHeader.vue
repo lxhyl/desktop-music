@@ -32,7 +32,7 @@
           <span id="colsePopover"></span>
         </div>
       </el-col>
-      <el-col class="row-header" :span="2">
+      <el-col class="row-header" :span="3">
         <el-avatar
           v-if="!isLogin"
           :src="avatarSrc"
@@ -79,7 +79,6 @@
 
         <span v-if="isLogin" class="user-login">{{accountInfo.profile.nickname}}</span>
       </el-col>
-      <el-col class="row-header" :span="1">开通VIP</el-col>
       <el-col class="row-header" :span="2" style="text-align:center">
         <el-popover style="background:#222225;" placement="bottom" width="280" trigger="click">
           <p style="text-align:center;">
@@ -110,7 +109,11 @@
         </el-popover>
       </el-col>
       <el-col class="row-header" :span="1" style="text-align:center">
-        <span class="el-icon-setting" style="font-size:16px;line-height:50px;"></span>
+        <span 
+        class="el-icon-setting" 
+        style="font-size:16px;line-height:50px;"
+        @click="routerToSetting"
+        ></span>
       </el-col>
       <el-col class="row-header" :span="2" style="text-align:center">
         <span @click="close" class="el-icon-close" style="font-size:16px;line-height:50px;"></span>
@@ -227,9 +230,11 @@ export default {
             this.accountInfo = res.data;
             this.isLogin = true;
             this.$store.commit("getUserId", res.data.account.id);
-            if (!localStorage.getItem("userid")) {
+           //如果是第一次登陆  初始化数据
+          if (!localStorage.getItem("userid")) {
               localStorage.setItem("userid", res.data.account.id);
               localStorage.setItem("anotherUserId", res.data.account.id);
+              localStorage.setItem('playNextSelf',true);
               this.reloadLeft();
             }
 
@@ -266,6 +271,10 @@ export default {
     search(){
         this.$store.commit("changeSearchPopover", false);
        this.$router.push(`/search?keyword=${this.searchKey}`)
+    },
+    //路由至设置
+    routerToSetting(){
+      this.$router.push("/setting")
     }
   }
 };
@@ -326,7 +335,7 @@ export default {
 }
 .user-login {
   position: absolute;
-  width: 50px;
+  width: 100px;
   left: 24px;
   margin-left: 5px;
   overflow: hidden;

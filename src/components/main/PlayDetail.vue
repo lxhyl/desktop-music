@@ -16,7 +16,7 @@
             @click="playSameSong(item.id,index)"
           >
             <div class="same-pic">
-              <img :src="item.picUrl" />
+              <img :src="item.picUrl+'?param=30y30'" />
             </div>
             <div class="same-text">
               <p class="same-name" style="color:white;">{{item.name}}</p>
@@ -33,7 +33,7 @@
             @click.native="toUserPage(item.id)"
           >
             <el-col :span="4" class="user-pic-con">
-              <img class="user-pic" :src="item.avar" />
+              <img class="user-pic" :src="item.avar+'?param=30y30'" />
             </el-col>
             <el-col :span="10" class="user-name">
               {{item.name}}
@@ -312,6 +312,7 @@ export default {
         }
       });
     },
+    //获取评论
     getComment() {
       this.$axios
         .get(

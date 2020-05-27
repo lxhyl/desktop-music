@@ -9,9 +9,6 @@ Router.prototype.push = function push(location) {
 
 Vue.use(Router)
 
-
-
-
 //发现音乐栏
 //个性推荐
 import FindMusic from '../components/findMusic/Index.vue'
@@ -24,6 +21,8 @@ import PlayList from "../components/PlayList.vue"
 import PlayDetail from "../components/main/PlayDetail.vue"
 // 搜索结果
 import SearchResult from "../components/main/SearchResult.vue"
+//设置
+import Setting from "../components/main/Setting.vue"
 export default new Router({
     mode:'hash',
     routes:[
@@ -52,6 +51,10 @@ export default new Router({
             path:'/search',
             name:'search',
             component:SearchResult
+        },{
+            path:'/setting',
+            name:'setting',
+            component:Setting
         }
 
     ]

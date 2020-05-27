@@ -188,7 +188,7 @@ export default {
     //定时器
     oneSecondTime() {
       let _this = this;
-       
+
       this.timer = setInterval(() => {
         let ref = this.$refs.audio;
         if (ref) {
@@ -202,7 +202,12 @@ export default {
           // 清除定时器
           if (this.$refs.audio.ended) {
             clearInterval(_this.timer);
-            this.playNextMusic();
+
+            if (localStorage.getItem("playNextSelf") === 'true') {
+              _this.playNextMusic();
+            }else{
+              _this.reloadPlay();
+            } 
           }
         }
       }, 1000);
