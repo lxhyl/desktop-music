@@ -109,10 +109,10 @@
         </el-popover>
       </el-col>
       <el-col class="row-header" :span="1" style="text-align:center">
-        <span 
-        class="el-icon-setting" 
-        style="font-size:16px;line-height:50px;"
-        @click="routerToSetting"
+        <span
+          class="el-icon-setting"
+          style="font-size:16px;line-height:50px;"
+          @click="routerToSetting"
         ></span>
       </el-col>
       <el-col class="row-header" :span="2" style="text-align:center">
@@ -133,7 +133,7 @@ import Tongzhi from "../components/msg/Tongzhi.vue";
 // 热搜
 import HotSearch from "./search/HotSearch.vue";
 // 搜索建议
-import Search from "./search/Search.vue"
+import Search from "./search/Search.vue";
 export default {
   name: "TopHeader",
   inject: ["reload", "reloadLeft"],
@@ -142,7 +142,7 @@ export default {
     Sixin,
     Tongzhi,
     HotSearch,
-    Search,
+    Search
   },
   data() {
     return {
@@ -159,7 +159,7 @@ export default {
       searchKey: "", //搜索关键词
       hotSearchControl: false, //是否显示热搜组件
       searchDebounceTimer: null, //搜索框防抖
-      searchControl:false,//是否显示搜索提示组件
+      searchControl: false //是否显示搜索提示组件
     };
   },
   computed: {
@@ -179,10 +179,9 @@ export default {
       // 搜索框防抖  200ms延时
       if (n == "") {
         this.$store.commit("changeSearchPopover", true);
-       this.searchControl = false;
-     
-     this.hotSearchControl = true;
-         
+        this.searchControl = false;
+
+        this.hotSearchControl = true;
       }
       if (this.searchDebounceTimer != null) {
         clearTimeout(this.searchDebounceTimer);
@@ -190,12 +189,12 @@ export default {
       } else {
         this.searchDebounceTimer = setTimeout(() => {
           if (n !== "") {
-            this.$store.commit("setSearchKey",n);
+            this.$store.commit("setSearchKey", n);
             this.hotSearchControl = false;
-             this.searchControl = false;
-            this.$nextTick(()=>{
+            this.searchControl = false;
+            this.$nextTick(() => {
               this.searchControl = true;
-            })
+            });
           }
         }, 200);
       }
@@ -230,11 +229,11 @@ export default {
             this.accountInfo = res.data;
             this.isLogin = true;
             this.$store.commit("getUserId", res.data.account.id);
-           //如果是第一次登陆  初始化数据
-          if (!localStorage.getItem("userid")) {
+            //如果是第一次登陆  初始化数据
+            if (!localStorage.getItem("userid")) {
               localStorage.setItem("userid", res.data.account.id);
               localStorage.setItem("anotherUserId", res.data.account.id);
-              localStorage.setItem('playNextSelf',true);
+              localStorage.setItem("playNextSelf", true);
               this.reloadLeft();
             }
 
@@ -246,9 +245,9 @@ export default {
       }
     },
     showUserPage() {
-      let myId = localStorage.getItem('userid');
-      localStorage.setItem("anotherUserId",myId);
-      this.$router.push(`/me?id=${localStorage.getItem('userid')}`);
+      let myId = localStorage.getItem("userid");
+      localStorage.setItem("anotherUserId", myId);
+      this.$router.push(`/me?id=${localStorage.getItem("userid")}`);
     },
     routerToPage(e) {
       this.routerMsg = e;
@@ -268,13 +267,37 @@ export default {
       this.$store.commit("changeSearchPopover", false);
     },
     //搜索
-    search(){
-        this.$store.commit("changeSearchPopover", false);
-       this.$router.push(`/search?keyword=${this.searchKey}`)
+    search() {
+      if (this.searchKey == "") {
+        return;
+      }
+      let his = JSON.parse(localStorage.getItem("history"));
+      //第一次搜索
+     if (his === null) {
+        his = [];
+      }
+      //搜索历史中是否已有
+      for (let i = 0; i < his.length; i++) {
+        if (his[i] == this.searchKey) {
+           this.$store.commit("changeSearchPopover", false);
+           this.$router.push(`/search?keyword=${this.searchKey}`);
+           return
+        }
+      }
+      if (his.length > 10) {
+        his.push(this.searchKey).splice(0, 1);
+      } else {
+        his.push(this.searchKey);
+      }
+
+      let str = JSON.stringify(his);
+      localStorage.setItem("history", str);
+      this.$store.commit("changeSearchPopover", false);
+      this.$router.push(`/search?keyword=${this.searchKey}`);
     },
     //路由至设置
-    routerToSetting(){
-      this.$router.push("/setting")
+    routerToSetting() {
+      this.$router.push("/setting");
     }
   }
 };

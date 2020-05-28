@@ -5,8 +5,8 @@
       <img :src="musicInfo.songs[0].al.picUrl" />
     </div>
     <div class="main-danmu">
-      <canvas v-if="showCanvas" ref="canvas" id="canvas" width="820" height="300"></canvas>
-      <div v-else class="no-canvas">
+      <canvas v-show="showCanvas" ref="canvas" id="canvas" width="820" height="300"></canvas>
+      <div v-show="!showCanvas" class="no-canvas">
         <div v-if="getSameDataOk" style="height:300px;width:250px;float:left;">
           <p style="width:300px;height:20px;line-height:20px;font-sie:14px;">相似歌曲</p>
           <div
@@ -209,7 +209,7 @@ export default {
       musicid: null, //音乐ID
       musicInfo: null, //音乐信息
       getDataOk: false, //是否拿到数据
-      lyric: [], //歌词
+      lyric: [], //歌词数组
       nolyric: false, //是否是纯音乐
       stopOrMove: true, //canvas弹幕 运动or暂停
       canvas: null, //canvas

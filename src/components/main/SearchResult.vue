@@ -9,57 +9,69 @@
     </div>
     <div>
       <el-row class="caidan">
-        <el-col class="caidan-item" :span="6">单曲</el-col>
-        <el-col class="caidan-item" :span="6">歌单</el-col>
-        <el-col class="caidan-item" :span="6">用户</el-col>
+        <el-col @click.native="routerMsg = 'songs'" class="caidan-item" :span="6">单曲</el-col>
+        <el-col @click.native="routerMsg = 'searchPlayLists'" class="caidan-item" :span="6">歌单</el-col>
+        <el-col @click.native="routerMsg = 'searchUsers'" class="caidan-item" :span="6">用户</el-col>
         <el-col class="caidan-item" :span="6">视频</el-col>
       </el-row>
+
       <el-divider></el-divider>
-      <div v-if="getSongs">
+      <div v-show="routerMsg == 'songs'">
         <div v-if="getSongsListOk">
-        <el-row class="li-container">
-          <el-col class="li-num" :span="2">索引</el-col>
-          <el-col class="li-name" :span="8">音乐标题</el-col>
-          <el-col class="li-name" :span="6">歌手</el-col>
-          <el-col class="li-name" :span="6">专辑</el-col>
-          <el-col class="li-name" :span="2">时长</el-col>
-        </el-row>
-        <el-row
-          v-for="(item,index) in songsList"
-          :key="item.id"
-          @click.native="playSong(item.id)"
-          class="li-container"
-        >
-          <el-col class="li-num" :span="2">{{index+1}}</el-col>
-          <el-col class="li-name" :span="8">{{item.name}}</el-col>
-          <el-col class="li-name" :span="6">{{item.ar}}</el-col>
-          <el-col class="li-name" :span="6">{{item.album}}</el-col>
-          <el-col class="li-name" :span="2">{{item.time | songToTime}}</el-col>
-        </el-row>
+          <el-row class="li-container">
+            <el-col class="li-num" :span="2">索引</el-col>
+            <el-col class="li-name" :span="8">音乐标题</el-col>
+            <el-col class="li-name" :span="6">歌手</el-col>
+            <el-col class="li-name" :span="6">专辑</el-col>
+            <el-col class="li-name" :span="2">时长</el-col>
+          </el-row>
+          <el-row
+            v-for="(item,index) in songsList"
+            :key="item.id"
+            @click.native="playSong(item.id)"
+            class="li-container"
+          >
+            <el-col class="li-num" :span="2">{{index+1}}</el-col>
+            <el-col class="li-name" :span="8">{{item.name}}</el-col>
+            <el-col class="li-name" :span="6">{{item.ar}}</el-col>
+            <el-col class="li-name" :span="6">{{item.album}}</el-col>
+            <el-col class="li-name" :span="2">{{item.time | songToTime}}</el-col>
+          </el-row>
         </div>
-        <p v-else class="loading">
-          <span  class="el-icon-loading"></span>加载中...
+        <p v-if="loading" class="loading">
+          <span class="el-icon-loading"></span>加载中...
         </p>
       </div>
-   
+
+      <search-play-lists v-if="routerMsg == 'searchPlayLists'" />
+      <search-users  v-if="routerMsg == 'searchUsers'" />
     </div>
   </div>
 </template>
 
 <script>
+//歌单
+import SearchPlayLists from "../search/PlayLists";
+//用户
+import SearchUsers from "../search/Users"
 export default {
   name: "searchResult",
   inject: ["reload", "reloadPlay"],
+  components: {
+    SearchPlayLists,
+    SearchUsers
+  },
   data() {
     return {
       keywords: null, //搜索关键词
-    
+
       type: 1, //搜索类型
       // 1：单曲，100：歌手，1000：歌单
       // 1002：用户， 1014:视频
       songsList: [], //音乐列表
-      getSongsListOk:false,//是否搜索到
-      getSongs: true,//搜索音乐
+      getSongsListOk: false, //是否搜索到
+      routerMsg: "songs", //加载那个组件
+      loading: true //是否加载中
     };
   },
   computed: {},
@@ -75,9 +87,7 @@ export default {
     this.keywords = this.$route.query.keyword;
   },
   mounted() {
-    if (this.getSongs) {
-      this.getSearchSongResult();
-    }
+    this.getSearchSongResult();
   },
   methods: {
     getSearchSongResult() {
@@ -96,6 +106,7 @@ export default {
             this.songsList.push(obj);
           }
           this.getSongsListOk = true;
+          this.loading = false;
         });
     },
     //播放音乐
@@ -155,7 +166,7 @@ export default {
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-.loading{
+.loading {
   text-align: center;
   font-size: 16px;
 }

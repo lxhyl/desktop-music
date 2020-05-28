@@ -7,11 +7,19 @@
      ></span>
     <div v-if="history.length > 0" class="history">
       <el-row>
-        <el-col :span="6">播放历史</el-col>
+        <el-col :span="6">搜索历史</el-col>
         <el-col :span="18">
-          <span class="el-icon-delete"></span>
+          <span @click="deleteHistory" class="el-icon-delete"></span>
         </el-col>
       </el-row>
+      <el-tag class="history-item" 
+      v-for="(item,index) in history" 
+      effect="dark"
+      type="info"
+      @click.native="search(item)"
+      :key="index/2">
+        {{item}}
+      </el-tag>
     </div>
     <div class="hot-search" v-if="hotSearch.length > 0">
       <p>热搜榜</p>
@@ -48,6 +56,7 @@ export default {
   },
   created() {
     this.getHotSearch();
+    this.history = JSON.parse(localStorage.getItem('history'))
   },
   mounted() {},
   methods: {
@@ -58,7 +67,8 @@ export default {
       });
     },
     deleteHistory() {
-      console.log("111");
+      localStorage.removeItem('history');
+      this.history = [];
     },
     colseSearch() {
       this.$store.commit("changeSearchPopover", false);
@@ -79,6 +89,9 @@ p{
   width: 280px;
   text-align: right;
   right: 0;
+}
+.hot-search{
+  margin-top:20px;
 }
 .item{
   height: 40px;
@@ -153,5 +166,8 @@ p{
   border-radius: 10px;
   -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
   background-color: rgb(25, 27, 31);
+}
+.history-item{
+  margin:10px;
 }
 </style>

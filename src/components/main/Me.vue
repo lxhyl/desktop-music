@@ -222,6 +222,9 @@ p {
   color: rgb(124, 124, 124);
 }
 .user-info-msg {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
   height: 25px;
   line-height: 25px;
   font-size: 12px;

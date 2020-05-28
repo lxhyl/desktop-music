@@ -4,7 +4,7 @@
       <div v-if="!loading">
         <div class="flex-item" v-for="(item,index) in list" :key="index">
           <div class="item-avatar">
-            <el-avatar :src="item.user.avatarUrl+'?param=30y30'" size="small"></el-avatar>
+            <el-avatar  :src="item.user.avatarUrl+'?param=30y30'" size="small"></el-avatar>
           </div>
           <div class="item-hf">
             <p class="item-hf-main">

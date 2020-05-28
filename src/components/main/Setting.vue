@@ -13,17 +13,16 @@
           ></el-switch>
         </p>
         <p>定时停止播放(5-150分钟)</p>
-       <p> 
-         <input class="timer-input" 
-        type="number" 
-        max="150"
-        min="5"
-        @keyup.enter="timerToTurnOff"
-        v-model="timerPlay"/>分
-        <el-button round type="info" 
-         size="mini" 
-         @click="timerToTurnOff"
-         >确定</el-button>
+        <p>
+          <input
+            class="timer-input"
+            type="number"
+            max="150"
+            min="5"
+            @keyup.enter="timerToTurnOff"
+            v-model="timerPlay"
+          />分
+          <el-button round type="info" size="mini" @click="timerToTurnOff">确定</el-button>
         </p>
       </div>
     </div>
@@ -35,35 +34,35 @@ export default {
   name: "setting",
   data() {
     return {
-      playNextSelf:true,
-      timerPlay:10,
-      timer:null,
+      playNextSelf: true,
+      timerPlay: 10,
+      timer: null
     };
   },
-  computed:{
-  
-  },
-  watch:{
-    playNextSelf(n){
-      localStorage.setItem('playNextSelf',n);
+  computed: {},
+  watch: {
+    playNextSelf(n) {
+      localStorage.setItem("playNextSelf", n);
     }
   },
-  created() {
-
-  },
+  created() {},
   methods: {
-    timerToTurnOff(){
+    timerToTurnOff() {
       clearTimeout(this.timer);
-      if(this.timerPlay > 150){
-        this.timerPlay = 150
+      if (this.timerPlay > 150) {
+        this.timerPlay = 150;
       }
-      if(this.timerPlay < 5){
-        this.timerPlay = 5
+      if (this.timerPlay < 5) {
+        this.timerPlay = 5;
       }
-      let timeMs = this.timerPlay * 60 * 1000; 
-      this.timer = setTimeout(()=>{
-         this.$store.commit('changePlayState',false);
-      },timeMs)
+      let timeMs = this.timerPlay * 60 * 1000;
+      this.$message({
+        message: `设置成功，${this.timerPlay}分钟后停止播放`,
+        type: "success"
+      });
+      this.timer = setTimeout(() => {
+        this.$store.commit("changePlayState", false);
+      }, timeMs);
     }
   }
 };
@@ -74,22 +73,23 @@ export default {
   margin: 20px 50px;
 }
 .item {
-  margin-left:20px;
+  margin-left: 20px;
   font-size: 12px;
   color: rgb(124, 124, 124);
 }
-.timer-input{
-  background:rgb(124, 124, 124);
+.timer-input {
+  background: rgb(124, 124, 124);
   width: 50px;
   height: 28px;
- border-radius: 7px;
-  border:none;
+  border-radius: 7px;
+  border: none;
   outline: none;
   text-align: center;
   color: #ffffff;
 }
-input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{
-   -webkit-appearance: none !important;
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none !important;
 }
 </style>
 

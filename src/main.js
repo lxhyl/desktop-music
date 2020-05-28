@@ -21,8 +21,7 @@ Vue.component(Line.name, Line);
 import 'element-ui/lib/theme-chalk/index.css';
 import {
   Col, Row, Image, Button, ButtonGroup, Input, Avatar, Popover,
-  Form, FormItem, Link, Message, Tag,Slider,Timeline,
-  TimelineItem,Switch,Divider
+  Form, FormItem, Link, Message, Tag,Slider,Switch,Divider
 } from 'element-ui';
 Vue.use(Col);
 Vue.use(Row);
@@ -37,8 +36,6 @@ Vue.use(FormItem);
 Vue.use(Link);
 Vue.use(Tag);
 Vue.use(Slider);
-Vue.use(Timeline);
-Vue.use(TimelineItem);
 Vue.use(Switch);
 Vue.use(Divider);
 Vue.prototype.$message = Message;
@@ -76,6 +73,7 @@ Vue.filter('songToTime', function (e) {
   s = s >= 10 ? s : `0${s}`;
   return `${m}:${s}`;
 })
+
 
 
 new Vue({
