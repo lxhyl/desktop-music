@@ -66,7 +66,9 @@ export default {
         { icon: "el-icon-star-on", text: "我的收藏", router: "/mySC" }
       ],
       //我的歌单
-      myList: []
+      myList: [],
+      //防抖函数
+      timer: null
     };
   },
   created() {
@@ -101,33 +103,49 @@ export default {
       this.$router.push(`/playlist?id=${e}`);
     },
     fm() {
-      if(!this.userid){
+      if (!this.userid) {
         this.$message("请登录");
-        return
+        return;
       }
-      this.$axios
-        .get(`${this.$domain}/personal_fm?timestamp=${new Date().getTime()}`)
-        .then(res => {
-          let songs = res.data.data;
-          let result = [];
-          for(let i =0;i<songs.length;i++){
-            let obj ={
-                id: songs[i].id,
-              name: songs[i].name,
-              album: songs[i].album.name,
-              ar: songs[i].artists[0].name,
-              time: songs[i].duration   
-            }
-            result.push(obj);
-          }
-          let id = res.data.data[0].id;
-          this.$router.push(`/playDetail?id=${id}`);
-          // 更新音乐ID
-          this.$store.commit("getMusicId", id);
-          this.$store.commit('setFm',true);
-          this.$store.commit("getPlayLists", result);
-          this.reloadPlay();
-        });
+      this.$message.closeAll();
+      this.$message({
+        showClose: false,
+        message: "推荐中",
+        duration: 0
+      });
+      if (this.timer != null) {
+        clearTimeout(this.timer);
+        this.timer = null;
+      } else {
+        this.timer = setTimeout(() => {
+          this.$axios
+            .get(
+              `${this.$domain}/personal_fm?timestamp=${new Date().getTime()}`
+            )
+            .then(res => {
+              let songs = res.data.data;
+              this.$message.closeAll();
+              let result = [];
+              for (let i = 0; i < songs.length; i++) {
+                let obj = {
+                  id: songs[i].id,
+                  name: songs[i].name,
+                  album: songs[i].album.name,
+                  ar: songs[i].artists[0].name,
+                  time: songs[i].duration
+                };
+                result.push(obj);
+              }
+              let id = res.data.data[0].id;
+              this.$router.push(`/playDetail?id=${id}`);
+              // 更新音乐ID
+              this.$store.commit("getMusicId", id);
+              this.$store.commit("setFm", true);
+              this.$store.commit("getPlayLists", result);
+              this.reloadPlay();
+            });
+        }, 500);
+      }
     }
   }
 };

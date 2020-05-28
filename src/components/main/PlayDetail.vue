@@ -250,7 +250,7 @@ export default {
     // 就略过显示歌曲详情,继续路由
     let storeMusicId = this.$store.state.musicid;
     if(this.musicid != storeMusicId){
-       this.$router.go(-1);     
+       this.$router.go(1);
     }
 
     if (localStorage.getItem("canvasItemV")) {
