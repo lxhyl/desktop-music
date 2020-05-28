@@ -9,6 +9,7 @@ const state = {
      playLists:null,//播放列表
      searchPopover:false,//是否显示搜索弹出框
      searchKey:'',//搜索关键词
+     fm:false,//是否是fm模式
 }
 export default state
 

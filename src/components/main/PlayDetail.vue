@@ -159,7 +159,7 @@ export default {
         this.comments.push(this.allComments.splice(0, 1)[0]);
       }
     },
-
+    // 如果评论数不够 就发请求获取新评论
     allComments: function(n) {
       if (n.length < 35) {
         this.getComment();

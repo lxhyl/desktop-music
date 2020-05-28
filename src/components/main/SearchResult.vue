@@ -114,6 +114,7 @@ export default {
       this.$router.push(`/playDetail?id=${id}`);
       // 更新音乐ID
       this.$store.commit("getMusicId", id);
+      this.$store.commit('setFm',false);
       // 将歌单更新到vuex state
       this.playAllLists();
       // 刷新PLAY组件

@@ -35,5 +35,9 @@ export default {
     // 改变搜索词
     setSearchKey(state,value){
       state.searchKey = value;
+    },
+    //改变fm模式
+    setFm(state,value){
+       state.fm = value;
     }
 }

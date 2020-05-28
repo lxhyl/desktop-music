@@ -4,14 +4,21 @@
       <div>
         <p class="tuijian">推荐</p>
         <div class="tuijian-main">
-          <p
-            class="item"
-            v-for="(item,index) in tuijian"
-            :key="index"
-            @click="routerToPage(item.router)"
-          >
-            <span :class="item.icon"></span>
-            <span class="text">{{item.text}}</span>
+          <p class="item" @click="routerToPage('/')">
+            <span class="el-icon-headset"></span>
+            <span class="text">发现音乐</span>
+          </p>
+          <p class="item" @click="fm">
+            <span class="el-icon-microphone"></span>
+            <span class="text">私人FM</span>
+          </p>
+          <p class="item">
+            <span class="el-icon-video-camera"></span>
+            <span class="text">视频</span>
+          </p>
+          <p class="item">
+            <span class="el-icon-user"></span>
+            <span class="text">朋友</span>
           </p>
         </div>
       </div>
@@ -40,9 +47,8 @@
         </div>
       </div>
       <div v-else>
-          <p class="tuijian">请登录以获取歌单...</p>
+        <p class="tuijian">请登录以获取歌单...</p>
       </div>
-    
     </div>
   </div>
 </template>
@@ -50,16 +56,10 @@
 <script>
 export default {
   name: "left",
+  inject: ["reloadPlay"],
   data() {
     return {
-      userid: null, //用户id判断是否登陆
-      // 推荐栏
-      tuijian: [
-        { icon: "el-icon-headset", text: "发现音乐", router: "/" },
-        { icon: "el-icon-microphone", text: "私人FM", router: "/fm" },
-        { icon: "el-icon-video-camera", text: "视频", router: "/video" },
-        { icon: "el-icon-user", text: "朋友", router: "/friend" }
-      ],
+      userid: null, //用户id判断是否登陆,
       // 我的音乐
       myMusic: [
         { icon: "el-icon-mic", text: "我的电台", router: "/myDT" },
@@ -74,7 +74,7 @@ export default {
     this.userid = localStorage.getItem("userid");
   },
   mounted() {
-    this.userid && this.getMusciList()
+    this.userid && this.getMusciList();
   },
   methods: {
     getMusciList() {
@@ -100,7 +100,35 @@ export default {
     routerToPlayList(e) {
       this.$router.push(`/playlist?id=${e}`);
     },
-    reloadLeftPage() {}
+    fm() {
+      if(!this.userid){
+        this.$message("请登录");
+        return
+      }
+      this.$axios
+        .get(`${this.$domain}/personal_fm?timestamp=${new Date().getTime()}`)
+        .then(res => {
+          let songs = res.data.data;
+          let result = [];
+          for(let i =0;i<songs.length;i++){
+            let obj ={
+                id: songs[i].id,
+              name: songs[i].name,
+              album: songs[i].album.name,
+              ar: songs[i].artists[0].name,
+              time: songs[i].duration   
+            }
+            result.push(obj);
+          }
+          let id = res.data.data[0].id;
+          this.$router.push(`/playDetail?id=${id}`);
+          // 更新音乐ID
+          this.$store.commit("getMusicId", id);
+          this.$store.commit('setFm',true);
+          this.$store.commit("getPlayLists", result);
+          this.reloadPlay();
+        });
+    }
   }
 };
 </script>

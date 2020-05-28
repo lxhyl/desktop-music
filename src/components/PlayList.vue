@@ -190,6 +190,7 @@ export default {
         result.push(obj);
       }
       this.$store.commit('getPlayLists',result);
+      this.$store.commit('setFm',false);
     },
   }
 };
