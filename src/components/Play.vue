@@ -123,7 +123,8 @@ export default {
       return Math.round(ms / 1000);
     }
   },
-  watch: {},
+  watch: {
+  },
   created() {
     this.musicid = this.$store.state.musicid;
   },

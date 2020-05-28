@@ -39,6 +39,10 @@
           </p>
         </div>
       </div>
+      <div v-else>
+          <p class="tuijian">请登录以获取歌单...</p>
+      </div>
+    
     </div>
   </div>
 </template>

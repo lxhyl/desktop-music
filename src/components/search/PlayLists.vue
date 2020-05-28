@@ -75,6 +75,9 @@ img {
 .name{
     line-height: 40px;
     font-size: 13px;
+      overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 .num{
     font-size: 11px;
@@ -85,6 +88,9 @@ img {
        font-size: 12px;
     line-height: 40px;
     color:rgb(124, 124, 124);
+      overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 </style>
