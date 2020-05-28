@@ -13,6 +13,7 @@
     "core-js": "^3.6.4",
     "echarts": "^4.7.0",
     "element-ui": "^2.13.1",
+    "qrcodejs2": "0.0.2",
     "v-charts": "^1.19.0",
     "vue": "^2.6.11",
     "vue-router": "^3.1.6",

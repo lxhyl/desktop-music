@@ -66,7 +66,6 @@
         <el-col :span="1" class="item item-icon" style="color:rgb(173, 175, 178);">
           <el-popover trigger="click" width="300" placement="top" offset="150">
             <div class="scrollbar-main" id="style-2">
-              <el-row></el-row>
               <el-row>
                 <el-col class="li-name" style="color:rgb(124, 124, 124);" :span="18">音乐标题</el-col>
                 <el-col :span="3" class="li-name" style="color:rgb(124, 124, 124);">歌手</el-col>
@@ -123,8 +122,7 @@ export default {
       return Math.round(ms / 1000);
     }
   },
-  watch: {
-  },
+  watch: {},
   created() {
     this.musicid = this.$store.state.musicid;
   },
@@ -189,11 +187,13 @@ export default {
     //定时器
     oneSecondTime() {
       let _this = this;
-
       this.timer = setInterval(() => {
         let ref = this.$refs.audio;
         if (ref) {
           if (ref.readyState) {
+            if (this.$refs.audio.paused) {
+              this.$refs.audio.play();
+            }
             this.isPlaying = true;
             _this.time += 1;
           } else {
@@ -204,11 +204,11 @@ export default {
           if (this.$refs.audio.ended) {
             clearInterval(_this.timer);
 
-            if (localStorage.getItem("playNextSelf") === 'true') {
+            if (localStorage.getItem("playNextSelf") === "true") {
               _this.playNextMusic();
-            }else{
+            } else {
               _this.reloadPlay();
-            } 
+            }
           }
         }
       }, 1000);

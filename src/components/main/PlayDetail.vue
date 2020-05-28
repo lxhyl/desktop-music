@@ -1,123 +1,135 @@
 <template>
   <div>
-    <div  v-if="getDataOk">
-    <div class="left">
-      <img :src="musicInfo.songs[0].al.picUrl" />
-    </div>
-    <div class="main-danmu">
-      <canvas v-show="showCanvas" ref="canvas" id="canvas" width="820" height="300"></canvas>
-      <div v-show="!showCanvas" class="no-canvas">
-        <div v-if="getSameDataOk" style="height:300px;width:250px;float:left;">
-          <p style="width:300px;height:20px;line-height:20px;font-sie:14px;">相似歌曲</p>
-          <div
-            class="same-item same-song"
-            v-for="(item,index) in sameSongs"
-            :key="index"
-            @click="playSameSong(item.id,index)"
-          >
-            <div class="same-pic">
-              <img :src="item.picUrl+'?param=30y30'" />
-            </div>
-            <div class="same-text">
-              <p class="same-name" style="color:white;">{{item.name}}</p>
-              <p class="same-art">{{item.artists}}</p>
+    <div v-if="getDataOk">
+      <el-popover  width="210" offset="110">
+         <div id="qrcode"></div>
+      <div slot="reference"
+       @click="shareSong"
+        class="share el-icon-share"></div>
+      </el-popover>
+    
+      <div class="left">
+        <img :src="musicInfo.songs[0].al.picUrl" />
+      </div>
+      <div class="main-danmu">
+        <canvas v-show="showCanvas" ref="canvas" id="canvas" width="820" height="300"></canvas>
+        <div v-show="!showCanvas" class="no-canvas">
+          <div v-if="getSameDataOk" style="height:300px;width:250px;float:left;">
+            <p style="width:300px;height:20px;line-height:20px;font-sie:14px;">相似歌曲</p>
+            <div
+              class="same-item same-song"
+              v-for="(item,index) in sameSongs"
+              :key="index"
+              @click="playSameSong(item.id,index)"
+            >
+              <div class="same-pic">
+                <img :src="item.picUrl+'?param=30y30'" />
+              </div>
+              <div class="same-text">
+                <p class="same-name" style="color:white;">{{item.name}}</p>
+                <p class="same-art">{{item.artists}}</p>
+              </div>
             </div>
           </div>
+          <div v-if="getUsersOk" class="user">
+            <p style="width:300px;height:20px;line-height:20px;font-sie:14px;">喜欢这首歌的人</p>
+            <el-row
+              style="height:50px;margin-top:5px;"
+              v-for="(item,index) in sameUsers"
+              :key="index"
+              @click.native="toUserPage(item.id)"
+            >
+              <el-col :span="4" class="user-pic-con">
+                <img class="user-pic" :src="item.avar+'?param=30y30'" />
+              </el-col>
+              <el-col :span="10" class="user-name">
+                {{item.name}}
+                <span v-if="item.gender == 1" class="el-icon-male male"></span>
+                <span v-if="item.gender == 2" class="el-icon-female female"></span>
+              </el-col>
+              <el-col :span="10" class="user-why">{{item.time}}</el-col>
+            </el-row>
+          </div>
         </div>
-        <div v-if="getUsersOk" class="user">
-          <p style="width:300px;height:20px;line-height:20px;font-sie:14px;">喜欢这首歌的人</p>
-          <el-row
-            style="height:50px;margin-top:5px;"
-            v-for="(item,index) in sameUsers"
+      </div>
+      <div class="lyric" id="lyric">
+        <div v-if="!nolyric">
+          <p
+            v-for="(item,index) in lyric"
             :key="index"
-            @click.native="toUserPage(item.id)"
-          >
-            <el-col :span="4" class="user-pic-con">
-              <img class="user-pic" :src="item.avar+'?param=30y30'" />
-            </el-col>
-            <el-col :span="10" class="user-name">
-              {{item.name}}
-              <span v-if="item.gender == 1" class="el-icon-male male"></span>
-              <span v-if="item.gender == 2" class="el-icon-female female"></span>
-            </el-col>
-            <el-col :span="10" class="user-why">{{item.time}}</el-col>
-          </el-row>
+            :id="index"
+            style="text-align:center;"
+          >{{item.lrc}}</p>
         </div>
+        <div v-else class="no-lyric">纯音乐，请您欣赏</div>
       </div>
-    </div>
-    <div class="lyric" id="lyric">
-      <div v-if="!nolyric">
-        <p
-          v-for="(item,index) in lyric"
-          :key="index"
-          :id="index"
-          style="text-align:center;"
-        >{{item.lrc}}</p>
-      </div>
-      <div v-else class="no-lyric">纯音乐，请您欣赏</div>
-    </div>
-    <div class="danmu-setting">
-      <p style="text-align:center;">弹幕设置</p>
-      <el-row class="cow">
-        <el-col class="text" :span="8">是否显示弹幕</el-col>
-        <el-col :span="16" style="line-height:40px;">
-          <el-switch
-            v-model="showCanvas"
-            inactive-color="rgb(124, 124, 124)"
-            active-color="rgb(184, 37, 37)"
-          ></el-switch>
-        </el-col>
-      </el-row>
-      <el-row class="cow">
-        <el-col class="text" :span="8">暂停(运动)</el-col>
-        <el-col :span="16" style="line-height:40px;">
-          <el-switch
-            v-model="stopOrMove"
-            inactive-color="rgb(124, 124, 124)"
-            active-color="rgb(184, 37, 37)"
-          ></el-switch>
-        </el-col>
-      </el-row>
-      <el-row class="cow">
-        <el-col class="text" :span="8">同时显示的弹幕条数{{canvasItemNum}}</el-col>
-        <el-col :span="16">
-          <el-slider
-            v-model="canvasItemNum"
-            :min="itemNumMin"
-            :max="itemNumMax"
-            @change="userChangeNum"
-          ></el-slider>
-        </el-col>
-      </el-row>
+      <div class="danmu-setting">
+        <p style="text-align:center;">弹幕设置</p>
+        <el-row class="cow">
+          <el-col class="text" :span="8">是否显示弹幕</el-col>
+          <el-col :span="16" style="line-height:40px;">
+            <el-switch
+              v-model="showCanvas"
+              inactive-color="rgb(124, 124, 124)"
+              active-color="rgb(184, 37, 37)"
+            ></el-switch>
+          </el-col>
+        </el-row>
+        <el-row class="cow">
+          <el-col class="text" :span="8">暂停(运动)</el-col>
+          <el-col :span="16" style="line-height:40px;">
+            <el-switch
+              v-model="stopOrMove"
+              inactive-color="rgb(124, 124, 124)"
+              active-color="rgb(184, 37, 37)"
+            ></el-switch>
+          </el-col>
+        </el-row>
+        <el-row class="cow">
+          <el-col class="text" :span="8">同时显示的弹幕条数{{canvasItemNum}}</el-col>
+          <el-col :span="16">
+            <el-slider
+              v-model="canvasItemNum"
+              :min="itemNumMin"
+              :max="itemNumMax"
+              @change="userChangeNum"
+            ></el-slider>
+          </el-col>
+        </el-row>
 
-      <el-row class="cow">
-        <el-col class="text" :span="8">速度(每帧间隔时间){{canvasItemV}}ms</el-col>
-        <el-col :span="16">
-          <el-slider v-model="canvasItemV" :min="itemVMin" :max="itemVMax" @change="userChangeV"></el-slider>
-        </el-col>
-      </el-row>
-      <el-row class="cow">
-        <el-col class="text" :span="8">发送弹幕(评论)</el-col>
-        <el-col :span="16" class="pinglun">
-          <input
-            v-model="pinglun"
-            type="text"
-            class="send-pinglun"
-            v-on:keyup.enter="send"
-            placeholder="请输入"
-          />
-        </el-col>
-      </el-row>
+        <el-row class="cow">
+          <el-col class="text" :span="8">速度(每帧间隔时间){{canvasItemV}}ms</el-col>
+          <el-col :span="16">
+            <el-slider v-model="canvasItemV" :min="itemVMin" :max="itemVMax" @change="userChangeV"></el-slider>
+          </el-col>
+        </el-row>
+        <el-row class="cow">
+          <el-col class="text" :span="8">发送弹幕(评论)</el-col>
+          <el-col :span="16" class="pinglun">
+            <input
+              v-model="pinglun"
+              type="text"
+              class="send-pinglun"
+              v-on:keyup.enter="send"
+              placeholder="请输入"
+            />
+          </el-col>
+        </el-row>
+      </div>
     </div>
-    </div>
-    <p v-else style="text-align:center;">加载中...</p>
+    <p v-else style="text-align:center;">
+      加载中...
+      <QRCode />
+    </p>
   </div>
 </template>
 
 <script>
+import QRCode from "qrcodejs2";
 export default {
   name: "playDetail",
   inject: ["reload", "reloadPlay"],
+  components: { QRCode },
   // 监听路由  刷新组件
   watch: {
     $route(to, from) {
@@ -228,7 +240,8 @@ export default {
       sameSongs: [], //相似音乐
       sameUsers: [], //最近听过这首歌的用户
       getSameDataOk: false, //是否获取到音乐或数据
-      getUsersOk: false //是否获取到最近听歌的用户
+      getUsersOk: false, //是否获取到最近听歌的用户
+      link: "" //分享链接
     };
   },
   computed: {
@@ -249,6 +262,9 @@ export default {
     } else {
       this.showCanvas = true;
     }
+
+    this.link = "http://zhangpengfan.xyz/#" + this.$route.fullPath;
+    console.log(this.link);
   },
   mounted() {
     this.musicid && this.getSongDetail();
@@ -273,6 +289,14 @@ export default {
         return;
       }
     });
+
+    if (!this.$store.state.isPlaying) {
+      this.$router.push(`/playDetail?id=${this.musicid}`);
+      this.$store.commit(`getPlayLists`, []);
+      // 更新音乐ID
+      this.$store.commit("getMusicId", this.musicid);
+      this.reloadPlay();
+    }
   },
   methods: {
     getSongDetail() {
@@ -304,8 +328,8 @@ export default {
             let lrc = arr[i].substr(right + 1);
             let json = {
               time, //时间 单位ms
-              lrc,  // 歌词
-              i    // 索引
+              lrc, // 歌词
+              i // 索引
             };
             this.lyric.push(json);
           }
@@ -474,12 +498,37 @@ export default {
     toUserPage(id) {
       localStorage.setItem("anotherUserId", id);
       this.$router.push(`/me?id=${id}`);
+    },
+    //生成二维码
+    qrcode() {
+       new QRCode("qrcode", {
+        width: 200,
+        height: 200, // 高度
+        text: this.link, // 二维码内容
+        render: "canvas", // 设置渲染方式
+        background: "#f0f", // 背景色
+        foreground: "#ff0" // 前景色
+      });
+    },
+    shareSong() {
+      document.getElementById('qrcode').innerHTML = '';
+      this.$nextTick(function() {
+        this.qrcode();
+      });
     }
   }
 };
 </script>
 
 <style scoped>
+.share {
+  position: absolute;
+  top: 5px;
+  right: 0;
+  z-index: 1000;
+  font-size: 25px;
+  color: rgb(184, 37, 37);
+}
 .left {
   width: 300px;
   height: 300px;
@@ -515,7 +564,7 @@ export default {
   margin-left: 0px;
   width: 820px;
   height: 300px;
-  z-index: 999;
+  z-index: -1;
 }
 .lyric {
   width: 300px;
