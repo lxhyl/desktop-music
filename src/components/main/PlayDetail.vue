@@ -1,13 +1,11 @@
 <template>
   <div>
     <div v-if="getDataOk">
-      <el-popover  width="210" offset="110">
-         <div id="qrcode"></div>
-      <div slot="reference"
-       @click="shareSong"
-        class="share el-icon-share"></div>
+      <el-popover width="210"  offset="150">
+        <div id="qrcode"></div>
+        <div slot="reference" @click="shareSong" class="share el-icon-share"></div>
       </el-popover>
-    
+
       <div class="left">
         <img :src="musicInfo.songs[0].al.picUrl" />
       </div>
@@ -119,7 +117,6 @@
     </div>
     <p v-else style="text-align:center;">
       加载中...
-      <QRCode />
     </p>
   </div>
 </template>
@@ -129,7 +126,6 @@ import QRCode from "qrcodejs2";
 export default {
   name: "playDetail",
   inject: ["reload", "reloadPlay"],
-  components: { QRCode },
   // 监听路由  刷新组件
   watch: {
     $route(to, from) {
@@ -140,7 +136,6 @@ export default {
     //监听现在播放的时长，歌词跳转
     nowPlayTime: function(n) {
       let playTime = n * 1000;
-
       for (let i = 0; i < this.lyric.length - 1; i++) {
         if (document.getElementById(i)) {
           document.getElementById(i).style.color = "rgb(124, 124, 124)";
@@ -251,6 +246,13 @@ export default {
   },
   created() {
     this.musicid = this.$route.query.id;
+    //如果歌曲详情和目前播放的歌曲不同
+    // 就略过显示歌曲详情,继续路由
+    let storeMusicId = this.$store.state.musicid;
+    if(this.musicid != storeMusicId){
+       this.$router.go(-1);     
+    }
+
     if (localStorage.getItem("canvasItemV")) {
       this.canvasItemV = Number(localStorage.getItem("canvasItemV"));
     }
@@ -264,7 +266,6 @@ export default {
     }
 
     this.link = "http://zhangpengfan.xyz/#" + this.$route.fullPath;
-    console.log(this.link);
   },
   mounted() {
     this.musicid && this.getSongDetail();
@@ -292,7 +293,9 @@ export default {
 
     if (!this.$store.state.isPlaying) {
       this.$router.push(`/playDetail?id=${this.musicid}`);
-      this.$store.commit(`getPlayLists`, []);
+      if (!this.$store.state.playLists) {
+        this.$store.commit(`getPlayLists`, []);
+      }
       // 更新音乐ID
       this.$store.commit("getMusicId", this.musicid);
       this.reloadPlay();
@@ -396,9 +399,11 @@ export default {
     userChangeV(e) {
       localStorage.setItem("canvasItemV", e);
       clearInterval(this.canvasTimer);
+      if(this.showCanvas && this.stopOrMove){
       this.canvasTimer = setInterval(() => {
         this.draw();
       }, e);
+      }
     },
     //改变弹幕数量
     userChangeNum(e) {
@@ -501,7 +506,7 @@ export default {
     },
     //生成二维码
     qrcode() {
-       new QRCode("qrcode", {
+      new QRCode("qrcode", {
         width: 200,
         height: 200, // 高度
         text: this.link, // 二维码内容
@@ -511,7 +516,7 @@ export default {
       });
     },
     shareSong() {
-      document.getElementById('qrcode').innerHTML = '';
+      document.getElementById("qrcode").innerHTML = "";
       this.$nextTick(function() {
         this.qrcode();
       });

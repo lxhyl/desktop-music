@@ -199,17 +199,6 @@ export default {
           } else {
             this.isPlaying = false;
           }
-          // 如果音乐播放结束 自动播放下一首音乐
-          // 清除定时器
-          if (this.$refs.audio.ended) {
-            clearInterval(_this.timer);
-
-            if (localStorage.getItem("playNextSelf") === "true") {
-              _this.playNextMusic();
-            } else {
-              _this.reloadPlay();
-            }
-          }
         }
       }, 1000);
       // 200ms更新一次音乐已播放时长
@@ -222,8 +211,15 @@ export default {
               _this.$refs.audio.currentTime
             );
           }
+          // 如果音乐播放结束 自动播放下一首音乐
+          // 清除定时器
           if (this.$refs.audio.ended) {
             clearInterval(_this.lyricTimer);
+            if (localStorage.getItem("playNextSelf") === "true") {
+              _this.playNextMusic();
+            } else {
+              _this.reloadPlay();
+            }
           }
         }
       }, 200);
