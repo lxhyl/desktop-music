@@ -1,13 +1,21 @@
 <template>
   <div>
     <div v-if="getDataOk">
-      <el-popover width="210"  offset="150">
+      <el-popover width="210" offset="150">
         <div id="qrcode"></div>
         <div slot="reference" @click="shareSong" class="share el-icon-share"></div>
       </el-popover>
 
       <div class="left">
-        <img :src="musicInfo.songs[0].al.picUrl" />
+        <img class="song-pic" :src="musicInfo.songs[0].al.picUrl" />
+       <el-tooltip 
+       effect="dark" 
+       content="单击红心可喜欢音乐">
+        <img @click="likeThisSong" 
+        class="love-song" 
+        src="../../assets/love.png" />
+       </el-tooltip>
+
       </div>
       <div class="main-danmu">
         <canvas v-show="showCanvas" ref="canvas" id="canvas" width="820" height="300"></canvas>
@@ -30,7 +38,7 @@
             </div>
           </div>
           <div v-if="getUsersOk" class="user">
-            <p style="width:300px;height:20px;line-height:20px;font-sie:14px;">喜欢这首歌的人</p>
+            <p style="width:300px;height:20px;line-height:20px;font-sie:14px;">听过这首歌的人</p>
             <el-row
               style="height:50px;margin-top:5px;"
               v-for="(item,index) in sameUsers"
@@ -61,6 +69,7 @@
         </div>
         <div v-else class="no-lyric">纯音乐，请您欣赏</div>
       </div>
+
       <div class="danmu-setting">
         <p style="text-align:center;">弹幕设置</p>
         <el-row class="cow">
@@ -115,9 +124,7 @@
         </el-row>
       </div>
     </div>
-    <p v-else style="text-align:center;">
-      加载中...
-    </p>
+    <p v-else style="text-align:center;">加载中...</p>
   </div>
 </template>
 
@@ -249,8 +256,8 @@ export default {
     //如果歌曲详情和目前播放的歌曲不同
     // 就略过显示歌曲详情,继续路由
     let storeMusicId = this.$store.state.musicid;
-    if(this.musicid != storeMusicId){
-       this.$router.go(1);
+    if (this.musicid != storeMusicId) {
+      this.$router.go(1);
     }
 
     if (localStorage.getItem("canvasItemV")) {
@@ -264,7 +271,6 @@ export default {
     } else {
       this.showCanvas = true;
     }
-
     this.link = "http://zhangpengfan.xyz/#" + this.$route.fullPath;
   },
   mounted() {
@@ -399,10 +405,10 @@ export default {
     userChangeV(e) {
       localStorage.setItem("canvasItemV", e);
       clearInterval(this.canvasTimer);
-      if(this.showCanvas && this.stopOrMove){
-      this.canvasTimer = setInterval(() => {
-        this.draw();
-      }, e);
+      if (this.showCanvas && this.stopOrMove) {
+        this.canvasTimer = setInterval(() => {
+          this.draw();
+        }, e);
       }
     },
     //改变弹幕数量
@@ -415,7 +421,7 @@ export default {
         return;
       }
       this.showCanvas = true;
-      let content = `我的评论:${this.pinglun}`;
+      let content = `“${this.pinglun}”`;
       let canvas = document.createElement("canvas");
       if (canvas) {
         let ctx = canvas.getContext("2d");
@@ -520,6 +526,27 @@ export default {
       this.$nextTick(function() {
         this.qrcode();
       });
+    },
+    likeThisSong() {
+      let id = this.musicid;
+      this.$axios
+        .get(`${this.$domain}/like?id=${id}`)
+        .then(() => {
+          this.$message({
+            showClose: true,
+            message: "已加入至喜欢列表",
+            type: "warning",
+            duration: 2000
+          });
+        })
+        .catch(() => {
+          this.$message({
+            showClose: true,
+            message: "加入失败",
+            type: "warning",
+            duration: 2000
+          });
+        });
     }
   }
 };
@@ -540,13 +567,21 @@ export default {
   text-align: center;
   position: absolute;
 }
-.left > img {
+
+.song-pic {
   position: relative;
   top: 50px;
   height: 200px;
   width: 200px;
   border-radius: 100%;
   animation: turn 16s linear infinite;
+}
+.love-song {
+  width: 40px;
+  height: 40px;
+  position: absolute;
+  left: 130px;
+  top: 130px;
 }
 @keyframes turn {
   0% {

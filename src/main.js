@@ -22,7 +22,7 @@ import 'element-ui/lib/theme-chalk/index.css';
 import {
   Col, Row, Image, Button, ButtonGroup, Input, Avatar, Popover,
   Form, FormItem, Link, Message, Tag,Slider,Switch,Divider,
-  Carousel,CarouselItem
+  Carousel,CarouselItem,Tooltip 
 } from 'element-ui';
 Vue.use(Col);
 Vue.use(Row);
@@ -41,6 +41,7 @@ Vue.use(Switch);
 Vue.use(Divider);
 Vue.use(Carousel);
 Vue.use(CarouselItem);
+Vue.use(Tooltip);
 Vue.prototype.$message = Message;
 
 
