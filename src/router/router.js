@@ -13,6 +13,8 @@ Vue.use(Router)
 //发现音乐栏
 //个性推荐
 import FindMusic from '../components/findMusic/Index.vue'
+import Gxtj from '../components/findMusic/Gxtj.vue'
+
 // 用户主页
 import Me from "../components/main/Me.vue"
 
@@ -31,7 +33,14 @@ export default new Router({
         {
             path:'/',
             name:"findmusic",
-            component:FindMusic
+            component:FindMusic,
+            children:[
+               {
+                   path:'/',
+                   name:'gxtj',
+                   component:Gxtj,
+               }
+            ]
         },
         {
             path:'/me',

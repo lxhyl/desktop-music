@@ -80,7 +80,7 @@
         <span v-if="isLogin" class="user-login">{{accountInfo.profile.nickname}}</span>
       </el-col>
       <el-col class="row-header" :span="2" style="text-align:center">
-        <el-popover style="background:#222225;" placement="bottom" width="280" trigger="click">
+        <el-popover v-if="isLogin" style="background:#222225;" placement="bottom" width="280" trigger="click">
           <p style="text-align:center;">
             <button
               @click="routerToPage('sixin')"
@@ -294,6 +294,8 @@ export default {
       localStorage.setItem("history", str);
       this.$store.commit("changeSearchPopover", false);
       this.$router.push(`/search?keyword=${this.searchKey}`);
+      this.searchKey = '';
+     
     },
     //路由至设置
     routerToSetting() {

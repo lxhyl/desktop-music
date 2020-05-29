@@ -73,28 +73,29 @@ export default {
     },
     search(e) {
       let his = JSON.parse(localStorage.getItem("history"));
-      //第一次搜索
+    //第一次搜索
       if (his == null) {
-        his = [];
+        his = []; 
       }
       //搜索历史中是否已有
       for (let i = 0; i < his.length; i++) {
         if (his[i] == e) {
           this.$store.commit("changeSearchPopover", false);
           this.$router.push(`/search?keyword=${e}`);
+          console.log('111')
           return;
         }
       }
+
       if (his.length > 10) {
         his.push(e).splice(0, 1);
       } else {
         his.push(e);
       }
+
       let str = JSON.stringify(his);
       localStorage.setItem("history", str);
-
       this.$store.commit("changeSearchPopover", false);
-      this.history.push(e);
       this.$router.push(`/search?keyword=${e}`);
 
     }

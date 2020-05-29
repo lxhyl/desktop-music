@@ -21,7 +21,8 @@ Vue.component(Line.name, Line);
 import 'element-ui/lib/theme-chalk/index.css';
 import {
   Col, Row, Image, Button, ButtonGroup, Input, Avatar, Popover,
-  Form, FormItem, Link, Message, Tag,Slider,Switch,Divider
+  Form, FormItem, Link, Message, Tag,Slider,Switch,Divider,
+  Carousel,CarouselItem
 } from 'element-ui';
 Vue.use(Col);
 Vue.use(Row);
@@ -38,6 +39,8 @@ Vue.use(Tag);
 Vue.use(Slider);
 Vue.use(Switch);
 Vue.use(Divider);
+Vue.use(Carousel);
+Vue.use(CarouselItem);
 Vue.prototype.$message = Message;
 
 
@@ -72,6 +75,25 @@ Vue.filter('songToTime', function (e) {
   m = m >= 10 ? m : `0${m}`;
   s = s >= 10 ? s : `0${s}`;
   return `${m}:${s}`;
+})
+//数字转汉字
+Vue.filter('toChinese', function (e) {
+   switch(e){
+     case 1:
+       return '一';
+     case 2:
+       return '二';
+     case 3:
+       return '三';
+     case 4:
+       return '四';
+     case 5:
+       return '五';
+     case 6:
+       return '六';
+     case 0:
+       return '日';
+   }
 })
 
 

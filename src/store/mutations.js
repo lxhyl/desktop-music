@@ -39,5 +39,5 @@ export default {
     //改变fm模式
     setFm(state,value){
        state.fm = value;
-    }
+    },
 }

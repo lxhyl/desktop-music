@@ -107,6 +107,10 @@ export default {
         this.$message("请登录");
         return;
       }
+      //如果已经是fm了
+      if(this.$store.state.fm){
+         return;
+      }
       this.$message.closeAll();
       this.$message({
         showClose: false,
@@ -203,4 +207,5 @@ p {
   -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
   background-color: rgb(47, 49, 52);
 }
+
 </style>

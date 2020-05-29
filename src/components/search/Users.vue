@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div>
+    <div v-if="usersList.length > 0">
         <el-row v-for="(item,index) in usersList"
         :key="index"
         class="row"
@@ -16,9 +16,11 @@
              </el-col>
         </el-row>
     </div>
+   <p v-else v-show="!loading" class="nothing">什么都没找到,换个关键词吧...</p>
     <p v-show="loading" class="loading">
       <span class="el-icon-loading"></span>加载中...
     </p>
+     
   </div>
 </template>
 
@@ -84,5 +86,9 @@ img{
     line-height: 50px;
     font-size: 11px;
     height: 30px;
+}
+.nothing{
+  text-align: center;
+  width: 100%;
 }
 </style>
