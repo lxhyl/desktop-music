@@ -20,7 +20,7 @@
       <div class="main-danmu">
         <canvas v-show="showCanvas" ref="canvas" id="canvas" width="820" height="300"></canvas>
         <div v-show="!showCanvas" class="no-canvas">
-          <div v-if="getSameDataOk" style="height:300px;width:250px;float:left;">
+          <div v-show="getSameDataOk" style="height:300px;width:250px;float:left;">
             <p style="width:300px;height:20px;line-height:20px;font-sie:14px;">相似歌曲</p>
             <div
               class="same-item same-song"
@@ -37,7 +37,7 @@
               </div>
             </div>
           </div>
-          <div v-if="getUsersOk" class="user">
+          <div v-show="getUsersOk" class="user">
             <p style="width:300px;height:20px;line-height:20px;font-sie:14px;">听过这首歌的人</p>
             <el-row
               style="height:50px;margin-top:5px;"
@@ -516,7 +516,7 @@ export default {
         width: 200,
         height: 200, // 高度
         text: this.link, // 二维码内容
-        render: "canvas", // 设置渲染方式
+        render: "canvas", // 渲染方式
         background: "#f0f", // 背景色
         foreground: "#ff0" // 前景色
       });
@@ -527,6 +527,7 @@ export default {
         this.qrcode();
       });
     },
+    //喜欢音乐
     likeThisSong() {
       let id = this.musicid;
       this.$axios
@@ -542,7 +543,7 @@ export default {
         .catch(() => {
           this.$message({
             showClose: true,
-            message: "加入失败",
+            message: "加入失败,请登录",
             type: "warning",
             duration: 2000
           });
@@ -582,6 +583,7 @@ export default {
   position: absolute;
   left: 130px;
   top: 130px;
+  outline: none;
 }
 @keyframes turn {
   0% {

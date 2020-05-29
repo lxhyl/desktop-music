@@ -22,7 +22,7 @@ import 'element-ui/lib/theme-chalk/index.css';
 import {
   Col, Row, Image, Button, ButtonGroup, Input, Avatar, Popover,
   Form, FormItem, Link, Message, Tag,Slider,Switch,Divider,
-  Carousel,CarouselItem,Tooltip 
+  Carousel,CarouselItem,Tooltip,MessageBox,
 } from 'element-ui';
 Vue.use(Col);
 Vue.use(Row);
@@ -43,6 +43,7 @@ Vue.use(Carousel);
 Vue.use(CarouselItem);
 Vue.use(Tooltip);
 Vue.prototype.$message = Message;
+Vue.prototype.$confirm = MessageBox.confirm;
 
 
 

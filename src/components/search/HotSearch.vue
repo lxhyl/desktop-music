@@ -82,7 +82,6 @@ export default {
         if (his[i] == e) {
           this.$store.commit("changeSearchPopover", false);
           this.$router.push(`/search?keyword=${e}`);
-          console.log('111')
           return;
         }
       }

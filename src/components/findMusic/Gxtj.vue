@@ -33,7 +33,7 @@
         </div>
       </div>
     </div>
-    <p v-else class="not-login">点击右上角登陆以获取每日推荐歌曲，歌单...</p>
+    <p v-else class="not-login">点击右上角登陆以获取专属每日推荐歌曲，歌单...</p>
     <div>
       <div class="item-container">
         <p style="width:100%;">推荐歌单</p>

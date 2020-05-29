@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="main-page">
-      <p>1.播放设置</p>
+      <p>1. 播放设置</p>
 
       <div class="item">
         <p>是否自动播放下一曲</p>
@@ -25,6 +25,10 @@
           <el-button round type="info" size="mini" @click="timerToTurnOff">确定</el-button>
         </p>
       </div>
+      <p>2. 账号</p>
+      <div class="item">
+        <el-button v-if="id" round type="info" size="mini" @click="logout">退出登陆</el-button>
+      </div>
     </div>
   </div>
 </template>
@@ -32,11 +36,13 @@
 <script>
 export default {
   name: "setting",
+  inject: ["reload"],
   data() {
     return {
       playNextSelf: true,
       timerPlay: 10,
-      timer: null
+      timer: null,
+      id: null //用户id
     };
   },
   computed: {},
@@ -45,8 +51,11 @@ export default {
       localStorage.setItem("playNextSelf", n);
     }
   },
-  created() {},
+  created() {
+    this.id = localStorage.getItem("userid");
+  },
   methods: {
+    //定时关闭
     timerToTurnOff() {
       clearTimeout(this.timer);
       if (this.timerPlay > 150) {
@@ -63,6 +72,32 @@ export default {
       this.timer = setTimeout(() => {
         this.$store.commit("changePlayState", false);
       }, timeMs);
+    },
+    //退出登陆
+    logout() {
+      this.$confirm("是否登出?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(() => {
+          this.$axios.get(`${this.$domain}/logout`).then(() => {
+            localStorage.clear();
+            this.$message({
+              showClose: true,
+              message: "已登出",
+              type: "warning",
+              duration: 2000
+            });
+            location.reload();
+          });
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消"
+          });
+        });
     }
   }
 };
