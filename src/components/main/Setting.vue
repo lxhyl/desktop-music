@@ -27,7 +27,7 @@
       </div>
       <p>2. 账号</p>
       <div class="item">
-        <el-button v-if="id" round type="info" size="mini" @click="logout">退出登陆</el-button>
+        <el-button v-if="this.$store.state.userid" round type="info" size="mini" @click="logout">退出登陆</el-button>
       </div>
     </div>
   </div>
@@ -42,7 +42,6 @@ export default {
       playNextSelf: true,
       timerPlay: 10,
       timer: null,
-      id: null //用户id
     };
   },
   computed: {},
@@ -52,7 +51,6 @@ export default {
     }
   },
   created() {
-    this.id = localStorage.getItem("userid");
   },
   methods: {
     //定时关闭

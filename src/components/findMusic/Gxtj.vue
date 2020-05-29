@@ -10,7 +10,7 @@
         <img :src="item.imageUrl" loading="lazy" class="banner-img" object-fit="fill" />
       </el-carousel-item>
     </el-carousel>
-    <div v-if="login">
+    <div v-if="this.$store.state.userid">
       <p>每日推荐</p>
       <div class="item-container">
         <div class="gd-item" @click="getRecommendSongs">
@@ -43,10 +43,8 @@
           class="gd-item"
           @click="openPlayList(item.id)"
         >
-          <img  :src="item.picUrl+'?param=130y150'" loading="lazy" class="gd-main-item" />
-          <span class="el-icon-service play-count">
-              {{item.playCount}}次
-            </span>
+          <img :src="item.picUrl+'?param=130y150'" loading="lazy" class="gd-main-item" />
+          <span class="el-icon-service play-count">{{item.playCount}}次</span>
           <div class="el-icon-video-play gd-show-play"></div>
           <p class="gd-name-item">{{item.name}}</p>
         </div>
@@ -62,7 +60,6 @@ export default {
   data() {
     return {
       banners: [],
-      login: false,
       playtuijian: false, //是否再播放推荐歌曲
       playList: [], //每日推荐歌单
       showPlay: false,
@@ -70,16 +67,14 @@ export default {
     };
   },
   created() {
-    if (localStorage.getItem("userid")) {
-      this.login = true;
-    }
   },
   mounted() {
     this.getBanner();
-    this.login && this.getRecommendList();
+    this.getRecommendList();
     this.getTuiJian();
   },
   methods: {
+  
     getBanner() {
       this.$axios.get(`${this.$domain}/banner?type=0`).then(res => {
         this.banners = res.data.banners;
@@ -139,13 +134,23 @@ export default {
     },
     //每日推荐歌单
     getRecommendList() {
-      this.$axios.get(`${this.$domain}/recommend/resource`).then(res => {
-        this.playList = res.data.recommend;
+      this.$axios
+        .get(`${this.$domain}/recommend/resource`)
+        .then(res => {
+          this.playList = res.data.recommend;
 
-        this.playList.forEach(item => {
-          item.showPlay = false;
+          this.playList.forEach(item => {
+            item.showPlay = false;
+          });
+        })
+        .catch(() => {
+          this.$message({
+            showClose: true,
+            message: "出了点问题，刷新试试",
+            type: "warning",
+            duration: 2000
+          });
         });
-      });
     },
     //打开歌单
     openPlayList(id) {
@@ -154,7 +159,7 @@ export default {
     //推荐歌单
     getTuiJian() {
       this.$axios.get(`${this.$domain}/personalized`).then(res => {
-        this.tjPlayLists = res.data.result.splice(20,29);
+        this.tjPlayLists = res.data.result.splice(15, 29);
       });
     }
   }

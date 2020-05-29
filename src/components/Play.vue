@@ -129,6 +129,11 @@ export default {
   watch: {},
   created() {
     this.musicid = this.$store.state.musicid;
+
+    if(localStorage.getItem('playNextSelf') === null){
+      localStorage.setItem('playNextSelf',true);
+    }
+
   },
   mounted() {
     this.musicid && this.getSongUrl();
