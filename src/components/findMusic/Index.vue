@@ -2,12 +2,10 @@
   <div class="page" >
     <div >
     <el-row class="header-menu">
-      <el-col class="header-item" :span="4">个性推荐</el-col>
-      <el-col  class="header-item" :span="4">歌单</el-col>
-      <el-col  class="header-item" :span="4">主播电台</el-col>
-      <el-col  class="header-item" :span="4">排行榜</el-col>
-      <el-col  class="header-item" :span="4">歌手</el-col>
-      <el-col  class="header-item" :span="4">最新音乐</el-col>
+      <el-col @click.native="routerTo('/')" class="header-item" :span="6">个性推荐</el-col>
+      <el-col @click.native="routerTo('/zbdt')"  class="header-item" :span="6">主播电台</el-col>
+      <el-col @click.native="routerTo('/')"  class="header-item" :span="6">排行榜</el-col>
+      <el-col @click.native="routerTo('/')"  class="header-item" :span="6">最新音乐</el-col>
     </el-row>
     <p class="line"></p>
     <router-view class="router-view"></router-view>
@@ -18,7 +16,11 @@
 <script>
 export default {
   name: "findMusicIndex",
-
+  methods:{
+    routerTo(e){
+       this.$router.push(e)
+    }
+  }
 };
 </script>
 

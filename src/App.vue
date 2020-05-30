@@ -2,8 +2,7 @@
   <div id="app">
     <TopHeader />
     <Left v-if="isFirstLogin" class="left-aide" />
-    <keep-alive exclude="playlist,playDetail,searchResult,Me,
-    setting">
+    <keep-alive exclude="playlist,playDetail,searchResult,Me,">
       <router-view
         id="style-2"
         v-if="isRouterAlive"
@@ -43,7 +42,8 @@ export default {
       isFirstLogin: true
     };
   },
-  created() {},
+  created() {
+  },
   methods: {
     reload() {
       this.isRouterAlive = false;

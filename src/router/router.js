@@ -14,6 +14,7 @@ Vue.use(Router)
 //个性推荐
 import FindMusic from '../components/findMusic/Index.vue'
 import Gxtj from '../components/findMusic/Gxtj.vue'
+import Zbdt from "../components/findMusic/Zbdt.vue"
 
 // 用户主页
 import Me from "../components/main/Me.vue"
@@ -26,6 +27,8 @@ import PlayDetail from "../components/main/PlayDetail.vue"
 import SearchResult from "../components/main/SearchResult.vue"
 //设置
 import Setting from "../components/main/Setting.vue"
+//404
+import Notfound from '../components/main/404.vue'
 export default new Router({
     mode:'hash',
     routes:[
@@ -39,6 +42,11 @@ export default new Router({
                    path:'/',
                    name:'gxtj',
                    component:Gxtj,
+               },
+               {
+                   path:'/zbdt',
+                   name:'zbdt',
+                   component:Zbdt
                }
             ]
         },
@@ -61,10 +69,15 @@ export default new Router({
             path:'/search',
             name:'search',
             component:SearchResult
-        },{
+        },
+        {
             path:'/setting',
             name:'setting',
             component:Setting
+        },
+        {
+            path:'/*',
+            component:Notfound
         }
 
     ]
