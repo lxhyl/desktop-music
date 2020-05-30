@@ -88,7 +88,7 @@
 <script>
 export default {
   name: "playlist",
-  inject: ["reload","reloadPlay"],
+  inject: ["reload", "reloadPlay"],
   data() {
     return {
       playListId: null, //歌单id
@@ -126,9 +126,7 @@ export default {
           this.playList = res.data;
           this.getDataOk = true;
         })
-           .catch(() => {
-
-        });
+        .catch(() => {});
     },
     //分享到动态
     sharePlayList() {
@@ -144,19 +142,19 @@ export default {
             showClose: true
           });
         })
-           .catch(() => {
-
-        });
+        .catch(() => {});
     },
     // 播放组件 id为歌曲id
     playMusic(id) {
       this.$router.push(`/playDetail?id=${id}`);
       // 更新音乐ID
       this.$store.commit("getMusicId", id);
+      //关闭fm模式
+      this.$store.commit("setFm", true);
       // 将歌单更新到vuex state
       this.playAllLists();
       // 刷新PLAY组件
-       this.reloadPlay();
+      this.reloadPlay();
     },
     //计算搜索匹配项
     getSearchItem() {
@@ -183,21 +181,21 @@ export default {
       }
     },
     // 播放全部音乐
-    playAllLists(){
+    playAllLists() {
       let result = [];
       let musicList = this.playList.playlist.tracks;
-      for(let i =0;i<musicList.length;i++){
+      for (let i = 0; i < musicList.length; i++) {
         let obj = {
-          name:musicList[i].name,
-          ar:musicList[i].ar[0].name,
-          time:musicList[i].dt,
-          id:musicList[i].id
-        }
+          name: musicList[i].name,
+          ar: musicList[i].ar[0].name,
+          time: musicList[i].dt,
+          id: musicList[i].id
+        };
         result.push(obj);
       }
-      this.$store.commit('getPlayLists',result);
-      this.$store.commit('setFm',false);
-    },
+      this.$store.commit("getPlayLists", result);
+      this.$store.commit("setFm", false);
+    }
   }
 };
 </script>

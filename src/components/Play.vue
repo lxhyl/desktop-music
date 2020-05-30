@@ -161,7 +161,9 @@ export default {
           this.getDataOk = true;
           this.oneSecondTime();
         })
-        .catch(() => {});
+        .catch((err) => {
+            console.log(err);
+        });
     },
     //格式化进度条显示数字
     formatTooltip(e) {
@@ -273,6 +275,7 @@ export default {
     },
     //获取下一首音乐
     //  返回歌曲id
+    // 如果是fm模式，最后一首歌时返回false
     getNextMusic() {
       let nowId = this.musicid;
       let lists = this.$store.state.playLists;
@@ -280,7 +283,7 @@ export default {
         if (lists[i].id == nowId) {
           if (i == lists.length - 1) {
             //如果是fm,就返回false
-            if (this.fm) {
+            if (this.$store.state.fm) {
               return false;
             } else {
               return lists[0].id;
@@ -295,7 +298,7 @@ export default {
     // 播放下一首音乐
     playNextMusic() {
       let id = this.getNextMusic();
-      if (id) {
+      if (id !== false) {
         this.$axios
           .get(`${this.$domain}/song/detail?ids=${id}`)
           .then(res => {

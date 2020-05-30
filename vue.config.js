@@ -9,22 +9,22 @@ module.exports = {
     indexPath: "index.html",
     productionSourceMap: false,
 
-    // 开发环境配置
-    devServer: {
-        // host:"localhost",
-        port:"8080",
-        proxy: {
-            '/api': {
-                target: 'https://zhangpengfan.xyz:3000',
-                ws: true,
-                changOrigin: true,
-                pathRewrite: {
-                    '^/api': ''
-                }
-            }
+    // // 开发环境配置
+    // devServer: {
+    //     // host:"localhost",
+    //     port:"8080",
+    //     proxy: {
+    //         '/api': {
+    //             target: 'https://zhangpengfan.xyz:3000',
+    //             ws: true,
+    //             changOrigin: true,
+    //             pathRewrite: {
+    //                 '^/api': ''
+    //             }
+    //         }
 
-        }
-    },
+    //     }
+    // },
     plugins:[
         new BundleAnalyzerPlugin()
     ],

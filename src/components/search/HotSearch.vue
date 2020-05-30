@@ -88,9 +88,10 @@ export default {
           return;
         }
       }
-
-      if (his.length > 10) {
-        his.push(e).splice(0, 1);
+      this.history.push(e);
+      if (his.length >= 10) {
+        his.push(e);
+        his.splice(0,1);
       } else {
         his.push(e);
       }

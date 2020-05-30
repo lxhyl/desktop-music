@@ -80,7 +80,13 @@
         <span v-if="isLogin" class="user-login">{{accountInfo.profile.nickname}}</span>
       </el-col>
       <el-col class="row-header" :span="2" style="text-align:center">
-        <el-popover v-if="isLogin" style="background:#222225;" placement="bottom" width="280" trigger="click">
+        <el-popover
+          v-if="isLogin"
+          style="background:#222225;"
+          placement="bottom"
+          width="280"
+          trigger="click"
+        >
           <p style="text-align:center;">
             <button
               @click="routerToPage('sixin')"
@@ -271,31 +277,32 @@ export default {
       if (this.searchKey == "") {
         return;
       }
+      this.$store.commit("changeSearchPopover", false);
       let his = JSON.parse(localStorage.getItem("history"));
       //第一次搜索
-     if (his === null) {
+      if (his === null) {
         his = [];
       }
       //搜索历史中是否已有
       for (let i = 0; i < his.length; i++) {
         if (his[i] == this.searchKey) {
-           this.$store.commit("changeSearchPopover", false);
-           this.$router.push(`/search?keyword=${this.searchKey}`);
-           return
+          this.$store.commit("changeSearchPopover", false);
+          this.$router.push(`/search?keyword=${this.searchKey}`);
+          return;
         }
       }
-      if (his.length > 10) {
-        his.push(this.searchKey).splice(0, 1);
+      if (his.length >= 10) {
+        his.push(this.searchKey)
+        his.splice(0,1);
       } else {
         his.push(this.searchKey);
       }
 
       let str = JSON.stringify(his);
       localStorage.setItem("history", str);
-      this.$store.commit("changeSearchPopover", false);
+
       this.$router.push(`/search?keyword=${this.searchKey}`);
-      this.searchKey = '';
-     
+      this.searchKey = "";
     },
     //路由至设置
     routerToSetting() {
