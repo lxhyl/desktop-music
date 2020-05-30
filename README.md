@@ -16,3 +16,22 @@
 * 搜索历史
 * 私人FM
 * 获取私信,评论,通知
+
+
+![个人主页](https://github.com/zpfnb/desktop-music/tree/master/readme-img/个人主页.jpg)
+
+![主页](https://github.com/zpfnb/desktop-music/tree/master/readme-img/主页.jpg)
+
+![歌单搜索](https://github.com/zpfnb/desktop-music/tree/master/readme-img/歌单搜索)
+
+![热搜-搜索历史](https://github.com/zpfnb/desktop-music/tree/master/readme-img/热搜-搜索历史.jpg)
+
+![单曲搜索](https://github.com/zpfnb/desktop-music/tree/master/readme-img/单曲搜索.jpg)
+
+![弹幕](https://github.com/zpfnb/desktop-music/tree/master/readme-img/弹幕.jpg)
+
+![推荐](https://github.com/zpfnb/desktop-music/tree/master/readme-img/推荐.jpg)
+
+![播放列表](https://github.com/zpfnb/desktop-music/tree/master/readme-img/播放列表)
+
+![歌单](https://github.com/zpfnb/desktop-music/tree/master/readme-img/歌单.jpg)
