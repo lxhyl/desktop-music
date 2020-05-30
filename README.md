@@ -19,23 +19,32 @@
 
 
 
-
+> 主页
 ![主页](https://github.com/zpfnb/desktop-music/raw/master/readme-img/主页.jpg)
 
-![歌单搜索](https://github.com/zpfnb/desktop-music/raw/master/readme-img/歌单搜索)
+> 歌单搜索
+![歌单搜索](https://github.com/zpfnb/desktop-music/raw/master/readme-img/歌单搜索.jpg)
 
+> 热搜-搜索历史
 ![热搜-搜索历史](https://github.com/zpfnb/desktop-music/raw/master/readme-img/热搜-搜索历史.jpg)
 
+>单曲搜索
 ![单曲搜索](https://github.com/zpfnb/desktop-music/raw/master/readme-img/单曲搜索.jpg)
 
+>以二维码形式分享单曲-扫码播放
 ![以二维码形式分享单曲-扫码播放](https://github.com/zpfnb/desktop-music/raw/master/readme-img/以二维码形式分享单曲-扫码播放.jpg)
 
+>弹幕
 ![弹幕](https://github.com/zpfnb/desktop-music/raw/master/readme-img/弹幕.jpg)
 
+>推荐
 ![推荐](https://github.com/zpfnb/desktop-music/raw/master/readme-img/推荐.jpg)
 
-![播放列表](https://github.com/zpfnb/desktop-music/raw/master/readme-img/播放列表)
+>播放列表
+![播放列表](https://github.com/zpfnb/desktop-music/raw/master/readme-img/播放列表.jpg)
 
+>歌单
 ![歌单](https://github.com/zpfnb/desktop-music/raw/master/readme-img/歌单.jpg)
 
+>个人主页
 ![个人主页](https://github.com/zpfnb/desktop-music/raw/master/readme-img/个人主页.jpg)
