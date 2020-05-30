@@ -46,7 +46,10 @@ export default {
            }
           
         }
-      });
+      })
+         .catch(() => {
+
+        });
     },
     //lastPage 上一页
     lastPage() {

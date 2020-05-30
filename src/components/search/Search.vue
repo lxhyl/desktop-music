@@ -37,6 +37,9 @@ export default {
         .then(res => {
           this.searchResult = res.data.result;
           this.getDataOk = true;
+        })
+           .catch(() => {
+
         });
     },
     search(e) {

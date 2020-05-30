@@ -107,6 +107,9 @@ export default {
           }
           this.getSongsListOk = true;
           this.loading = false;
+        })
+           .catch(() => {
+
         });
     },
     //播放音乐

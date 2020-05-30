@@ -125,6 +125,9 @@ export default {
         .then(res => {
           this.playList = res.data;
           this.getDataOk = true;
+        })
+           .catch(() => {
+
         });
     },
     //分享到动态
@@ -140,6 +143,9 @@ export default {
             duration: 2000,
             showClose: true
           });
+        })
+           .catch(() => {
+
         });
     },
     // 播放组件 id为歌曲id

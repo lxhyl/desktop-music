@@ -3,18 +3,11 @@
     <div v-if="this.$store.state.musicInfo">
       <el-row style="height:50px;margin-left:5px;">
         <el-col :span="1" class="item">
-          <el-avatar
-            shape="square"
-            :src="this.$store.state.musicInfo.songs[0].al.picUrl"
-            class="music-pic"
-          ></el-avatar>
+          <el-avatar shape="square" :src="this.$store.state.musicInfo.songs[0].al.picUrl" class="music-pic"></el-avatar>
           <div @click="openDetail" class="el-icon-rank open-detail"></div>
         </el-col>
         <el-col :span="2" style="height:50px;">
-          <span
-            class="name-arname"
-            style="line-height:30px;"
-          >{{this.$store.state.musicInfo.songs[0].name}}</span>
+          <span class="name-arname" style="line-height:30px;">{{this.$store.state.musicInfo.songs[0].name}}</span>
 
           <p
             class="name-arname"
@@ -103,6 +96,7 @@ export default {
     return {
       getDataOk: false, //是否获取到数据
       musicid: null, // 音乐id
+      musicInfo: null, //
       time: 0, //播放进度 单位s
       nowtime: 0, // 播放进度 格式化后的时间
       musicUrl: null, //音乐文件存储地址
@@ -125,6 +119,9 @@ export default {
     fm: function() {
       return this.$store.state.fmLists;
     }
+    // musicInfo:function(){
+    //   return this.$store.state.musicInfo;
+    // }
   },
   watch: {},
   created() {
@@ -164,9 +161,7 @@ export default {
           this.getDataOk = true;
           this.oneSecondTime();
         })
-        .catch(err => {
-          console.log(err);
-        });
+        .catch(() => {});
     },
     //格式化进度条显示数字
     formatTooltip(e) {
@@ -195,7 +190,7 @@ export default {
       } else {
         this.$message({
           showClose: true,
-          message: "音乐还没准备好！",
+          message: "网有点慢,别急呀...",
           type: "warning",
           duration: 2000
         });
@@ -220,9 +215,6 @@ export default {
         let ref = this.$refs.audio;
         if (ref) {
           if (ref.readyState) {
-            if (this.$refs.audio.paused) {
-              this.$refs.audio.play();
-            }
             this.isPlaying = true;
             if (!ref.paused) {
               _this.time += 1;
@@ -382,7 +374,8 @@ export default {
           this.$store.commit("getMusicId", id);
           this.$store.commit("getPlayLists", result);
           this.reloadPlay();
-        });
+        })
+        .catch(() => {});
     }
   }
 };

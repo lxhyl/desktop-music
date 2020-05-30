@@ -62,7 +62,10 @@ export default {
     getHotSearch() {
       this.$axios.get(`${this.$domain}/search/hot/detail`).then(res => {
         this.hotSearch = res.data.data;
-      });
+      })
+         .catch(() => {
+
+        });
     },
     deleteHistory() {
       localStorage.removeItem("history");

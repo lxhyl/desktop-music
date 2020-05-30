@@ -63,6 +63,9 @@ export default {
           }
           this.lastTime.push(this.list[this.list.length - 1].time)
           this.loading = false;
+        })
+           .catch(() => {
+
         });
     },
     lastPage() {

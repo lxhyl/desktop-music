@@ -1,6 +1,6 @@
 <template>
   <div>
-        <el-carousel style="margin-top:20px;" :interval="4000" type="card" height="200px">
+    <el-carousel style="margin-top:20px;" :interval="4000" type="card" height="200px">
       <el-carousel-item
         v-for="(item,index) in banners"
         style="width:540px;left:-80px;"
@@ -15,27 +15,27 @@
 
 <script>
 export default {
-   data(){
-       return {
-           banners:[]
-       }
-   },
-   created(){
+  data() {
+    return {
+      banners: []
+    };
+  },
+  created() {
     this.getBanners();
-   },
-   mounted(){
-    
-   },
-   methods:{
-       getBanners(){
-           this.$axios.get(`${this.$domain}/dj/banner`)
-           .then(res => {
-               console.log(res);
-                 this.banners = res.data.data;
-           })
-       }
-   }
-}
+  },
+  mounted() {},
+  methods: {
+    getBanners() {
+      this.$axios
+        .get(`${this.$domain}/dj/banner`)
+        .then(res => {
+          console.log(res);
+          this.banners = res.data.data;
+        })
+        .catch(() => {});
+    }
+  }
+};
 </script>
 
 <style scoped>

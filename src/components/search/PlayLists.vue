@@ -50,6 +50,9 @@ export default {
         .then(res => {
           this.playLists = res.data.result.playlists;
           this.loading = false;
+        })
+           .catch(() => {
+
         });
     },
     openLists(id){

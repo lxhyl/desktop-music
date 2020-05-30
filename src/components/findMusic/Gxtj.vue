@@ -78,7 +78,10 @@ export default {
     getBanner() {
       this.$axios.get(`${this.$domain}/banner?type=0`).then(res => {
         this.banners = res.data.banners;
-      });
+      })
+         .catch(() => {
+
+        });
     },
     openBanner(e) {
       if (e) {
@@ -130,7 +133,10 @@ export default {
         this.$store.commit("getMusicId", id);
         this.$store.commit("getPlayLists", result);
         this.reloadPlay();
-      });
+      })
+         .catch(() => {
+
+        });
     },
     //每日推荐歌单
     getRecommendList() {
@@ -143,6 +149,9 @@ export default {
             item.showPlay = false;
           });
         })
+           .catch(() => {
+
+        });
     },
     //打开歌单
     openPlayList(id) {
@@ -152,7 +161,10 @@ export default {
     getTuiJian() {
       this.$axios.get(`${this.$domain}/personalized`).then(res => {
         this.tjPlayLists = res.data.result.splice(15, 29);
-      });
+      })
+         .catch(() => {
+
+        });
     }
   }
 };

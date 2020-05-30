@@ -8,9 +8,10 @@
         <div class="userinfo">
           <div class="userinfo-main">
             <el-row style="height:40px;line-height:40px;">
-              <el-col :span="6" style="font-size:20px;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;">
-                {{userInfo.profile.nickname}}
-                </el-col>
+              <el-col
+                :span="6"
+                style="font-size:20px;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;"
+              >{{userInfo.profile.nickname}}</el-col>
               <el-col :span="1" style="font-size:20px;">
                 <span
                   v-if="userInfo.profile.gender == 1"
@@ -117,14 +118,15 @@ export default {
         .then(res => {
           this.userInfo = res.data;
           this.getOk = true;
-        });
+        })
+        .catch(() => {});
     },
     getUserDetail() {
       this.$axios
         .get(`${this.$domain}/user/playlist?uid=${this.userid}`)
         .then(res => {
           let arr = res.data.playlist;
-        
+
           for (let i = 0; i < arr.length; i++) {
             // 用户自己创建的歌单
             if (arr[i].creator.userId == this.userid) {
@@ -136,7 +138,8 @@ export default {
               this.chartData.rows.push(json);
             }
           }
-        });
+        })
+        .catch(() => {});
     }
   }
 };

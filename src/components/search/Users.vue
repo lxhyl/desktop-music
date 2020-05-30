@@ -47,6 +47,9 @@ export default {
         .then(res => {
           this.usersList = res.data.result.userprofiles;
           this.loading = false;
+        })
+           .catch(() => {
+
         });
     },
     openUsers(id){

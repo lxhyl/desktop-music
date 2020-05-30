@@ -92,7 +92,8 @@ export default {
             };
             this.myList.push(json);
           }
-        });
+        })
+        .catch(() => {});
     },
     //路由至 e 页面
     routerToPage(e) {
@@ -108,8 +109,8 @@ export default {
         return;
       }
       //如果已经是fm了
-      if(this.$store.state.fm){
-         return;
+      if (this.$store.state.fm) {
+        return;
       }
       this.$message.closeAll();
       this.$message({
@@ -147,7 +148,8 @@ export default {
               this.$store.commit("setFm", true);
               this.$store.commit("getPlayLists", result);
               this.reloadPlay();
-            });
+            })
+            .catch(() => {});
         }, 500);
       }
     }
@@ -207,5 +209,4 @@ p {
   -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
   background-color: rgb(47, 49, 52);
 }
-
 </style>

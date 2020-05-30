@@ -56,6 +56,9 @@ export default {
         .then(res => {
           this.list = res.data.comments;
           this.loading = false;
+        })
+           .catch(() => {
+
         });
     },
     nextPage() {
@@ -76,7 +79,10 @@ export default {
           .then(res => {
             this.list = res.data.comments;
             this.loading = false;
-          });
+          })
+             .catch(() => {
+
+        });
       }
       if (this.page >= 2) {
         this.page -= 1;

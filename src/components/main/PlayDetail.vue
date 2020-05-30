@@ -206,10 +206,6 @@ export default {
       } else {
         clearInterval(this.canvasTimer);
         this.canvas = null;
-        //获取相似歌曲
-        this.getSameSong();
-        //获取最近听过这首歌的用户
-        this.getListenedUser();
       }
     }
   },
@@ -250,13 +246,22 @@ export default {
     this.musicid = this.$route.query.id;
 
     // 更新音乐ID
-    this.$store.commit("getMusicId", this.musicid);
+
     //如果歌曲详情和目前播放的歌曲不同
     // 就略过显示歌曲详情,继续路由
     let storeMusicId = this.$store.state.musicid;
     if (this.musicid != storeMusicId) {
       this.$router.go(1);
+      if (this.$store.state.musicid) {
+        this.$message({
+          showClose: true,
+          message: "没有内容了！",
+          type: "warning",
+          duration: 2000
+        });
+      }
     }
+  
 
     if (localStorage.getItem("canvasItemV")) {
       this.canvasItemV = Number(localStorage.getItem("canvasItemV"));
@@ -272,6 +277,7 @@ export default {
     this.link = "http://zhangpengfan.xyz/#" + this.$route.fullPath;
   },
   mounted() {
+    this.$store.commit("getMusicId", this.musicid);
     this.musicid && this.getSongDetail();
     this.musicid && this.getLyric();
     this.getComment();
@@ -303,6 +309,10 @@ export default {
 
       this.reloadPlay();
     }
+    //  获取相似歌曲
+    this.getSameSong();
+    //获取最近听过这首歌的用户
+    this.getListenedUser();
   },
   methods: {
     getSongDetail() {
@@ -313,37 +323,41 @@ export default {
           this.$store.commit("getMusicInfo", res.data);
           this.musicInfo = res.data;
           this.getDataOk = true;
-        });
+        })
+        .catch(() => {});
     },
     //获取解析歌词
     getLyric() {
-      this.$axios.get(`${this.$domain}/lyric?id=${this.musicid}`).then(res => {
-        if (res.data.nolyric) {
-          this.nolyric = true;
+      this.$axios
+        .get(`${this.$domain}/lyric?id=${this.musicid}`)
+        .then(res => {
+          if (res.data.nolyric) {
+            this.nolyric = true;
 
-          return;
-        }
-        //字符串按行变为数组
-        // 分别拿到时间，歌词
-        let arr = res.data.lrc.lyric.split("\n");
-        for (let i = 0; i < arr.length; i++) {
-          if (arr[i].length) {
-            let right = arr[i].indexOf("]");
-            let time = arr[i].substr(1, right - 1);
-            let m = time.substr(0, 2);
-            let s = time.substr(3, 2);
-            let ms = parseInt(time.substr(6));
-            time = m * 60 * 1000 + s * 1000 + ms;
-            let lrc = arr[i].substr(right + 1);
-            let json = {
-              time, //时间 单位ms
-              lrc, // 歌词
-              i // 索引
-            };
-            this.lyric.push(json);
+            return;
           }
-        }
-      });
+          //字符串按行变为数组
+          // 分别拿到时间，歌词
+          let arr = res.data.lrc.lyric.split("\n");
+          for (let i = 0; i < arr.length; i++) {
+            if (arr[i].length) {
+              let right = arr[i].indexOf("]");
+              let time = arr[i].substr(1, right - 1);
+              let m = time.substr(0, 2);
+              let s = time.substr(3, 2);
+              let ms = parseInt(time.substr(6));
+              time = m * 60 * 1000 + s * 1000 + ms;
+              let lrc = arr[i].substr(right + 1);
+              let json = {
+                time, //时间 单位ms
+                lrc, // 歌词
+                i // 索引
+              };
+              this.lyric.push(json);
+            }
+          }
+        })
+        .catch(() => {});
     },
     //获取评论
     getComment() {
@@ -375,7 +389,8 @@ export default {
             this.comments = this.allComments.splice(0, this.canvasItemNum);
           }
           this.offset += 1;
-        });
+        })
+        .catch(() => {});
     },
 
     draw() {
@@ -446,6 +461,7 @@ export default {
         .get(`${this.$domain}/simi/song?id=${this.musicid}`)
         .then(res => {
           let arr = res.data.songs;
+          //  console.log(res);
           for (let i = 0; i < arr.length; i++) {
             let name = arr[i].name;
             let artists = arr[i].artists[0].name;
@@ -462,7 +478,8 @@ export default {
             this.sameSongs.push(obj);
           }
           this.getSameDataOk = true;
-        });
+        })
+        .catch(() => {});
     },
     //播放推荐歌曲
     playSameSong(id, index) {
@@ -503,7 +520,8 @@ export default {
             this.sameUsers.push(obj);
           }
           this.getUsersOk = true;
-        });
+        })
+        .catch(() => {});
     },
     //跳转用户页
     toUserPage(id) {
