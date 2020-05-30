@@ -143,14 +143,6 @@ export default {
             item.showPlay = false;
           });
         })
-        .catch(() => {
-          this.$message({
-            showClose: true,
-            message: "出了点问题，刷新试试",
-            type: "warning",
-            duration: 2000
-          });
-        });
     },
     //打开歌单
     openPlayList(id) {

@@ -8,14 +8,9 @@
 
       <div class="left">
         <img class="song-pic" :src="musicInfo.songs[0].al.picUrl" />
-       <el-tooltip 
-       effect="dark" 
-       content="单击红心可喜欢音乐">
-        <img @click="likeThisSong" 
-        class="love-song" 
-        src="../../assets/love.png" />
-       </el-tooltip>
-
+        <el-tooltip effect="dark" content="单击红心可喜欢音乐">
+          <img @click="likeThisSong" class="love-song" src="../../assets/love.png" />
+        </el-tooltip>
       </div>
       <div class="main-danmu">
         <canvas v-show="showCanvas" ref="canvas" id="canvas" width="820" height="300"></canvas>
@@ -253,6 +248,9 @@ export default {
   },
   created() {
     this.musicid = this.$route.query.id;
+
+    // 更新音乐ID
+    this.$store.commit("getMusicId", this.musicid);
     //如果歌曲详情和目前播放的歌曲不同
     // 就略过显示歌曲详情,继续路由
     let storeMusicId = this.$store.state.musicid;
@@ -302,8 +300,7 @@ export default {
       if (!this.$store.state.playLists) {
         this.$store.commit(`getPlayLists`, []);
       }
-      // 更新音乐ID
-      this.$store.commit("getMusicId", this.musicid);
+
       this.reloadPlay();
     }
   },
@@ -323,8 +320,11 @@ export default {
       this.$axios.get(`${this.$domain}/lyric?id=${this.musicid}`).then(res => {
         if (res.data.nolyric) {
           this.nolyric = true;
+
           return;
         }
+        //字符串按行变为数组
+        // 分别拿到时间，歌词
         let arr = res.data.lrc.lyric.split("\n");
         for (let i = 0; i < arr.length; i++) {
           if (arr[i].length) {

@@ -7,7 +7,7 @@ Vue.config.productionTip = false
 import axios from 'axios';
 Vue.prototype.$axios = axios;
 axios.defaults.withCredentials = true;
-Vue.prototype.$domain = 'http://zhangpengfan.xyz/music'
+Vue.prototype.$domain = 'http://zhangpengfan.xyz:3000'
 
 //路由
 import router from './router/router';

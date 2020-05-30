@@ -128,14 +128,12 @@ export default {
   },
   watch: {},
   created() {
-    this.musicid = this.$store.state.musicid;
-
-    if(localStorage.getItem('playNextSelf') === null){
-      localStorage.setItem('playNextSelf',true);
+    if (localStorage.getItem("playNextSelf") === null) {
+      localStorage.setItem("playNextSelf", true);
     }
-
   },
   mounted() {
+    this.musicid = this.$store.state.musicid;
     this.musicid && this.getSongUrl();
     // 当audio就绪 初始化音量
     let volumeTimer = setInterval(() => {
@@ -152,8 +150,22 @@ export default {
         .get(`${this.$domain}/song/url?br=128000&id=${this.musicid}`)
         .then(res => {
           this.musicUrl = res.data.data[0].url;
+          //如果是会员歌曲
+          if (!this.musicUrl) {
+            this.$message({
+              showClose: true,
+              message: "会员歌曲，拿不到存储地址啊 :)",
+              type: "warning",
+              duration: 5000
+            });
+            this.$store.commit("changePlayState", false);
+            return;
+          }
           this.getDataOk = true;
           this.oneSecondTime();
+        })
+        .catch(err => {
+          console.log(err);
         });
     },
     //格式化进度条显示数字
@@ -180,6 +192,13 @@ export default {
         this.$refs.audio.play();
         this.isPlaying = true;
         this.oneSecondTime();
+      } else {
+        this.$message({
+          showClose: true,
+          message: "音乐还没准备好！",
+          type: "warning",
+          duration: 2000
+        });
       }
     },
     // 手动改变进度条
@@ -196,6 +215,7 @@ export default {
     //定时器
     oneSecondTime() {
       let _this = this;
+      //更新进度条
       this.timer = setInterval(() => {
         let ref = this.$refs.audio;
         if (ref) {
@@ -204,7 +224,9 @@ export default {
               this.$refs.audio.play();
             }
             this.isPlaying = true;
-            _this.time += 1;
+            if (!ref.paused) {
+              _this.time += 1;
+            }
           } else {
             this.isPlaying = false;
           }
@@ -250,7 +272,7 @@ export default {
       for (let i = 0; i < lists.length; i++) {
         if (lists[i].id == nowId) {
           if (i == 0) {
-              return lists[lists.length - 1].id;
+            return lists[lists.length - 1].id;
           } else {
             return lists[i - 1].id;
           }
@@ -304,21 +326,21 @@ export default {
     // 播放上一首音乐
     playLastMusic() {
       let id = this.getLastMusic();
-        this.$axios
-          .get(`${this.$domain}/song/detail?ids=${id}`)
-          .then(res => {
-            //更新VUEX的音乐信息
-            this.$store.commit("getMusicInfo", res.data);
-            if (this.$route.name == "playDetail") {
-              this.$router.replace(`/playDetail?id=${id}`);
-            }
-            // 更新音乐ID
-            this.$store.commit("getMusicId", id);
-            this.reloadPlay();
-          })
-          .catch(() => {
-            this.$message("网络出问题啦");
-          });
+      this.$axios
+        .get(`${this.$domain}/song/detail?ids=${id}`)
+        .then(res => {
+          //更新VUEX的音乐信息
+          this.$store.commit("getMusicInfo", res.data);
+          if (this.$route.name == "playDetail") {
+            this.$router.replace(`/playDetail?id=${id}`);
+          }
+          // 更新音乐ID
+          this.$store.commit("getMusicId", id);
+          this.reloadPlay();
+        })
+        .catch(() => {
+          this.$message("网络出问题啦");
+        });
     },
     // 点击播放音乐列表音乐
     playListsMusic(id) {
