@@ -20,6 +20,10 @@
             <span class="el-icon-user"></span>
             <span class="text">朋友</span>
           </p>
+          <p class="item" @click="routerToHistory">
+            <span class="el-icon-tickets"></span>
+            <span class="text">播放历史</span>
+          </p>
         </div>
       </div>
       <div v-if="userid">
@@ -148,6 +152,14 @@ export default {
           })
           .catch(() => {});
       }, 500);
+    },
+    //历史记录
+    routerToHistory() {
+      if (!this.userid) {
+        this.$message("请登录");
+        return;
+      }
+      this.$router.push('/history');
     }
   }
 };

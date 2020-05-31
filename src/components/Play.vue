@@ -113,7 +113,8 @@ export default {
       maxVolume: 1, // 最大音量
       stepVolume: 0.1, //调节音量步长
       volumeImgUrl: require("../assets/volume.png"), // 喇叭图片
-      lyricTimer: null //歌词计时器
+      lyricTimer: null, //歌词计时器
+      lastMusicTimer: null //改变歌曲防抖函数
     };
   },
   computed: {
@@ -130,11 +131,60 @@ export default {
     //   return this.$store.state.musicInfo;
     // }
   },
-  watch: {},
+  watch: {
+    volume: function(n) {
+      if (this.$refs.audio) {
+        this.$refs.audio.volume = n;
+      }
+    }
+  },
   created() {
     if (localStorage.getItem("playNextSelf") === null) {
       localStorage.setItem("playNextSelf", true);
     }
+    // 监听键盘事件
+    document.addEventListener("keyup", e => {
+      console.log(e.keyCode);
+      //增大音量
+      if (e.keyCode === 39 && this.volume <= 0.9) {
+        this.volume += 0.1;
+        this.$store.commit(
+          "setMusicVolume",
+          this.$store.state.musicVolume + 0.1
+        );
+      }
+      //减少音量
+      if (e.keyCode === 37 && this.volume >= 0.1) {
+        this.volume -= 0.1;
+        this.$store.commit(
+          "setMusicVolume",
+          this.$store.state.musicVolume - 0.1
+        );
+      }
+      //上一曲
+      if (e.keyCode === 38) {
+        if (this.lastMusicTimer !== null) {
+        
+          clearTimeout(this.lastMusicTimer);
+          this.lastMusicTimer = null;
+        } else {
+          this.lastMusicTimer = setTimeout(() => {
+            this.playLastMusic();
+          }, 1000);
+        }
+      }
+      //下一曲
+      if (e.keyCode === 40) {
+          if (this.lastMusicTimer !== null) {
+          clearTimeout(this.lastMusicTimer);
+          this.lastMusicTimer = null;
+        } else {
+          this.lastMusicTimer = setTimeout(() => {
+            this.playNextMusic();
+          }, 1000);
+        }
+      }
+    });
   },
   mounted() {
     this.musicid = this.$store.state.musicid;
@@ -147,7 +197,32 @@ export default {
       }
     }, 100);
   },
+  // 在组件销毁前，将歌曲信息加入到播放历史
+  beforeDestroy() {
+    let sourceid = this.$store.state.musicInfo.songs[0].al.id;
+    let id = this.musicid;
+    let time = Math.floor(this.$store.state.musicPlayTime);
+    this.$axios
+      .post(`${this.$domain}/scrobble`, {
+        id,
+        sourceid,
+        time
+      })
+      .then(() => {})
+      .catch(() => {});
+  },
   methods: {
+    // 防抖函数
+    debounce(func,time){
+      if(this.lastMusicTimer !== null){
+        clearTimeout(this.lastMusicTimer);
+        this.lastMusicTimer =null;
+      }else{
+        this.lastMusicTimer = setTimeout(()=>{
+          func();
+        },time)
+      }
+    },
     //获取音乐存储地址
     getSongUrl() {
       this.$axios
@@ -160,12 +235,32 @@ export default {
           if (!this.musicUrl) {
             this.$message({
               showClose: true,
-              message: "会员或无版权歌曲  🥺 ",
+              message: "会员或无版权歌曲🥺",
               type: "warning",
               duration: 3000
             });
-            this.$store.commit("changePlayState", false);
-            return;
+
+            //如果设置自动跳过，并且播放列表中有单曲的话
+            //  并且跳转的次数小于播放列表单曲总数
+            //  防止列表全无版权，进入死循环
+            let tonext = this.$store.state.canNotplayToNext;
+            if (
+              tonext.value &&
+              tonext.num < this.$store.state.playLists.length
+            ) {
+              this.$message.closeAll();
+              this.$message({
+                showClose: true,
+                message: "会员或无版权歌曲🥺,已跳过",
+                type: "warning",
+                duration: 3000
+              });
+
+              this.playNextMusic();
+              return;
+            } else {
+              this.$store.commit("changePlayState", false);
+            }
           }
           this.getDataOk = true;
           this.oneSecondTime();
@@ -307,7 +402,6 @@ export default {
         }
       }
     },
-
     // 播放下一首音乐
     playNextMusic() {
       if (this.$store.state.playLists.length === 0) {
@@ -409,7 +503,9 @@ export default {
           this.reloadPlay();
         })
         .catch(() => {});
-    }
+    },
+    //添加到播放历史,
+    pushToPlayHistory() {}
   }
 };
 </script>

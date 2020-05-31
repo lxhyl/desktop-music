@@ -50,5 +50,10 @@ export default {
    //改变播放模式，顺序/随机
    changeRandomPlay(state,value){
       state.randomPlay = value;
+   },
+   //遇到会员或无版权单曲时是否自动切换下一首
+   changeCanNotplayToNext(state,value){
+      state.canNotplayToNext.value = value;
+      state.canNotplayToNext.num += 1;
    }
 }

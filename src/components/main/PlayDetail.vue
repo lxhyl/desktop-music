@@ -7,7 +7,7 @@
       </el-popover>
 
       <div class="left">
-        <img class="song-pic" :src="musicInfo.songs[0].al.picUrl" />
+        <img class="song-pic" :src="musicInfo.songs[0].al.picUrl+'?param=200y200'" />
         <el-tooltip effect="dark" content="单击红心可喜欢音乐">
           <img @click="likeThisSong" class="love-song" src="../../assets/love.png" />
         </el-tooltip>
@@ -51,7 +51,7 @@
               </el-col>
               <el-col :span="10" class="user-why">{{item.time}}</el-col>
             </el-row>
-              <p v-if="sameUsers.length == 0">暂无数据</p>
+            <p v-if="sameUsers.length == 0">暂无数据</p>
           </div>
         </div>
       </div>
@@ -160,13 +160,34 @@ export default {
     //监听显示的弹幕条数
     comments: function(n) {
       if (n.length < this.canvasItemNum) {
-        this.comments.push(this.allComments.splice(0, 1)[0]);
+        if (this.allComments.length >= 1) {
+          this.comments.push(this.allComments.splice(0, 1)[0]);
+        } else {
+          this.$message({
+            showClose: true,
+            message: "拿不到弹幕了！检查下网络吧",
+            type: "warning",
+            duration: 2000
+          });
+        }
       }
     },
     // 如果评论数不够 就发请求获取新评论
     allComments: function(n) {
-      if (n.length < 35) {
-        this.getComment();
+      if (n.length == 0) {
+        this.showCanvas = false;
+        this.$message({
+          showClose: true,
+          message: "拿不到弹幕了！检查下网络吧",
+          type: "warning",
+          duration: 2000
+        });
+      }
+
+      if (this.getNewComments) {
+        if (n.length < 100) {
+          this.getComment();
+        }
       }
     },
 
@@ -236,7 +257,8 @@ export default {
       sameUsers: [], //最近听过这首歌的用户
       getSameDataOk: false, //是否获取到音乐或数据
       getUsersOk: false, //是否获取到最近听歌的用户
-      link: "" //分享链接
+      link: "", //分享链接
+      getNewComments: true //获取新评论防抖
     };
   },
   computed: {
@@ -262,7 +284,6 @@ export default {
         });
       }
     }
-  
 
     if (localStorage.getItem("canvasItemV")) {
       this.canvasItemV = Number(localStorage.getItem("canvasItemV"));
@@ -337,7 +358,7 @@ export default {
 
             return;
           }
-          //字符串按行变为数组
+          //歌词字符串按行变为数组
           // 分别拿到时间，歌词
           let arr = res.data.lrc.lyric.split("\n");
           for (let i = 0; i < arr.length; i++) {
@@ -362,6 +383,8 @@ export default {
     },
     //获取评论
     getComment() {
+      // 请求未完成时禁止发新请求
+      this.getNewComments = false;
       this.$axios
         .get(
           `${this.$domain}/comment/music?id=${this.musicid}&limit=50&offset=${this.offset}`
@@ -390,8 +413,16 @@ export default {
             this.comments = this.allComments.splice(0, this.canvasItemNum);
           }
           this.offset += 1;
+          this.getNewComments = true;
         })
-        .catch(() => {});
+        .catch(() => {
+          this.$message({
+          showClose: true,
+          message: "检查下网络吧!",
+          type: "warning",
+          duration: 2000
+        });
+        });
     },
 
     draw() {

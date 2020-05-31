@@ -25,6 +25,14 @@
           </p>
         </div>
         <div>
+          <p>遇到无版权或会员专属曲目时是否自动切换</p>
+           <el-switch
+              v-model="canNotplayToNext"
+              inactive-color="rgb(124, 124, 124)"
+              active-color="rgb(184, 37, 37)"
+            ></el-switch>
+        </div>
+        <div>
           <p>定时停止播放(5-150分钟)</p>
           <p>
             <input
@@ -75,6 +83,7 @@ export default {
       timerPlay: 10,
       timer: null,
       playRandom:false,//是否是随机播放
+      canNotplayToNext:true,//
     };
   },
   computed: {
@@ -101,8 +110,13 @@ export default {
     playNextSelf(n) {
       localStorage.setItem("playNextSelf", n);
     },
+    //顺序播放/随机播放
     playRandom(n){
       this.$store.commit('changeRandomPlay',n);
+    },
+    //遇到会员或无版权单曲时是否自动切换下一首
+    canNotplayToNext(n){
+      this.$store.commit('changeCanNotplayToNext',n);
     }
   },
   created() {},

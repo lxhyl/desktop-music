@@ -22,7 +22,7 @@ import 'element-ui/lib/theme-chalk/index.css';
 import {
   Col, Row, Image, Button, ButtonGroup, Input, Avatar, Popover,
   Form, FormItem, Link, Message, Tag,Slider,Switch,Divider,
-  Carousel,CarouselItem,Tooltip,MessageBox,
+  Carousel,CarouselItem,Tooltip,MessageBox,Card,
 } from 'element-ui';
 Vue.use(Col);
 Vue.use(Row);
@@ -42,6 +42,7 @@ Vue.use(Divider);
 Vue.use(Carousel);
 Vue.use(CarouselItem);
 Vue.use(Tooltip);
+Vue.use(Card);
 Vue.prototype.$message = Message;
 Vue.prototype.$confirm = MessageBox.confirm;
 
@@ -67,7 +68,11 @@ Vue.filter('toTime', function (e) {
       if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
     return fmt;
   }
-  return new Date(e).Format('yy-MM-dd');
+  return new Date(e).Format('yy-MM-dd/hh:mm:ss');
+})
+// 日期只取到天
+Vue.filter('toTimeGetOnlyDay',function(e){
+ return e.substr(0,10)
 })
 
 //歌曲时长格式化
@@ -98,6 +103,18 @@ Vue.filter('toChinese', function (e) {
    }
 })
 
+//将防抖函数挂载至原型上，方便使用
+Vue.prototype.$debounce = (fun,time) => {
+   let timer = null;
+   if(timer !== null){
+     clearTimeout(timer);
+     timer = null;
+   }else {
+     return () => {
+       timer = setTimeout(fun,time);
+     }
+   }
+}
 
 
 new Vue({

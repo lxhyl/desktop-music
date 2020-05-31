@@ -15,7 +15,7 @@
               {{item.notice.user.nickname}}
               <span style="color:#607D8B;">赞了我</span>
             </span>
-            <span class="item-hf-time">{{item.time | toTime}}</span>
+            <span class="item-hf-time">{{item.time | toTime | toTimeGetOnlyDay}}</span>
           </p>
           <p v-if="item.notice.comment" class="item-my-msg">{{item.notice.comment.content}}</p>
         </div>

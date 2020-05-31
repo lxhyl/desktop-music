@@ -9,7 +9,7 @@
           <div class="item-hf">
             <p class="item-hf-main">
               <span class="item-hf-name">{{item.user.nickname}}</span>
-              <span class="item-hf-time">{{item.time | toTime}}</span>
+              <span class="item-hf-time">{{item.time | toTime | toTimeGetOnlyDay}}</span>
             </p>
             <p class="item-hf-content">回复我：{{item.content}}</p>
           </div>

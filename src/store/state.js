@@ -12,6 +12,10 @@ const state = {
      tuijian:false,//是否是推荐歌曲
      br:128000,//音乐码率
      randomPlay:false,//是否是随机播放
+     canNotplayToNext:{//遇到会员或无版权单曲时是否自动切换下一首
+          value:true, // 是否跳转
+          num:0,      // 当前跳转的次数
+     },
 }
 export default state
 

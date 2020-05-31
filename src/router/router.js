@@ -7,7 +7,6 @@ Router.prototype.push = function push(location) {
   return routerPush.call(this, location).catch(error=> error)
 }
 
-
 Vue.use(Router)
 
 //发现音乐栏
@@ -18,7 +17,8 @@ import Zbdt from "../components/findMusic/Zbdt.vue"
 
 // 用户主页
 import Me from "../components/main/Me.vue"
-
+// 播放历史
+import PlayHistory from "../components/main/PlayHistory.vue"
 // 歌单列表
 import PlayList from "../components/PlayList.vue"
 // 播放详情组件
@@ -49,6 +49,11 @@ export default new Router({
                    component:Zbdt
                }
             ]
+        },
+        {
+           path:'/history',
+           name:'history',
+           component:PlayHistory
         },
         {
             path:'/me',
