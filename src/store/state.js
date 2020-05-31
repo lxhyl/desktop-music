@@ -10,6 +10,8 @@ const state = {
      searchKey:'',//搜索关键词
      fm:false,//是否是fm模式
      tuijian:false,//是否是推荐歌曲
+     br:128000,//音乐码率
+     randomPlay:false,//是否是随机播放
 }
 export default state
 

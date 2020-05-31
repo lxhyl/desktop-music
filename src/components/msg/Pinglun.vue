@@ -4,7 +4,7 @@
       <div v-if="!loading">
         <div class="flex-item" v-for="(item,index) in list" :key="index">
           <div class="item-avatar">
-            <el-avatar  :src="item.user.avatarUrl+'?param=30y30'" size="small"></el-avatar>
+            <el-avatar :src="item.user.avatarUrl+'?param=30y30'" size="small"></el-avatar>
           </div>
           <div class="item-hf">
             <p class="item-hf-main">
@@ -28,7 +28,7 @@
 
 <script>
 export default {
-  name:"msgPL",
+  name: "msgPL",
   data() {
     return {
       id: null, //用户id
@@ -57,9 +57,7 @@ export default {
           this.list = res.data.comments;
           this.loading = false;
         })
-           .catch(() => {
-
-        });
+        .catch(() => {});
     },
     nextPage() {
       this.loading = true;
@@ -73,16 +71,12 @@ export default {
       if (this.page == 1) {
         this.page -= 1;
         this.$axios
-          .get(
-            `${this.$domain}/msg/comments?uid=${this.id}&limit=5`
-          )
+          .get(`${this.$domain}/msg/comments?uid=${this.id}&limit=5`)
           .then(res => {
             this.list = res.data.comments;
             this.loading = false;
           })
-             .catch(() => {
-
-        });
+          .catch(() => {});
       }
       if (this.page >= 2) {
         this.page -= 1;
@@ -139,10 +133,12 @@ export default {
 }
 .item-hf-content {
   font-size: 10px;
+  width: 240px;
   color: #dcdde3;
 }
 .me-msg {
   margin-top: 5px;
+  width: 240px;
   font-size: 12px;
   margin-left: 30px;
   background-color: rgb(54, 56, 60);

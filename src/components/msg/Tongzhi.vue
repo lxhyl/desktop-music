@@ -120,18 +120,19 @@ export default {
   font-size: 11px;
   color: rgb(45, 96, 155);
   width: 100px;
-  margin-right: 100px;
 }
 .item-hf-time {
   float: right;
   font-size: 9px;
-  text-align: right;
+  text-align: center;
+  margin-right: 10px;
 }
 .item-my-msg {
   height: 25px;
   line-height: 25px;
   margin: 0;
   font-size: 11px;
+  width: 240px;
   color: #dcdde3;
   overflow: hidden;
   text-overflow: ellipsis;

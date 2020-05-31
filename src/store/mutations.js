@@ -43,4 +43,12 @@ export default {
    setFm(state, value) {
       state.fm = value;
    },
+   //改变音乐码率
+   changeBr(state,value){
+      state.br = parseInt(value) * 1000;
+   },
+   //改变播放模式，顺序/随机
+   changeRandomPlay(state,value){
+      state.randomPlay = value;
+   }
 }

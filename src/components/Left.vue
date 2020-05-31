@@ -117,7 +117,8 @@ export default {
 
       this.$message({
         showClose: false,
-        message: "推荐中",
+        message: "推荐中 🎵 ",
+        type: "warning",
         duration: 0
       });
       clearTimeout(this.timer);

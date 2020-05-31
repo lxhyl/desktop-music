@@ -3,11 +3,18 @@
     <div v-if="this.$store.state.musicInfo">
       <el-row style="height:50px;margin-left:5px;">
         <el-col :span="1" class="item">
-          <el-avatar shape="square" :src="this.$store.state.musicInfo.songs[0].al.picUrl" class="music-pic"></el-avatar>
+          <el-avatar
+            shape="square"
+            :src="this.$store.state.musicInfo.songs[0].al.picUrl"
+            class="music-pic"
+          ></el-avatar>
           <div @click="openDetail" class="el-icon-rank open-detail"></div>
         </el-col>
         <el-col :span="2" style="height:50px;">
-          <span class="name-arname" style="line-height:30px;">{{this.$store.state.musicInfo.songs[0].name}}</span>
+          <span
+            class="name-arname"
+            style="line-height:30px;"
+          >{{this.$store.state.musicInfo.songs[0].name}}</span>
 
           <p
             class="name-arname"
@@ -144,16 +151,18 @@ export default {
     //获取音乐存储地址
     getSongUrl() {
       this.$axios
-        .get(`${this.$domain}/song/url?br=128000&id=${this.musicid}`)
+        .get(
+          `${this.$domain}/song/url?br=${this.$store.state.br}&id=${this.musicid}`
+        )
         .then(res => {
           this.musicUrl = res.data.data[0].url;
           //如果是会员歌曲
           if (!this.musicUrl) {
             this.$message({
               showClose: true,
-              message: "会员歌曲，拿不到存储地址啊 :)",
+              message: "会员或无版权歌曲  🥺 ",
               type: "warning",
-              duration: 5000
+              duration: 3000
             });
             this.$store.commit("changePlayState", false);
             return;
@@ -161,8 +170,12 @@ export default {
           this.getDataOk = true;
           this.oneSecondTime();
         })
-        .catch((err) => {
-            console.log(err);
+        .catch(err => {
+          // 如果出现403错误
+          // 重新给audio赋值
+          if (err.code == 403) {
+            this.musicUrl = `https://music.163.com/song/media/outer/url?id=${this.musicid}.mp3`;
+          }
         });
     },
     //格式化进度条显示数字
@@ -297,7 +310,16 @@ export default {
 
     // 播放下一首音乐
     playNextMusic() {
+      if (this.$store.state.playLists.length === 0) {
+        this.reloadPlay();
+        return;
+      }
       let id = this.getNextMusic();
+      //如果是随机播放，产生一个随机数，重新赋值id;
+      if (this.$store.state.randomPlay) {
+        let le = this.$store.state.playLists.length;
+        id = this.$store.state.playLists[Math.floor(Math.random() * le)].id;
+      }
       if (id !== false) {
         this.$axios
           .get(`${this.$domain}/song/detail?ids=${id}`)
@@ -320,7 +342,15 @@ export default {
     },
     // 播放上一首音乐
     playLastMusic() {
+      if (this.$store.state.playLists.length === 0) {
+        this.reloadPlay();
+        return;
+      }
       let id = this.getLastMusic();
+      if (this.$store.state.randomPlay) {
+        let le = this.$store.state.playLists.length;
+        id = this.$store.state.playLists[Math.floor(Math.random() * le)].id;
+      }
       this.$axios
         .get(`${this.$domain}/song/detail?ids=${id}`)
         .then(res => {

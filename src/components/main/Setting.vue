@@ -4,30 +4,62 @@
       <p>1. 播放设置</p>
 
       <div class="item">
-        <p>是否自动播放下一曲</p>
-        <p>
-          <el-switch
-            v-model="playNextSelf"
-            inactive-color="rgb(124, 124, 124)"
-            active-color="rgb(184, 37, 37)"
-          ></el-switch>
-        </p>
-        <p>定时停止播放(5-150分钟)</p>
-        <p>
-          <input
-            class="timer-input"
-            type="number"
-            max="150"
-            min="5"
-            @keyup.enter="timerToTurnOff"
-            v-model="timerPlay"
-          />分
-          <el-button round type="info" size="mini" @click="timerToTurnOff">确定</el-button>
-        </p>
+        <div>
+          <p>是否自动播放下一曲</p>
+          <p>
+            <el-switch
+              v-model="playNextSelf"
+              inactive-color="rgb(124, 124, 124)"
+              active-color="rgb(184, 37, 37)"
+            ></el-switch>
+          </p>
+        </div>
+        <div>
+          <p>顺序播放/随机播放</p>
+           <p style="font-size:11px;">
+            <el-switch
+              v-model="playRandom"
+              inactive-color="rgb(124, 124, 124)"
+              active-color="rgb(184, 37, 37)"
+            ></el-switch>
+          </p>
+        </div>
+        <div>
+          <p>定时停止播放(5-150分钟)</p>
+          <p>
+            <input
+              class="timer-input"
+              type="number"
+              max="150"
+              min="5"
+              @keyup.enter="timerToTurnOff"
+              v-model="timerPlay"
+            />分
+            <el-button round type="info" size="mini" @click="timerToTurnOff">确定</el-button>
+          </p>
+        </div>
+
+        <div>
+          <p>音乐品质(单位k)</p>
+          <el-tag
+            class="br-item"
+            v-for="(item,index) in br"
+            effect="dark"
+            :type="item.type"
+            @click.native="changeBr(item)"
+            :key="'br-'+index"
+          >{{item.v}}</el-tag>
+        </div>
       </div>
       <p>2. 账号</p>
       <div class="item">
-        <el-button v-if="this.$store.state.userid" round type="info" size="mini" @click="logout">退出登陆</el-button>
+        <el-button
+          v-if="this.$store.state.userid"
+          round
+          type="info"
+          size="mini"
+          @click="logout"
+        >退出登陆</el-button>
       </div>
     </div>
   </div>
@@ -36,22 +68,44 @@
 <script>
 export default {
   name: "setting",
-  inject: ["reload"],
+  inject: ["reload", "reloadPlay"],
   data() {
     return {
       playNextSelf: true,
       timerPlay: 10,
       timer: null,
+      playRandom:false,//是否是随机播放
     };
   },
-  computed: {},
+  computed: {
+    br: function() {
+      let nowBr = this.$store.state.br;
+      let brs = [
+        { v: 128, type: "info" },
+        { v: 320, type: "info" },
+        { v: 480, type: "info" },
+        { v: 640, type: "info" },
+        { v: 800, type: "info" },
+        { v: 999, type: "info" }
+      ];
+   
+      for (let i = 0; i < brs.length; i++) {
+        if (brs[i].v == nowBr / 1000) {
+          brs[i].type = "danger";
+        }
+      }
+      return brs;
+    }
+  },
   watch: {
     playNextSelf(n) {
       localStorage.setItem("playNextSelf", n);
+    },
+    playRandom(n){
+      this.$store.commit('changeRandomPlay',n);
     }
   },
-  created() {
-  },
+  created() {},
   methods: {
     //定时关闭
     timerToTurnOff() {
@@ -96,6 +150,14 @@ export default {
             message: "已取消"
           });
         });
+    },
+    //改变码率
+    changeBr(e) {
+      this.br;
+      this.$store.commit("changeBr", e.v);
+      if (this.$store.state.isPlaying) {
+        this.reloadPlay();
+      }
     }
   }
 };
@@ -123,6 +185,10 @@ export default {
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
   -webkit-appearance: none !important;
+}
+.br-item {
+  margin-right: 10px;
+  background-color: black;
 }
 </style>
 

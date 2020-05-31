@@ -228,9 +228,10 @@ export default {
         localStorage.setItem("password", this.loginForm.password);
 
         this.$axios
-          .get(
-            `${this.$domain}/login/cellphone?phone=${this.loginForm.phone}&password=${this.loginForm.password}`
-          )
+          .post(`${this.$domain}/login/cellphone`, {
+            phone: this.loginForm.phone,
+            password: this.loginForm.password
+          })
           .then(res => {
             this.accountInfo = res.data;
             this.isLogin = true;
@@ -292,8 +293,8 @@ export default {
         }
       }
       if (his.length >= 10) {
-        his.push(this.searchKey)
-        his.splice(0,1);
+        his.push(this.searchKey);
+        his.splice(0, 1);
       } else {
         his.push(this.searchKey);
       }

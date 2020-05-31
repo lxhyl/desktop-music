@@ -31,6 +31,7 @@
                 <p class="same-art">{{item.artists}}</p>
               </div>
             </div>
+            <p v-if="sameSongs.length == 0">暂无数据</p>
           </div>
           <div v-show="getUsersOk" class="user">
             <p style="width:300px;height:20px;line-height:20px;font-sie:14px;">听过这首歌的人</p>
@@ -50,6 +51,7 @@
               </el-col>
               <el-col :span="10" class="user-why">{{item.time}}</el-col>
             </el-row>
+              <p v-if="sameUsers.length == 0">暂无数据</p>
           </div>
         </div>
       </div>
@@ -246,7 +248,6 @@ export default {
     this.musicid = this.$route.query.id;
 
     // 更新音乐ID
-
     //如果歌曲详情和目前播放的歌曲不同
     // 就略过显示歌曲详情,继续路由
     let storeMusicId = this.$store.state.musicid;

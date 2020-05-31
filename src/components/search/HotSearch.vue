@@ -54,18 +54,21 @@ export default {
   },
   created() {
     this.getHotSearch();
-    this.history = JSON.parse(localStorage.getItem("history"));
+    //如果有搜索历史
+    if (localStorage.getItem("history")) {
+      this.history = JSON.parse(localStorage.getItem("history"));
+    }
   },
   mounted() {},
   methods: {
     //拿到热搜列表
     getHotSearch() {
-      this.$axios.get(`${this.$domain}/search/hot/detail`).then(res => {
-        this.hotSearch = res.data.data;
-      })
-         .catch(() => {
-
-        });
+      this.$axios
+        .get(`${this.$domain}/search/hot/detail`)
+        .then(res => {
+          this.hotSearch = res.data.data;
+        })
+        .catch(() => {});
     },
     deleteHistory() {
       localStorage.removeItem("history");
@@ -75,10 +78,11 @@ export default {
       this.$store.commit("changeSearchPopover", false);
     },
     search(e) {
+      this.$store.commit("changeSearchPopover", false);
       let his = JSON.parse(localStorage.getItem("history"));
-    //第一次搜索
+      //第一次搜索
       if (his == null) {
-        his = []; 
+        his = [];
       }
       //搜索历史中是否已有
       for (let i = 0; i < his.length; i++) {
@@ -88,19 +92,18 @@ export default {
           return;
         }
       }
+      // console.log(his);
       this.history.push(e);
       if (his.length >= 10) {
         his.push(e);
-        his.splice(0,1);
+        his.splice(0, 1);
       } else {
         his.push(e);
       }
 
       let str = JSON.stringify(his);
       localStorage.setItem("history", str);
-      this.$store.commit("changeSearchPopover", false);
       this.$router.push(`/search?keyword=${e}`);
-
     }
   }
 };

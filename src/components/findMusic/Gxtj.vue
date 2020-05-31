@@ -102,7 +102,7 @@ export default {
       }
       this.$message({
         showClose: false,
-        message: "搜寻歌曲中...",
+        message: "搜寻歌曲中...🎶",
         type: "warning",
         duration: 0
       });
@@ -123,7 +123,7 @@ export default {
         let id = result[0].id;
         this.$message({
           showClose: true,
-          message: "推荐歌曲已加入至播放列表",
+          message: "推荐歌曲已加入至播放列表🎶",
           type: "warning",
           duration: 2000
         });

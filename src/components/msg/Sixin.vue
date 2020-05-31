@@ -106,7 +106,7 @@ export default {
   color: rgb(45, 96, 155);
 }
 .item-msg-des {
-  width: 260px;
+  width: 250px;
   height: 25px;
   margin: 0;
   padding: 0;
