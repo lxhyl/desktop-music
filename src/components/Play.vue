@@ -48,7 +48,7 @@
         <el-col class="item item-icon" style="text-align:right;" :span="2">
           <span
             v-if="this.$store.state.playLists.length > 1 && !this.$store.state.fm"
-            @click="playLastMusic()"
+            @click="debouncePlayLastMusic"
             class="el-icon-caret-left"
           ></span>
         </el-col>
@@ -59,7 +59,7 @@
         <el-col class="item item-icon" style="text-align:left;" :span="2">
           <span
             v-if="this.$store.state.playLists.length > 1"
-            @click="playNextMusic()"
+            @click="debouncePlayNextMusic"
             class="el-icon-caret-right"
           ></span>
         </el-col>
@@ -212,17 +212,6 @@ export default {
       .catch(() => {});
   },
   methods: {
-    // 防抖函数
-    debounce(func,time){
-      if(this.lastMusicTimer !== null){
-        clearTimeout(this.lastMusicTimer);
-        this.lastMusicTimer =null;
-      }else{
-        this.lastMusicTimer = setTimeout(()=>{
-          func();
-        },time)
-      }
-    },
     //获取音乐存储地址
     getSongUrl() {
       this.$axios
@@ -424,7 +413,7 @@ export default {
             this.$store.commit("getMusicId", id);
             this.reloadPlay();
             if (this.$route.name == "playDetail") {
-              this.$router.replace(`/playDetail?id=${id}`);
+              this.$router.replace(`/playDetail?id=${id}`).catch(err => {});
             }
           })
           .catch(() => {
@@ -451,7 +440,7 @@ export default {
           //更新VUEX的音乐信息
           this.$store.commit("getMusicInfo", res.data);
           if (this.$route.name == "playDetail") {
-            this.$router.replace(`/playDetail?id=${id}`);
+            this.$router.replace(`/playDetail?id=${id}`).catch(err => {});
           }
           // 更新音乐ID
           this.$store.commit("getMusicId", id);
@@ -461,6 +450,28 @@ export default {
           this.$message("网络出问题啦");
         });
     },
+    //防抖下一曲函数
+     debouncePlayNextMusic(){
+        if(this.lastMusicTimer !== null){
+            clearTimeout(this.lastMusicTimer);
+            this.lastMusicTimer = null;
+        }else {
+          this.lastMusicTimer = setTimeout(()=>{
+             this.playNextMusic();
+          },500)
+        }
+     },
+     //防抖播放上一首
+     debouncePlayLastMusic(){
+        if(this.lastMusicTimer !== null){
+            clearTimeout(this.lastMusicTimer);
+            this.lastMusicTimer = null;
+        }else {
+          this.lastMusicTimer = setTimeout(()=>{
+             this.playLastMusic();
+          },500)
+        }
+     },
     // 点击播放音乐列表音乐
     playListsMusic(id) {
       this.$router.push(`/playDetail?id=${id}`);
@@ -504,8 +515,6 @@ export default {
         })
         .catch(() => {});
     },
-    //添加到播放历史,
-    pushToPlayHistory() {}
   }
 };
 </script>
