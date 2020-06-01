@@ -144,6 +144,9 @@ export default {
         if (document.getElementById(i)) {
           document.getElementById(i).style.color = "rgb(124, 124, 124)";
         }
+        if (document.getElementById(i+1)) {
+          document.getElementById(i+1).style.color = "rgb(124, 124, 124)";
+        }
         let last = this.lyric[i].time;
         let next = this.lyric[i + 1].time;
 
@@ -151,6 +154,13 @@ export default {
           let item = document.getElementById(i);
           if (item) {
             item.scrollIntoView();
+            item.style.color = "white";
+          }
+        }
+        //最后一句歌词
+        if (playTime > this.lyric[this.lyric.length - 1].time) {
+          let item = document.getElementById(this.lyric.length - 1);
+          if (item) {
             item.style.color = "white";
           }
         }
@@ -417,11 +427,11 @@ export default {
         })
         .catch(() => {
           this.$message({
-          showClose: true,
-          message: "检查下网络吧!",
-          type: "warning",
-          duration: 2000
-        });
+            showClose: true,
+            message: "检查下网络吧!",
+            type: "warning",
+            duration: 2000
+          });
         });
     },
 

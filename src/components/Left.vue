@@ -20,10 +20,6 @@
             <span class="el-icon-user"></span>
             <span class="text">朋友</span>
           </p>
-          <p class="item" @click="routerToHistory">
-            <span class="el-icon-tickets"></span>
-            <span class="text">播放历史</span>
-          </p>
         </div>
       </div>
       <div v-if="userid">
@@ -32,6 +28,14 @@
           <p class="item" v-for="(item,index) in myMusic" :key="index">
             <span :class="item.icon"></span>
             <span class="text">{{item.text}}</span>
+          </p>
+           <p class="item" @click="routerToPage('/rank')">
+            <span class="el-icon-medal-1"></span>
+            <span class="text">播放排行</span>
+          </p>
+          <p class="item" @click="routerToPage('/history')">
+             <span class="el-icon-notebook-2"></span>
+            <span class="text">播放历史</span>
           </p>
         </div>
       </div>
@@ -153,14 +157,6 @@ export default {
           .catch(() => {});
       }, 500);
     },
-    //历史记录
-    routerToHistory() {
-      if (!this.userid) {
-        this.$message("请登录");
-        return;
-      }
-      this.$router.push('/history');
-    }
   }
 };
 </script>

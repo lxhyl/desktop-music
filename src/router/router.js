@@ -4,7 +4,7 @@ import Router from 'vue-router'
 
 const routerPush = Router.prototype.push
 Router.prototype.push = function push(location) {
-  return routerPush.call(this, location).catch(error=> error)
+    return routerPush.call(this, location).catch(error => error)
 }
 
 
@@ -18,7 +18,9 @@ import Zbdt from "../components/findMusic/Zbdt.vue"
 
 // 用户主页
 import Me from "../components/main/Me.vue"
-// 播放历史
+// 播放排行
+import PlayRank from "../components/main/PlayRank.vue"
+//播放历史
 import PlayHistory from "../components/main/PlayHistory.vue"
 // 歌单列表
 import PlayList from "../components/PlayList.vue"
@@ -31,59 +33,63 @@ import Setting from "../components/main/Setting.vue"
 //404
 import Notfound from '../components/main/404.vue'
 export default new Router({
-    mode:'hash',
-    routes:[
-       
+    mode: 'hash',
+    routes: [
         {
-            path:'/',
-            name:"findmusic",
-            component:FindMusic,
-            children:[
-               {
-                   path:'/',
-                   name:'gxtj',
-                   component:Gxtj,
-               },
-               {
-                   path:'/zbdt',
-                   name:'zbdt',
-                   component:Zbdt
-               }
+            path: '/',
+            name: "findmusic",
+            component: FindMusic,
+            children: [
+                {
+                    path: '/',
+                    name: 'gxtj',
+                    component: Gxtj,
+                },
+                {
+                    path: '/zbdt',
+                    name: 'zbdt',
+                    component: Zbdt
+                }
             ]
         },
         {
-           path:'/history',
-           name:'history',
-           component:PlayHistory
+            path: '/rank',
+            name: 'rank',
+            component: PlayRank
         },
         {
-            path:'/me',
-            name:"me",
-            component:Me,
+            path: '/history',
+            name: 'history',
+            component: PlayHistory
         },
         {
-            path:'/playlist',
-            name:"playlist",
-            component:PlayList,
+            path: '/me',
+            name: "me",
+            component: Me,
         },
         {
-            path:'/playDetail',
-            name:'playDetail',
-            component:PlayDetail,
+            path: '/playlist',
+            name: "playlist",
+            component: PlayList,
         },
         {
-            path:'/search',
-            name:'search',
-            component:SearchResult
+            path: '/playDetail',
+            name: 'playDetail',
+            component: PlayDetail,
         },
         {
-            path:'/setting',
-            name:'setting',
-            component:Setting
+            path: '/search',
+            name: 'search',
+            component: SearchResult
         },
         {
-            path:'/*',
-            component:Notfound
+            path: '/setting',
+            name: 'setting',
+            component: Setting
+        },
+        {
+            path: '/*',
+            component: Notfound
         }
 
     ]

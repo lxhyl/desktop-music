@@ -1,6 +1,6 @@
 
 const CompressionPlugin = require("compression-webpack-plugin");
-const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
+// const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
 
 module.exports = {
 
@@ -11,21 +11,22 @@ module.exports = {
     productionSourceMap: false,
 
     // 开发环境配置
-    devServer: {
-        // host:"localhost",
-        port:"8080",
-        proxy: {
-            '/api': {
-                target: 'https://zhangpengfan.xyz:3000',
-                ws: true,
-                changOrigin: true,
-                pathRewrite: {
-                    '^/api': ''
-                }
-            }
+    
+    // devServer: {
+    //     // host:"localhost",
+    //     port:"8080",
+    //     proxy: {
+    //         '/api': {
+    //             target: 'https://zhangpengfan.xyz:3000',
+    //             ws: true,
+    //             changOrigin: true,
+    //             pathRewrite: {
+    //                 '^/api': ''
+    //             }
+    //         }
 
-        }
-    },
+    //     }
+    // },
     configureWebpack: {
         plugins: [
             new CompressionPlugin({
@@ -33,7 +34,7 @@ module.exports = {
                 threshold: 10240,//对超过10k的数据压缩
                 deleteOriginalAssets: false //删除源文件
             }),
-            new BundleAnalyzerPlugin()
+            // new BundleAnalyzerPlugin()
         ]
     }
 }
