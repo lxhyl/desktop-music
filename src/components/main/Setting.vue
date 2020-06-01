@@ -52,7 +52,7 @@
           <el-tag
             class="br-item"
             v-for="(item,index) in br"
-            effect="dark"
+             effect="dark"
             :type="item.type"
             @click.native="changeBr(item)"
             :key="'br-'+index"
@@ -202,7 +202,6 @@ input::-webkit-inner-spin-button {
 }
 .br-item {
   margin-right: 10px;
-  background-color: black;
 }
 </style>
 

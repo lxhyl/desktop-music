@@ -20,6 +20,10 @@
             <span class="el-icon-user"></span>
             <span class="text">朋友</span>
           </p>
+           <p class="item" @click="routerToPage('/history')">
+             <span class="el-icon-notebook-2"></span>
+            <span class="text">播放历史</span>
+          </p>
         </div>
       </div>
       <div v-if="userid">
@@ -32,10 +36,6 @@
            <p class="item" @click="routerToPage('/rank')">
             <span class="el-icon-medal-1"></span>
             <span class="text">播放排行</span>
-          </p>
-          <p class="item" @click="routerToPage('/history')">
-             <span class="el-icon-notebook-2"></span>
-            <span class="text">播放历史</span>
           </p>
         </div>
       </div>

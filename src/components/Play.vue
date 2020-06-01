@@ -5,7 +5,7 @@
         <el-col :span="1" class="item">
           <el-avatar
             shape="square"
-            :src="this.$store.state.musicInfo.songs[0].al.picUrl"
+            :src="this.$store.state.musicInfo.songs[0].al.picUrl+'?param=40y40'"
             class="music-pic"
           ></el-avatar>
           <div @click="openDetail" class="el-icon-rank open-detail"></div>
@@ -43,7 +43,11 @@
           <img class="volume" :src="volumeImgUrl" />
         </el-col>
         <el-col class="item" :span="2">
-          <el-slider v-model="volume" @change="volumeChange" :max="maxVolume" :step="stepVolume"></el-slider>
+          <el-slider 
+          v-model="volume" 
+          @change="volumeChange" 
+          :max="maxVolume" 
+          :step="stepVolume"></el-slider>
         </el-col>
         <el-col class="item item-icon" style="text-align:right;" :span="2">
           <span
@@ -109,7 +113,7 @@ export default {
       musicUrl: null, //音乐文件存储地址
       isPlaying: false, // 是否在播放
       timer: null, // 1s定时器 加载歌曲进度
-      volume: this.$store.state.musicVolume, //音量
+      volume:0.5, //音量
       maxVolume: 1, // 最大音量
       stepVolume: 0.1, //调节音量步长
       volumeImgUrl: require("../assets/volume.png"), // 喇叭图片
@@ -135,6 +139,7 @@ export default {
     volume: function(n) {
       if (this.$refs.audio) {
         this.$refs.audio.volume = n;
+        this.$store.commit('setMusicVolume',n);
       }
     }
   },
@@ -143,8 +148,15 @@ export default {
       localStorage.setItem("playNextSelf", true);
     }
     // 监听键盘事件
-    document.addEventListener("keyup", e => {
-      console.log(e.keyCode);
+    document.addEventListener("keyup", e => { 
+     //空格键就暂停或播放
+     if(e.keyCode === 32){
+        if(this.isPlaying){
+           this.stop();
+         }else{  
+           this.play();
+         }
+      }
       //增大音量
       if (e.keyCode === 39 && this.volume <= 0.9) {
         this.volume += 0.1;
@@ -161,32 +173,32 @@ export default {
           this.$store.state.musicVolume - 0.1
         );
       }
-      //上一曲
-      if (e.keyCode === 38) {
-        if (this.lastMusicTimer !== null) {
-        
-          clearTimeout(this.lastMusicTimer);
-          this.lastMusicTimer = null;
-        } else {
-          this.lastMusicTimer = setTimeout(() => {
-            this.playLastMusic();
-          }, 1000);
-        }
-      }
-      //下一曲
-      if (e.keyCode === 40) {
-          if (this.lastMusicTimer !== null) {
-          clearTimeout(this.lastMusicTimer);
-          this.lastMusicTimer = null;
-        } else {
-          this.lastMusicTimer = setTimeout(() => {
-            this.playNextMusic();
-          }, 1000);
-        }
-      }
+      // // 上一曲
+      // if (e.keyCode === 38) {
+      //   if (this.lastMusicTimer !== null) {
+      //     clearTimeout(this.lastMusicTimer);
+      //     this.lastMusicTimer = null;
+      //   } else {
+      //     this.lastMusicTimer = setTimeout(() => {
+      //       this.playLastMusic();
+      //     }, 200);
+      //   }
+      // }
+      // //下一曲
+      // if (e.keyCode === 40) {
+      //   if (this.lastMusicTimer !== null) {
+      //     clearTimeout(this.lastMusicTimer);
+      //     this.lastMusicTimer = null;
+      //   } else {
+      //     this.lastMusicTimer = setTimeout(() => {
+      //       this.playNextMusic();
+      //     }, 200);
+      //   }
+      // }
     });
   },
   mounted() {
+    this.volume = this.$store.state.musicVolume;
     this.musicid = this.$store.state.musicid;
     this.musicid && this.getSongUrl();
     // 当audio就绪 初始化音量
@@ -195,13 +207,36 @@ export default {
         this.$refs.audio.volume = this.$store.state.musicVolume;
         clearInterval(volumeTimer);
       }
-    }, 100);
+    }, 200);
   },
+
   // 在组件销毁前，将歌曲信息加入到播放历史
   beforeDestroy() {
     let sourceid = this.$store.state.musicInfo.songs[0].al.id;
     let id = this.musicid;
     let time = Math.floor(this.$store.state.musicPlayTime);
+    let song = {
+      id,
+      listenTime: new Date().getTime(),
+      name: this.$store.state.musicInfo.songs[0].name,
+      ar: this.$store.state.musicInfo.songs[0].ar[0].name
+    };
+    let history = JSON.parse(localStorage.getItem("playHistory"));
+    if (history) {
+      history.unshift(song);
+      if(history.length > 100){
+        history.pop();
+      }
+      let str = JSON.stringify(history);
+      localStorage.setItem("playHistory", str);
+    } else {
+      //如果第一次听歌，初始化听歌历史数组
+      let arr = [song];
+      let str = JSON.stringify(arr);
+      localStorage.setItem("playHistory", str);
+    }
+
+    //更新听歌打卡
     this.$axios
       .post(`${this.$domain}/scrobble`, {
         id,
@@ -231,7 +266,7 @@ export default {
 
             //如果设置自动跳过，并且播放列表中有单曲的话
             //  并且跳转的次数小于播放列表单曲总数
-            //  防止列表全无版权，进入死循环
+            //  防止列表全无版权，进入死循环   
             let tonext = this.$store.state.canNotplayToNext;
             if (
               tonext.value &&
@@ -338,7 +373,7 @@ export default {
           // 清除定时器
           if (this.$refs.audio.ended) {
             clearInterval(_this.lyricTimer);
-
+            this.volume = this.$store.state.musicVolume;
             let self = localStorage.getItem("playNextSelf");
             if (self === "true") {
               this.playNextMusic();
@@ -379,7 +414,7 @@ export default {
       for (let i = 0; i < lists.length; i++) {
         if (lists[i].id == nowId) {
           if (i == lists.length - 1) {
-            //如果是fm,就返回false
+            //如果是fm模式,就返回false
             if (this.$store.state.fm) {
               return false;
             } else {
@@ -393,6 +428,7 @@ export default {
     },
     // 播放下一首音乐
     playNextMusic() {
+      let _this = this;
       if (this.$store.state.playLists.length === 0) {
         this.reloadPlay();
         return;
@@ -403,15 +439,22 @@ export default {
         let le = this.$store.state.playLists.length;
         id = this.$store.state.playLists[Math.floor(Math.random() * le)].id;
       }
-      if (id !== false) {
+
+      if (id != false) {
         this.$axios
           .get(`${this.$domain}/song/detail?ids=${id}`)
           .then(res => {
+            /*
+             需要先更新音乐id
+             vuex中先判断播放的歌曲id，是否和歌曲数据中的id相等
+             再决定是否赋值
+             以防止歌曲详情页路由改变，而播放条也改变
+            */
+            _this.$store.commit("getMusicId", id);
             //更新VUEX的音乐信息
-            this.$store.commit("getMusicInfo", res.data);
-            // 更新音乐ID
-            this.$store.commit("getMusicId", id);
-            this.reloadPlay();
+            _this.$store.commit("getMusicInfo", res.data);
+
+            _this.reloadPlay();
             if (this.$route.name == "playDetail") {
               this.$router.replace(`/playDetail?id=${id}`).catch(err => {});
             }
@@ -451,27 +494,27 @@ export default {
         });
     },
     //防抖下一曲函数
-     debouncePlayNextMusic(){
-        if(this.lastMusicTimer !== null){
-            clearTimeout(this.lastMusicTimer);
-            this.lastMusicTimer = null;
-        }else {
-          this.lastMusicTimer = setTimeout(()=>{
-             this.playNextMusic();
-          },500)
-        }
-     },
-     //防抖播放上一首
-     debouncePlayLastMusic(){
-        if(this.lastMusicTimer !== null){
-            clearTimeout(this.lastMusicTimer);
-            this.lastMusicTimer = null;
-        }else {
-          this.lastMusicTimer = setTimeout(()=>{
-             this.playLastMusic();
-          },500)
-        }
-     },
+    debouncePlayNextMusic() {
+      if (this.lastMusicTimer !== null) {
+        clearTimeout(this.lastMusicTimer);
+        this.lastMusicTimer = null;
+      } else {
+        this.lastMusicTimer = setTimeout(() => {
+          this.playNextMusic();
+        }, 200);
+      }
+    },
+    //防抖播放上一首
+    debouncePlayLastMusic() {
+      if (this.lastMusicTimer !== null) {
+        clearTimeout(this.lastMusicTimer);
+        this.lastMusicTimer = null;
+      } else {
+        this.lastMusicTimer = setTimeout(() => {
+          this.playLastMusic();
+        }, 200);
+      }
+    },
     // 点击播放音乐列表音乐
     playListsMusic(id) {
       this.$router.push(`/playDetail?id=${id}`);
@@ -514,7 +557,7 @@ export default {
           this.reloadPlay();
         })
         .catch(() => {});
-    },
+    }
   }
 };
 </script>
