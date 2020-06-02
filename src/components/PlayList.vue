@@ -79,7 +79,7 @@
         </el-row>
       </div>
     </div>
-    <div v-else class="loading">加载中。。。</div>
+    <div v-else class="loading">加载中...</div>
   </div>
 </template>
 
@@ -150,7 +150,7 @@ export default {
       // 更新音乐ID
       this.$store.commit("getMusicId", id);
       //关闭fm模式
-      this.$store.commit("setFm", true);
+      this.$store.commit("setFm", false);
       // 将歌单更新到vuex state
       this.playAllLists();
       // 刷新PLAY组件

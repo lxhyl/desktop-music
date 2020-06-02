@@ -4,8 +4,8 @@
       <p>1. 播放设置</p>
 
       <div class="item">
-        <div>
-          <p>是否自动播放下一曲</p>
+        <div class="setting-one-item">
+          <p>1.1 是否自动播放下一曲</p>
           <p>
             <el-switch
               v-model="playNextSelf"
@@ -14,8 +14,9 @@
             ></el-switch>
           </p>
         </div>
-        <div>
-          <p>顺序播放/随机播放</p>
+       
+        <div class="setting-one-item">
+          <p>1.2 顺序播放/随机播放</p>
            <p style="font-size:11px;">
             <el-switch
               v-model="playRandom"
@@ -24,16 +25,16 @@
             ></el-switch>
           </p>
         </div>
-        <div>
-          <p>遇到无版权或会员专属曲目时是否自动切换</p>
+        <div class="setting-one-item">
+          <p>1.3 遇到无版权或会员专属曲目时是否自动切换</p>
            <el-switch
               v-model="canNotplayToNext"
               inactive-color="rgb(124, 124, 124)"
               active-color="rgb(184, 37, 37)"
             ></el-switch>
         </div>
-        <div>
-          <p>定时停止播放(5-150分钟)</p>
+        <div class="setting-one-item">
+          <p>1.4 定时停止播放(5-150分钟)</p>
           <p>
             <input
               class="timer-input"
@@ -47,8 +48,8 @@
           </p>
         </div>
 
-        <div>
-          <p>音乐品质(单位k)</p>
+        <div class="setting-one-item">
+          <p>1.5 音乐品质(单位k)</p>
           <el-tag
             class="br-item"
             v-for="(item,index) in br"
@@ -59,6 +60,7 @@
           >{{item.v}}</el-tag>
         </div>
       </div>
+        <el-divider></el-divider>
       <p>2. 账号</p>
       <div class="item">
         <el-button
@@ -202,6 +204,9 @@ input::-webkit-inner-spin-button {
 }
 .br-item {
   margin-right: 10px;
+}
+.setting-one-item{
+  margin-top:20px;
 }
 </style>
 

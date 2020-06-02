@@ -145,7 +145,8 @@ p {
   margin-left: 5px;
 }
 .item-icon > img {
-  height: 20px;
+  height: 15px;
+
 }
 .item-content {
   font-size: 11px;

@@ -283,6 +283,7 @@ export default {
     //如果歌曲详情和目前播放的歌曲不同
     // 就略过显示歌曲详情,继续路由
     let storeMusicId = this.$store.state.musicid;
+    if(storeMusicId){    
     if (this.musicid != storeMusicId) {
       this.$router.go(1);
       if (this.$store.state.musicid) {
@@ -293,7 +294,16 @@ export default {
           duration: 2000
         });
       }
+      return;
     }
+    }
+     if (!this.$store.state.isPlaying) {
+      this.$router.push(`/playDetail?id=${this.musicid}`);
+      if (!this.$store.state.playLists) {
+        this.$store.commit(`getPlayLists`, []);
+      }
+      this.reloadPlay();
+     }
 
     if (localStorage.getItem("canvasItemV")) {
       this.canvasItemV = Number(localStorage.getItem("canvasItemV"));
@@ -333,14 +343,7 @@ export default {
       }
     });
 
-    if (!this.$store.state.isPlaying) {
-      this.$router.push(`/playDetail?id=${this.musicid}`);
-      if (!this.$store.state.playLists) {
-        this.$store.commit(`getPlayLists`, []);
-      }
-
-      this.reloadPlay();
-    }
+   
     //  获取相似歌曲
     this.getSameSong();
     //获取最近听过这首歌的用户
@@ -348,6 +351,7 @@ export default {
   },
   methods: {
     getSongDetail() {
+      
       this.$axios
         .get(`${this.$domain}/song/detail?ids=${this.musicid}`)
         .then(res => {
@@ -357,6 +361,7 @@ export default {
           this.getDataOk = true;
         })
         .catch(() => {});
+
     },
     //获取解析歌词
     getLyric() {

@@ -43,11 +43,7 @@
           <img class="volume" :src="volumeImgUrl" />
         </el-col>
         <el-col class="item" :span="2">
-          <el-slider 
-          v-model="volume" 
-          @change="volumeChange" 
-          :max="maxVolume" 
-          :step="stepVolume"></el-slider>
+          <el-slider v-model="volume" @change="volumeChange" :max="maxVolume" :step="stepVolume"></el-slider>
         </el-col>
         <el-col class="item item-icon" style="text-align:right;" :span="2">
           <span
@@ -113,7 +109,7 @@ export default {
       musicUrl: null, //音乐文件存储地址
       isPlaying: false, // 是否在播放
       timer: null, // 1s定时器 加载歌曲进度
-      volume:0.5, //音量
+      volume: 0.5, //音量
       maxVolume: 1, // 最大音量
       stepVolume: 0.1, //调节音量步长
       volumeImgUrl: require("../assets/volume.png"), // 喇叭图片
@@ -139,7 +135,7 @@ export default {
     volume: function(n) {
       if (this.$refs.audio) {
         this.$refs.audio.volume = n;
-        this.$store.commit('setMusicVolume',n);
+        this.$store.commit("setMusicVolume", n);
       }
     }
   },
@@ -148,14 +144,14 @@ export default {
       localStorage.setItem("playNextSelf", true);
     }
     // 监听键盘事件
-    document.addEventListener("keyup", e => { 
-     //空格键就暂停或播放
-     if(e.keyCode === 32){
-        if(this.isPlaying){
-           this.stop();
-         }else{  
-           this.play();
-         }
+    document.addEventListener("keyup", e => {
+      //空格键就暂停或播放
+      if (e.keyCode === 32) {
+        if (this.isPlaying) {
+          this.stop();
+        } else {
+          this.play();
+        }
       }
       //增大音量
       if (e.keyCode === 39 && this.volume <= 0.9) {
@@ -200,7 +196,11 @@ export default {
   mounted() {
     this.volume = this.$store.state.musicVolume;
     this.musicid = this.$store.state.musicid;
-    this.musicid && this.getSongUrl();
+
+    // this.$nextTick(() => {
+      this.musicid && this.getSongUrl();
+    // });
+
     // 当audio就绪 初始化音量
     let volumeTimer = setInterval(() => {
       if (this.$refs.audio) {
@@ -208,6 +208,7 @@ export default {
         clearInterval(volumeTimer);
       }
     }, 200);
+   
   },
 
   // 在组件销毁前，将歌曲信息加入到播放历史
@@ -224,7 +225,7 @@ export default {
     let history = JSON.parse(localStorage.getItem("playHistory"));
     if (history) {
       history.unshift(song);
-      if(history.length > 100){
+      if (history.length > 100) {
         history.pop();
       }
       let str = JSON.stringify(history);
@@ -255,6 +256,11 @@ export default {
         )
         .then(res => {
           this.musicUrl = res.data.data[0].url;
+            //苹果和火狐浏览器音频不能自动播放
+            // // 先模拟用户点击事件
+            // let tempClick = document.getElementById('musicname');
+            // tempClick.click();
+
           //如果是会员歌曲
           if (!this.musicUrl) {
             this.$message({
@@ -266,7 +272,7 @@ export default {
 
             //如果设置自动跳过，并且播放列表中有单曲的话
             //  并且跳转的次数小于播放列表单曲总数
-            //  防止列表全无版权，进入死循环   
+            //  防止列表全无版权，进入死循环
             let tonext = this.$store.state.canNotplayToNext;
             if (
               tonext.value &&
@@ -310,24 +316,28 @@ export default {
     },
     //暂停
     stop() {
-      this.$refs.audio.pause();
-      this.isPlaying = false;
       clearInterval(this.timer);
       this.timer = null;
+      if (this.$refs.audio) {
+        this.$refs.audio.pause();
+      }
+      this.isPlaying = false;
     },
     //播放
     play() {
-      if (this.$refs.audio.readyState) {
-        this.$refs.audio.play();
-        this.isPlaying = true;
-        this.oneSecondTime();
-      } else {
-        this.$message({
-          showClose: true,
-          message: "网有点慢,别急呀...",
-          type: "warning",
-          duration: 2000
-        });
+      if (this.$refs.audio) {
+        if (this.$refs.audio.readyState) {
+          this.$refs.audio.play();
+          this.isPlaying = true;
+          this.oneSecondTime();
+        } else {
+          this.$message({
+            showClose: true,
+            message: "网有点慢,别急呀...",
+            type: "warning",
+            duration: 2000
+          });
+        }
       }
     },
     // 手动改变进度条
