@@ -47,6 +47,7 @@
         </el-col>
         <el-col class="item item-icon" style="text-align:right;" :span="2">
           <span
+            id="last"
             v-if="this.$store.state.playLists.length > 1 && !this.$store.state.fm"
             @click="debouncePlayLastMusic"
             class="el-icon-caret-left"
@@ -58,6 +59,7 @@
         </el-col>
         <el-col class="item item-icon" style="text-align:left;" :span="2">
           <span
+            id="next"
             v-if="this.$store.state.playLists.length > 1"
             @click="debouncePlayNextMusic"
             class="el-icon-caret-right"
@@ -115,7 +117,9 @@ export default {
       stepVolume: 0.1, //调节音量步长
       volumeImgUrl: require("../assets/volume.png"), // 喇叭图片
       lyricTimer: null, //歌词计时器
-      lastMusicTimer: null //改变歌曲防抖函数
+      lastMusicTimer: false, //改变歌曲节流函数
+      nextMusicTimer: false,
+      debounde:false,//键盘节流
     };
   },
   computed: {
@@ -146,6 +150,7 @@ export default {
     }
     // 监听键盘事件
     document.addEventListener("keyup", e => {
+      console.log(e.keyCode);
       //空格键就暂停或播放
       if (e.keyCode === 32) {
         if (this.isPlaying) {
@@ -170,28 +175,18 @@ export default {
           this.$store.state.musicVolume - 0.1
         );
       }
-      // // 上一曲
-      // if (e.keyCode === 38) {
-      //   if (this.lastMusicTimer !== null) {
-      //     clearTimeout(this.lastMusicTimer);
-      //     this.lastMusicTimer = null;
-      //   } else {
-      //     this.lastMusicTimer = setTimeout(() => {
-      //       this.playLastMusic();
-      //     }, 200);
-      //   }
-      // }
-      // //下一曲
-      // if (e.keyCode === 40) {
-      //   if (this.lastMusicTimer !== null) {
-      //     clearTimeout(this.lastMusicTimer);
-      //     this.lastMusicTimer = null;
-      //   } else {
-      //     this.lastMusicTimer = setTimeout(() => {
-      //       this.playNextMusic();
-      //     }, 200);
-      //   }
-      // }
+      if(this.debounde){
+        return;
+      }
+      // 上一曲
+      if (e.keyCode === 38) {    
+         let last =document.getElementById('last');
+         last.click();
+      }
+      if (e.keyCode === 40) {
+        let next =document.getElementById('next');
+        next.click();
+      }
     });
   },
   mounted() {
@@ -199,7 +194,7 @@ export default {
     this.musicid = this.$store.state.musicid;
 
     // this.$nextTick(() => {
-      this.musicid && this.getSongUrl();
+    this.musicid && this.getSongUrl();
     // });
 
     // 当audio就绪 初始化音量
@@ -209,7 +204,6 @@ export default {
         clearInterval(volumeTimer);
       }
     }, 200);
-   
   },
 
   // 在组件销毁前，将歌曲信息加入到播放历史
@@ -257,10 +251,10 @@ export default {
         )
         .then(res => {
           this.musicUrl = res.data.data[0].url;
-            //苹果和火狐浏览器音频不能自动播放
-            // // 先模拟用户点击事件
-            // let tempClick = document.getElementById('musicname');
-            // tempClick.click();
+          //苹果和火狐浏览器音频不能自动播放
+          // // 先模拟用户点击事件
+          // let tempClick = document.getElementById('musicname');
+          // tempClick.click();
 
           //如果是会员歌曲
           if (!this.musicUrl) {
@@ -451,7 +445,7 @@ export default {
         id = this.$store.state.playLists[Math.floor(Math.random() * le)].id;
       }
 
-      if (id != false) {
+      if (id !== false) {
         this.$axios
           .get(`${this.$domain}/song/detail?ids=${id}`)
           .then(res => {
@@ -488,43 +482,45 @@ export default {
         let le = this.$store.state.playLists.length;
         id = this.$store.state.playLists[Math.floor(Math.random() * le)].id;
       }
-      this.$axios
-        .get(`${this.$domain}/song/detail?ids=${id}`)
-        .then(res => {
-          //更新VUEX的音乐信息
-          this.$store.commit("getMusicInfo", res.data);
-          if (this.$route.name == "playDetail") {
-            this.$router.replace(`/playDetail?id=${id}`).catch(err => {});
-          }
-          // 更新音乐ID
-          this.$store.commit("getMusicId", id);
-          this.reloadPlay();
-        })
-        .catch(() => {
-          this.$message("网络出问题啦");
-        });
+      if (id) {
+        this.$axios
+          .get(`${this.$domain}/song/detail?ids=${id}`)
+          .then(res => {
+
+            //更新VUEX的音乐信息
+            this.$store.commit("getMusicInfo", res.data);
+            if (this.$route.name == "playDetail") {
+              this.$router.replace(`/playDetail?id=${id}`).catch(err => {});
+            }
+            // 更新音乐ID
+            this.$store.commit("getMusicId", id);
+            this.reloadPlay();
+          })
+          .catch(() => {
+            this.$message("网络出问题啦");
+          });
+      }
     },
     //防抖下一曲函数
     debouncePlayNextMusic() {
-      if (this.lastMusicTimer !== null) {
-        clearTimeout(this.lastMusicTimer);
-        this.lastMusicTimer = null;
-      } else {
-        this.lastMusicTimer = setTimeout(() => {
-          this.playNextMusic();
-        }, 200);
+      if (this.nextMusicTimer !== null) {
+        clearTimeout(this.nextMusicTimer);
+        this.nextMusicTimer = null;
       }
+      this.nextMusicTimer = setTimeout(() => {
+        this.playNextMusic();
+      }, 200);
     },
     //防抖播放上一首
     debouncePlayLastMusic() {
       if (this.lastMusicTimer !== null) {
         clearTimeout(this.lastMusicTimer);
         this.lastMusicTimer = null;
-      } else {
-        this.lastMusicTimer = setTimeout(() => {
-          this.playLastMusic();
-        }, 200);
       }
+
+      this.lastMusicTimer = setTimeout(() => {
+        this.playLastMusic();
+      }, 200);
     },
     // 点击播放音乐列表音乐
     playListsMusic(id) {

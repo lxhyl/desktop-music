@@ -103,18 +103,7 @@ Vue.filter('toChinese', function (e) {
    }
 })
 
-//将防抖函数挂载至原型上，方便使用
-Vue.prototype.$debounce = (fun,time) => {
-   let timer = null;
-   if(timer !== null){
-     clearTimeout(timer);
-     timer = null;
-   }else {
-     return () => {
-       timer = setTimeout(fun,time);
-     }
-   }
-}
+
 
 
 new Vue({

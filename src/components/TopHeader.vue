@@ -19,6 +19,7 @@
             <!-- 搜索建议 -->
             <search v-if="searchControl" />
             <input
+              id="search-input"
               type="text"
               slot="reference"
               v-model="searchKey"
@@ -184,7 +185,7 @@ export default {
     searchKey: function(n) {
       // 搜索框防抖  200ms延时
       if (n == "") {
-        this.$store.commit("changeSearchPopover", true);
+        // this.$store.commit("changeSearchPopover", true);
         this.searchControl = false;
 
         this.hotSearchControl = true;
@@ -278,6 +279,10 @@ export default {
       if (this.searchKey == "") {
         return;
       }
+      let input = document.getElementById("search-input");
+      if (input) {
+        input.blur();
+      }
       this.$store.commit("changeSearchPopover", false);
       let his = JSON.parse(localStorage.getItem("history"));
       //第一次搜索
@@ -287,7 +292,6 @@ export default {
       //搜索历史中是否已有
       for (let i = 0; i < his.length; i++) {
         if (his[i] == this.searchKey) {
-          this.$store.commit("changeSearchPopover", false);
           this.$router.push(`/search?keyword=${this.searchKey}`);
           return;
         }
@@ -304,6 +308,7 @@ export default {
 
       this.$router.push(`/search?keyword=${this.searchKey}`);
       this.searchKey = "";
+      this.searchPopover;
     },
     //路由至设置
     routerToSetting() {
