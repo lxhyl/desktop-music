@@ -53,6 +53,7 @@
             </el-row>
             <p v-if="sameUsers.length == 0">暂无数据</p>
           </div>
+          <p v-show="!getUsersOk">登陆以获取推荐用户</p>
         </div>
       </div>
       <div class="lyric" id="lyric">
@@ -144,8 +145,8 @@ export default {
         if (document.getElementById(i)) {
           document.getElementById(i).style.color = "rgb(124, 124, 124)";
         }
-        if (document.getElementById(i+1)) {
-          document.getElementById(i+1).style.color = "rgb(124, 124, 124)";
+        if (document.getElementById(i + 1)) {
+          document.getElementById(i + 1).style.color = "rgb(124, 124, 124)";
         }
         let last = this.lyric[i].time;
         let next = this.lyric[i + 1].time;
@@ -195,7 +196,9 @@ export default {
       }
 
       if (this.getNewComments) {
-        if (n.length < 100) {
+        //getNewComments决定是否拿新弹幕，
+        // 等待每次请求完成，再发新请求
+        if (n.length < 100 && this.getNewComments) {
           this.getComment();
         }
       }
@@ -283,27 +286,27 @@ export default {
     //如果歌曲详情和目前播放的歌曲不同
     // 就略过显示歌曲详情,继续路由
     let storeMusicId = this.$store.state.musicid;
-    if(storeMusicId){    
-    if (this.musicid != storeMusicId) {
-      this.$router.go(1);
-      if (this.$store.state.musicid) {
-        this.$message({
-          showClose: true,
-          message: "没有内容了！",
-          type: "warning",
-          duration: 2000
-        });
+    if (storeMusicId) {
+      if (this.musicid != storeMusicId) {
+        this.$router.go(1);
+        if (this.$store.state.musicid) {
+          this.$message({
+            showClose: true,
+            message: "没有内容了！",
+            type: "warning",
+            duration: 2000
+          });
+        }
+        return;
       }
-      return;
     }
-    }
-     if (!this.$store.state.isPlaying) {
-      this.$router.push(`/playDetail?id=${this.musicid}`);
+    if (!this.$store.state.isPlaying) {
+      // this.$router.push(`/playDetail?id=${this.musicid}`);
       if (!this.$store.state.playLists) {
         this.$store.commit(`getPlayLists`, []);
       }
       this.reloadPlay();
-     }
+    }
 
     if (localStorage.getItem("canvasItemV")) {
       this.canvasItemV = Number(localStorage.getItem("canvasItemV"));
@@ -322,6 +325,12 @@ export default {
     this.$store.commit("getMusicId", this.musicid);
     this.musicid && this.getSongDetail();
     this.musicid && this.getLyric();
+    // 推荐用户需要登陆
+    let userid = localStorage.getItem("userid");
+    if (userid) {
+      //获取最近听过这首歌的用户
+      this.getListenedUser();
+    }
     this.getComment();
     if (this.showCanvas === true && this.stopOrMove === true) {
       setTimeout(() => {
@@ -343,15 +352,11 @@ export default {
       }
     });
 
-   
     //  获取相似歌曲
     this.getSameSong();
-    //获取最近听过这首歌的用户
-    this.getListenedUser();
   },
   methods: {
     getSongDetail() {
-      
       this.$axios
         .get(`${this.$domain}/song/detail?ids=${this.musicid}`)
         .then(res => {
@@ -361,7 +366,6 @@ export default {
           this.getDataOk = true;
         })
         .catch(() => {});
-
     },
     //获取解析歌词
     getLyric() {
@@ -430,10 +434,10 @@ export default {
           this.offset += 1;
           this.getNewComments = true;
         })
-        .catch(() => {
+        .catch(err => {
           this.$message({
             showClose: true,
-            message: "检查下网络吧!",
+            message: `获取评论报错:${err}`,
             type: "warning",
             duration: 2000
           });
@@ -526,7 +530,14 @@ export default {
           }
           this.getSameDataOk = true;
         })
-        .catch(() => {});
+        .catch(err => {
+          this.$message({
+            showClose: true,
+            message: `获取推荐单曲报错${err}`,
+            type: "warning",
+            duration: 2000
+          });
+        });
     },
     //播放推荐歌曲
     playSameSong(id, index) {
@@ -568,7 +579,14 @@ export default {
           }
           this.getUsersOk = true;
         })
-        .catch(() => {});
+        .catch(err => {
+          this.$message({
+            showClose: true,
+            message: `获取推荐用户报错${err}`,
+            type: "warning",
+            duration: 2000
+          });
+        });
     },
     //跳转用户页
     toUserPage(id) {

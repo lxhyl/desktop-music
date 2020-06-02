@@ -12,21 +12,21 @@ module.exports = {
 
     // 开发环境配置
     
-    devServer: {
-        // host:"localhost",
-        port:"8080",
-        proxy: {
-            '/api': {
-                target: 'https://zhangpengfan.xyz:3000',
-                ws: true,
-                changOrigin: true,
-                pathRewrite: {
-                    '^/api': ''
-                }
-            }
+    // devServer: {
+    //     host:"localhost",
+    //     port:"8080",
+    //     proxy: {
+    //         '/music': {
+    //             target: 'https://zhangpengfan.xyz:3000',
+    //             ws: true,
+    //             changOrigin: true,
+    //             pathRewrite: {
+    //                 '^/music': ''
+    //             }
+    //         }
 
-        }
-    },
+    //     }
+    // },
     configureWebpack: {
         plugins: [
             new CompressionPlugin({

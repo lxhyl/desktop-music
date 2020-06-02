@@ -90,6 +90,7 @@
         </el-col>
       </el-row>
     </div>
+    <div v-else>刷新下吧</div>
     <audio ref="audio" v-if="getDataOk" autoplay :src="musicUrl" style="width:0;height:0;"></audio>
   </div>
 </template>
