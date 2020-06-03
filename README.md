@@ -5,7 +5,7 @@
 #### 后台
 [网易云音乐](https://github.com/Binaryify/NeteaseCloudMusicApi)
 
-#### 已完成  
+#### 已完成
 
 * 用户歌单单曲数，播放量以图表展示
 * 音乐评论以弹幕的形式播放
@@ -15,12 +15,22 @@
 * 单曲，歌单，用户搜索
 * 相似单曲推荐
 * 歌曲详情
+* 歌单，歌单内单曲搜索
 * 搜索历史
 * 私人FM
 * 获取私信,评论,通知
 * 随机播放
 * 改变播放音频品质
+* 播放历史
+* 播放排行
+* 每日单曲，歌单推荐
+* 设置  
 
+#### 建设中
+* 电台
+
+
+#### 操作简介
 | 按键 | 操作 |
 |:--|:--|
 |space|播放/暂停|
@@ -31,36 +41,17 @@
 |Esc|返回|
 |S|搜索|
 |Enter|确定|
-|歌单详情内右键|收藏单曲至歌单|
-|播放条音乐图片左键|打开歌曲详情|
+|歌曲详情页图片中心红心|喜欢音乐|
+|歌单详情页内右键|收藏单曲至歌单|
+|播放条音乐图片|打开歌曲详情|
 |播放条音乐图片右键|收藏单曲至歌单|
 
+
+#### 截图
 > 主页
 ![主页](https://github.com/zpfnb/desktop-music/raw/master/readme-img/主页.jpg)
 
-> 歌单搜索
-![歌单搜索](https://github.com/zpfnb/desktop-music/raw/master/readme-img/歌单搜索.jpg)
-
-> 热搜-搜索历史
-![热搜-搜索历史](https://github.com/zpfnb/desktop-music/raw/master/readme-img/热搜-搜索历史.jpg)
-
->单曲搜索
-![单曲搜索](https://github.com/zpfnb/desktop-music/raw/master/readme-img/单曲搜索.jpg)
-
->以二维码形式分享单曲-扫码播放
 ![以二维码形式分享单曲-扫码播放](https://github.com/zpfnb/desktop-music/raw/master/readme-img/以二维码形式分享单曲-扫码播放.jpg)
 
->弹幕
-![弹幕](https://github.com/zpfnb/desktop-music/raw/master/readme-img/弹幕.jpg)
-
->推荐
-![推荐](https://github.com/zpfnb/desktop-music/raw/master/readme-img/推荐.jpg)
-
->播放列表
-![播放列表](https://github.com/zpfnb/desktop-music/raw/master/readme-img/播放列表.jpg)
-
->歌单
-![歌单](https://github.com/zpfnb/desktop-music/raw/master/readme-img/歌单.jpg)
-
->个人主页
-![个人主页](https://github.com/zpfnb/desktop-music/raw/master/readme-img/个人主页.jpg)
+#### License
+MIT

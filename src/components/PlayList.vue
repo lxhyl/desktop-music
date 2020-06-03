@@ -58,7 +58,7 @@
         </div>
       </div>
       <div class="container">
-        <el-row class="li-container">
+        <el-row class="li-container" style="background-color: #222225;">
           <el-col :span="1" class="li-num">序号</el-col>
           <el-col :span="7" class="li-name" style="color:rgb(124, 124, 124);">音乐标题</el-col>
           <el-col :span="7" class="li-name" style="color:rgb(124, 124, 124);">歌手</el-col>
@@ -342,7 +342,7 @@ export default {
 .container {
   margin-bottom: 20px;
 }
-.li-container:nth-child(odd) {
+.li-container:nth-child(2n) {
   background-color: #222225;
 }
 .li-container {

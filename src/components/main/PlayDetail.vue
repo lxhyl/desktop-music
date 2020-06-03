@@ -34,7 +34,7 @@
             <p v-if="sameSongs.length == 0">暂无数据</p>
           </div>
           <div v-show="getUsersOk" class="user">
-            <p style="width:300px;height:20px;line-height:20px;font-sie:14px;">听过这首歌的人</p>
+            <p style="width:300px;height:20px;line-height:20px;font-sie:14px;">喜欢这首歌的人</p>
             <el-row
               style="height:50px;margin-top:5px;"
               v-for="(item,index) in sameUsers"

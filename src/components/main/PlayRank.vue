@@ -135,6 +135,7 @@ export default {
       this.$router.push(`/playDetail?id=${id}`);
       // 更新音乐ID
       this.$store.commit("getMusicId", id);
+       this.$store.commit("getPlayLists", []);
       //关闭fm模式
       this.$store.commit("setFm", false);
       this.reloadPlay();

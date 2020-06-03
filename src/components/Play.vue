@@ -218,9 +218,10 @@ export default {
     }, 200);
   },
 
-  // 在组件销毁前，将歌曲信息加入到播放历史
+  // 在组件销毁前
+   //更新听歌打卡
   beforeDestroy() {
-    //更新听歌打卡
+   
     let id = this.musicid;
     let sourceid = this.$store.state.musicInfo.songs[0].al.id;
     let time = this.$store.state.musicPlayTime;
@@ -242,13 +243,10 @@ export default {
         )
         .then(res => {
           this.musicUrl = res.data.data[0].url;
-          //苹果和火狐浏览器音频不能自动播放
-          // // 先模拟用户点击事件
-          // let tempClick = document.getElementById('musicname');
-          // tempClick.click();
-
           //如果是会员歌曲
           if (!this.musicUrl) {
+           
+
             this.$message({
               showClose: true,
               message: "会员或无版权歌曲🥺",
@@ -278,6 +276,7 @@ export default {
               this.$store.commit("changePlayState", false);
             }
           }
+         
           this.getDataOk = true;
           this.oneSecondTime();
         })
@@ -286,6 +285,13 @@ export default {
           // 重新给audio赋值
           if (err.code == 403) {
             this.musicUrl = `https://music.163.com/song/media/outer/url?id=${this.musicid}.mp3`;
+          }else{
+             this.$message({
+                showClose: true,
+                message: `${err}`,
+                type: "warning",
+                duration: 3000
+              });
           }
         });
     },

@@ -25,6 +25,12 @@ export default {
    },
    //获取音乐信息 添加进历史记录
    getMusicInfo(state, value) {
+      //将新值于老值比较，如果不相等再更新
+      let o =JSON.stringify(state.musicInfo);
+      let n = JSON.stringify(value);
+      if(o == n){
+        return;
+      }
       if (state.musicid == value.privileges[0].id) {
          state.musicInfo = value;
          let id = value.songs[0].id;

@@ -28,9 +28,12 @@
         <el-col :span="7" class="li-name" style="color:rgb(124, 124, 124);">歌手</el-col>
         <el-col :span="5" class="li-name" style="color:rgb(124, 124, 124);">上次播放时间</el-col>
       </el-row>
-      <el-row v-for="(item,index) in lists" :key="index" 
-      @click.native="playSong(item.id)"
-      class="li-container">
+      <el-row
+        v-for="(item,index) in lists"
+        :key="index"
+        @click.native="playSong(item.id)"
+        class="li-container"
+      >
         <el-col :span="1" class="li-num">{{index + 1}}</el-col>
         <el-col :span="7" class="li-name">{{item.name}}</el-col>
         <el-col :span="7" class="li-name">{{item.ar}}</el-col>
@@ -38,10 +41,8 @@
       </el-row>
     </div>
     <div v-else>
-         <el-row class="title-elrow">
-        <el-col :span="20">    
-         暂无记录，试试这些新音乐吧
-        </el-col>
+      <el-row class="title-elrow">
+        <el-col :span="20">暂无记录，试试这些新音乐吧</el-col>
         <el-col :span="4">
           <el-button
             type="text"
@@ -51,17 +52,17 @@
           >刷新</el-button>
         </el-col>
       </el-row>
-        <div class="newsongs-container">
-          <el-card
-            v-for="(item,index) in newSongs"
-            :key="'newSong-'+ index"
-            class="card"
-            @click.native="playSong(item.id)"
-          >
-            <img :src="item.picUrl+'?param=100y150'" loading="lazy" />
-            <p class="newsong-name">{{item.name}}</p>
-          </el-card>
-        </div>
+      <div class="newsongs-container">
+        <el-card
+          v-for="(item,index) in newSongs"
+          :key="'newSong-'+ index"
+          class="card"
+          @click.native="playSong(item.id)"
+        >
+          <img :src="item.picUrl+'?param=100y150'" loading="lazy" />
+          <p class="newsong-name">{{item.name}}</p>
+        </el-card>
+      </div>
     </div>
   </div>
 </template>
@@ -72,7 +73,7 @@ export default {
   data() {
     return {
       lists: [],
-       newSongs: [] //推荐新歌
+      newSongs: [] //推荐新歌
     };
   },
   created() {
@@ -83,13 +84,13 @@ export default {
       let arr = JSON.parse(localStorage.getItem("playHistory"));
       if (arr) {
         this.lists = arr;
-      }else{
-          this.lists = [];
-          this.$axios
-              .get(`${this.$domain}/personalized/newsong`)
-              .then(res => {
-                this.newSongs = res.data.result;
-              })
+      } else {
+        this.lists = [];
+        this.$axios
+          .get(`${this.$domain}/personalized/newsong`)
+          .then(res => {
+            this.newSongs = res.data.result;
+          })
           .catch(() => {});
       }
     },
@@ -98,10 +99,11 @@ export default {
       localStorage.removeItem("playHistory");
       this.getPlayHistory();
     },
-     playSong(id) {
+    playSong(id) {
       this.$router.push(`/playDetail?id=${id}`);
-      // 更新音乐ID
+      // 更新音乐ID 播放列表
       this.$store.commit("getMusicId", id);
+      this.$store.commit("getPlayLists", []);
       //关闭fm模式
       this.$store.commit("setFm", false);
       this.reloadPlay();
@@ -140,7 +142,7 @@ export default {
 .newsongs-container {
   display: flex;
   flex-wrap: wrap;
-  margin:20px;
+  margin: 20px;
 }
 .card {
   margin-right: 10px;
