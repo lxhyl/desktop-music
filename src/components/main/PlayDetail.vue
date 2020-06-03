@@ -53,7 +53,7 @@
             </el-row>
             <p v-if="sameUsers.length == 0">暂无数据</p>
           </div>
-          <p v-show="!getUsersOk">登陆以获取推荐用户</p>
+          <p v-show="!getUsersOk">登陆以获取喜欢这首歌的人</p>
         </div>
       </div>
       <div class="lyric" id="lyric">

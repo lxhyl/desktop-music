@@ -20,8 +20,8 @@
             <span class="el-icon-user"></span>
             <span class="text">朋友</span>
           </p>
-           <p class="item" @click="routerToPage('/history')">
-             <span class="el-icon-notebook-2"></span>
+          <p class="item" @click="routerToPage('/history')">
+            <span class="el-icon-notebook-2"></span>
             <span class="text">播放历史</span>
           </p>
         </div>
@@ -33,7 +33,7 @@
             <span :class="item.icon"></span>
             <span class="text">{{item.text}}</span>
           </p>
-           <p class="item" @click="routerToPage('/rank')">
+          <p class="item" @click="routerToPage('/rank')">
             <span class="el-icon-medal-1"></span>
             <span class="text">播放排行</span>
           </p>
@@ -100,6 +100,8 @@ export default {
             };
             this.myList.push(json);
           }
+          // 拿到用户歌单
+          this.$store.commit('getUserList',arr);
         })
         .catch(() => {});
     },
@@ -113,7 +115,7 @@ export default {
     },
     fm() {
       if (!this.userid) {
-        this.$message("请登录");
+        this.$message("请登录☹️");
         return;
       }
       //如果已经是fm了
@@ -125,7 +127,7 @@ export default {
 
       this.$message({
         showClose: false,
-        message: "推荐中 🎵 ",
+        message: "个性化推荐中🔎 ",
         type: "warning",
         duration: 0
       });
@@ -134,6 +136,12 @@ export default {
         this.$axios
           .get(`${this.$domain}/personal_fm?timestamp=${new Date().getTime()}`)
           .then(res => {
+            this.$message({
+              showClose: false,
+              message: "歌曲搜寻成功💃🕺",
+              type: "warning",
+              duration: 0
+            });
             let songs = res.data.data;
             this.$message.closeAll();
             let result = [];
@@ -156,7 +164,7 @@ export default {
           })
           .catch(() => {});
       }, 500);
-    },
+    }
   }
 };
 </script>

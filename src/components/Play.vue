@@ -8,7 +8,21 @@
             :src="this.$store.state.musicInfo.songs[0].al.picUrl+'?param=40y40'"
             class="music-pic"
           ></el-avatar>
-          <div @click="openDetail" class="el-icon-rank open-detail"></div>
+          <el-dialog title="添加到歌单" width="500px" :visible.sync="dialog">
+            <el-tag
+              v-for="(item,index) in this.$store.state.userList"
+              effect="dark"
+              style="margin:5px;"
+              type="info"
+              :key="'userlist-'+index"
+              @click.native="addToPlayList(item.id)"
+            >{{item.name}}</el-tag>
+          </el-dialog>
+          <div
+            @click="openDetail"
+            @contextmenu.prevent="openDialog(musicid)"
+            class="el-icon-rank open-detail"
+          ></div>
         </el-col>
         <el-col :span="2" style="height:50px;">
           <span
@@ -119,7 +133,9 @@ export default {
       lyricTimer: null, //歌词计时器
       lastMusicTimer: false, //改变歌曲节流函数
       nextMusicTimer: false,
-      debounde:false,//键盘节流
+      debounde: false, //键盘节流
+      thisTemplateSongInfo: null, //歌曲信息
+      dialog: false //控制dialog
     };
   },
   computed: {
@@ -150,7 +166,6 @@ export default {
     }
     // 监听键盘事件
     document.addEventListener("keyup", e => {
-      console.log(e.keyCode);
       //空格键就暂停或播放
       if (e.keyCode === 32) {
         if (this.isPlaying) {
@@ -175,16 +190,16 @@ export default {
           this.$store.state.musicVolume - 0.1
         );
       }
-      if(this.debounde){
+      if (this.debounde) {
         return;
       }
       // 上一曲
-      if (e.keyCode === 38) {    
-         let last =document.getElementById('last');
-         last.click();
+      if (e.keyCode === 38) {
+        let last = document.getElementById("last");
+        last.click();
       }
       if (e.keyCode === 40) {
-        let next =document.getElementById('next');
+        let next = document.getElementById("next");
         next.click();
       }
     });
@@ -192,10 +207,7 @@ export default {
   mounted() {
     this.volume = this.$store.state.musicVolume;
     this.musicid = this.$store.state.musicid;
-
-    // this.$nextTick(() => {
     this.musicid && this.getSongUrl();
-    // });
 
     // 当audio就绪 初始化音量
     let volumeTimer = setInterval(() => {
@@ -208,31 +220,10 @@ export default {
 
   // 在组件销毁前，将歌曲信息加入到播放历史
   beforeDestroy() {
-    let sourceid = this.$store.state.musicInfo.songs[0].al.id;
-    let id = this.musicid;
-    let time = Math.floor(this.$store.state.musicPlayTime);
-    let song = {
-      id,
-      listenTime: new Date().getTime(),
-      name: this.$store.state.musicInfo.songs[0].name,
-      ar: this.$store.state.musicInfo.songs[0].ar[0].name
-    };
-    let history = JSON.parse(localStorage.getItem("playHistory"));
-    if (history) {
-      history.unshift(song);
-      if (history.length > 100) {
-        history.pop();
-      }
-      let str = JSON.stringify(history);
-      localStorage.setItem("playHistory", str);
-    } else {
-      //如果第一次听歌，初始化听歌历史数组
-      let arr = [song];
-      let str = JSON.stringify(arr);
-      localStorage.setItem("playHistory", str);
-    }
-
     //更新听歌打卡
+    let id = this.musicid;
+    let sourceid = this.$store.state.musicInfo.songs[0].al.id;
+    let time = this.$store.state.musicPlayTime;
     this.$axios
       .post(`${this.$domain}/scrobble`, {
         id,
@@ -458,7 +449,6 @@ export default {
             _this.$store.commit("getMusicId", id);
             //更新VUEX的音乐信息
             _this.$store.commit("getMusicInfo", res.data);
-
             _this.reloadPlay();
             if (this.$route.name == "playDetail") {
               this.$router.replace(`/playDetail?id=${id}`).catch(err => {});
@@ -486,15 +476,16 @@ export default {
         this.$axios
           .get(`${this.$domain}/song/detail?ids=${id}`)
           .then(res => {
-
             //更新VUEX的音乐信息
             this.$store.commit("getMusicInfo", res.data);
+            this.$store.commit("getMusicId", id);
             if (this.$route.name == "playDetail") {
               this.$router.replace(`/playDetail?id=${id}`).catch(err => {});
             }
-            // 更新音乐ID
-            this.$store.commit("getMusicId", id);
+
             this.reloadPlay();
+
+            // 更新音乐ID
           })
           .catch(() => {
             this.$message("网络出问题啦");
@@ -564,6 +555,53 @@ export default {
           this.reloadPlay();
         })
         .catch(() => {});
+    },
+    openDialog(id) {
+      if (this.$store.state.userid) {
+        this.dialog = true;
+        this.nowMusicId = id;
+      } else {
+        this.$message({
+          showClose: true,
+          message: "登陆后才能收藏单曲哦",
+          type: "warning",
+          duration: 2000
+        });
+      }
+    },
+    addToPlayList(id) {
+      let songId = this.nowMusicId;
+      this.$axios
+        .get(
+          `${this.$domain}/playlist/tracks?op=add&pid=${id}&tracks=${songId}`
+        )
+        .then(res => {
+          if (res.data.code == 200) {
+            this.dialog = false;
+            this.$message({
+              showClose: true,
+              message: "添加成功😊",
+              type: "warning",
+              duration: 2000
+            });
+          }
+          if (res.data.code == 502) {
+            this.$message({
+              showClose: true,
+              message: `歌单歌曲重复`,
+              type: "warning",
+              duration: 2000
+            });
+          }
+        })
+        .catch(err => {
+          this.$message({
+            showClose: true,
+            message: `失败,无权限：${err}`,
+            type: "warning",
+            duration: 2000
+          });
+        });
     }
   }
 };

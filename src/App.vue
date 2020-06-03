@@ -43,6 +43,14 @@ export default {
     };
   },
   created() {
+
+  },
+  mounted(){
+   document.addEventListener('keyup',(e)=>{
+     if(e.keyCode=== 27){
+       this.$router.go(-1);
+     }
+   })
   },
   methods: {
     reload() {

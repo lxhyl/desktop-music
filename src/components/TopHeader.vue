@@ -217,6 +217,16 @@ export default {
       this.login();
     }
   },
+  mounted(){
+    document.addEventListener('keyup',(e)=>{
+      if(e.keyCode === 83){
+        let input = document.getElementById('search-input');
+        if(input){
+          input.focus();
+        }
+      }
+    })
+  },
   methods: {
     routerGo(e) {
       this.$router.go(e);

@@ -23,6 +23,7 @@ import {
   Col, Row, Image, Button, ButtonGroup, Input, Avatar, Popover,
   Form, FormItem, Link, Message, Tag,Slider,Switch,Divider,
   Carousel,CarouselItem,Tooltip,MessageBox,Card,
+  Dialog
 } from 'element-ui';
 Vue.use(Col);
 Vue.use(Row);
@@ -43,6 +44,7 @@ Vue.use(Carousel);
 Vue.use(CarouselItem);
 Vue.use(Tooltip);
 Vue.use(Card);
+Vue.use(Dialog);
 Vue.prototype.$message = Message;
 Vue.prototype.$confirm = MessageBox.confirm;
 

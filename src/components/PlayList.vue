@@ -65,10 +65,21 @@
           <el-col :span="7" class="li-name" style="color:rgb(124, 124, 124);">专辑</el-col>
           <el-col :span="2" class="li-name" style="text-align:center;color:rgb(124, 124, 124);">时长</el-col>
         </el-row>
+        <el-dialog title="添加到歌单" width="500px" :visible.sync="dialog">
+          <el-tag
+            v-for="(item,index) in this.$store.state.userList"
+            effect="dark"
+            style="margin:5px;"
+            type="info"
+            :key="'userlist-'+index"
+            @click.native="addToPlayList(item.id)"
+          >{{item.name}}</el-tag>
+        </el-dialog>
         <el-row
           v-for="(item,index) in computedList"
           :key="index"
           @click.native="playMusic(item.id)"
+          @contextmenu.prevent.native="openDialog(item.id)"
           class="li-container"
         >
           <el-col :span="1" class="li-num">{{index + 1}}</el-col>
@@ -94,7 +105,9 @@ export default {
       playListId: null, //歌单id
       playList: {}, //歌单信息
       getDataOk: false, //数据获取完毕
-      searchName: "" // 搜索关键词
+      searchName: "", // 搜索关键词
+      dialog: false, //控制dialog
+      nowMusicId: null //右键选中的音乐Id
     };
   },
   // 监听路由  刷新组件
@@ -195,6 +208,54 @@ export default {
       }
       this.$store.commit("getPlayLists", result);
       this.$store.commit("setFm", false);
+    },
+    //打开dialog
+    openDialog(id) {
+      if (this.$store.state.userid) {
+        this.dialog = true;
+        this.nowMusicId = id;
+      } else {
+        this.$message({
+          showClose: true,
+          message: "登陆后才能收藏单曲哦",
+          type: "warning",
+          duration: 2000
+        });
+      }
+    },
+    addToPlayList(id) {
+      let songId = this.nowMusicId;
+      this.$axios
+        .get(
+          `${this.$domain}/playlist/tracks?op=add&pid=${id}&tracks=${songId}`
+        )
+        .then(res => {
+          if (res.data.code == 200) {
+            this.dialog = false;
+            this.$message({
+              showClose: true,
+              message: "添加成功😊",
+              type: "warning",
+              duration: 2000
+            });
+          }
+          if (res.data.code == 502) {
+            this.$message({
+              showClose: true,
+              message: `歌单歌曲重复`,
+              type: "warning",
+              duration: 2000
+            });
+          }
+        })
+        .catch(err => {
+          this.$message({
+            showClose: true,
+            message: `失败,无权限：${err}`,
+            type: "warning",
+            duration: 2000
+          });
+        });
     }
   }
 };

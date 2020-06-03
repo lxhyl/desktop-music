@@ -60,28 +60,41 @@ export default {
   data() {
     return {
       banners: [],
-      playtuijian: false, //是否再播放推荐歌曲
       playList: [], //每日推荐歌单
       showPlay: false,
       tjPlayLists: [] //推荐歌单
     };
   },
-  created() {
+
+  computed: {
+    islogin: function() {
+      if (this.$store.state.userid) {
+        return true;
+      } else {
+        return false;
+      }
+    }
   },
+  watch: {
+    islogin: function(n) {
+      if (n) {
+        this.getRecommendList();
+      }
+    }
+  },
+  created() {},
   mounted() {
     this.getBanner();
-    this.getRecommendList();
     this.getTuiJian();
   },
   methods: {
-  
     getBanner() {
-      this.$axios.get(`${this.$domain}/banner?type=0`).then(res => {
-        this.banners = res.data.banners;
-      })
-         .catch(() => {
-
-        });
+      this.$axios
+        .get(`${this.$domain}/banner?type=0`)
+        .then(res => {
+          this.banners = res.data.banners;
+        })
+        .catch(() => {});
     },
     openBanner(e) {
       if (e) {
@@ -91,51 +104,49 @@ export default {
     //每日推荐歌曲
     getRecommendSongs() {
       this.$message.closeAll();
-      if (this.playtuijian) {
-        this.$message({
-          showClose: true,
-          message: "已经在播放了！",
-          type: "warning",
-          duration: 2000
-        });
-        return;
-      }
       this.$message({
         showClose: false,
-        message: "搜寻歌曲中...🎶",
+        message: "搜寻歌曲中...🎼",
         type: "warning",
         duration: 0
       });
-      this.$axios.get(`${this.$domain}/recommend/songs`).then(res => {
-        this.playtuijian = true;
-        this.$message.closeAll();
-        let arr = res.data.data.dailySongs;
-        let result = [];
-        for (let i = 0; i < arr.length; i++) {
-          let obj = {
-            id: arr[i].id,
-            name: arr[i].name,
-            ar: arr[i].artists[0].name,
-            time: arr[i].duration
-          };
-          result.push(obj);
-        }
-        let id = result[0].id;
-        this.$message({
-          showClose: true,
-          message: "推荐歌曲已加入至播放列表🎶",
-          type: "warning",
-          duration: 2000
-        });
-        this.$router.push(`/playDetail?id=${id}`);
-        // 更新音乐ID
-        this.$store.commit("changePlayState", true);
-        this.$store.commit("getMusicId", id);
-        this.$store.commit("getPlayLists", result);
-        this.reloadPlay();
-      })
-         .catch(() => {
-
+      this.$axios
+        .get(`${this.$domain}/recommend/songs`)
+        .then(res => {
+          this.playtuijian = true;
+          this.$message.closeAll();
+          let arr = res.data.data.dailySongs;
+          let result = [];
+          for (let i = 0; i < arr.length; i++) {
+            let obj = {
+              id: arr[i].id,
+              name: arr[i].name,
+              ar: arr[i].artists[0].name,
+              time: arr[i].duration
+            };
+            result.push(obj);
+          }
+          let id = result[0].id;
+          this.$message({
+            showClose: true,
+            message: "推荐歌曲已加入至播放列表🎶",
+            type: "warning",
+            duration: 2000
+          });
+          this.$router.push(`/playDetail?id=${id}`);
+          // 更新音乐ID
+          this.$store.commit("changePlayState", true);
+          this.$store.commit("getMusicId", id);
+          this.$store.commit("getPlayLists", result);
+          this.reloadPlay();
+        })
+        .catch(() => {
+          this.$message({
+            showClose: false,
+            message: "找不到歌曲了...",
+            type: "warning",
+            duration: 0
+          });
         });
     },
     //每日推荐歌单
@@ -149,9 +160,7 @@ export default {
             item.showPlay = false;
           });
         })
-           .catch(() => {
-
-        });
+        .catch(() => {});
     },
     //打开歌单
     openPlayList(id) {
@@ -159,12 +168,12 @@ export default {
     },
     //推荐歌单
     getTuiJian() {
-      this.$axios.get(`${this.$domain}/personalized`).then(res => {
-        this.tjPlayLists = res.data.result.splice(15, 29);
-      })
-         .catch(() => {
-
-        });
+      this.$axios
+        .get(`${this.$domain}/personalized`)
+        .then(res => {
+          this.tjPlayLists = res.data.result.splice(15, 29);
+        })
+        .catch(() => {});
     }
   }
 };

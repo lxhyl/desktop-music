@@ -4,7 +4,7 @@
       <el-row class="title-elrow">
         <el-col :span="18">
           历史记录
-          <span style="font-size:12px;color: rgb(124, 124, 124);">（数据存储于浏览器，不同浏览器数据无法共享）</span>
+          <span style="font-size:12px;color: rgb(124, 124, 124);">（数据存储于浏览器，不同浏览器数据无法共享🙅‍♂️）</span>
         </el-col>
         <el-col :span="6">
           <el-button

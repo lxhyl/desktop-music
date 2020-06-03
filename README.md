@@ -28,6 +28,12 @@
 |↓|下一曲|
 |←|音量减|
 |→|音量加|
+|Esc|返回|
+|S|搜索|
+|Enter|确定|
+|歌单详情内右键|收藏单曲至歌单|
+|播放条音乐图片左键|打开歌曲详情|
+|播放条音乐图片右键|收藏单曲至歌单|
 
 > 主页
 ![主页](https://github.com/zpfnb/desktop-music/raw/master/readme-img/主页.jpg)
