@@ -3,10 +3,15 @@
     <div v-if="getDataOk">
       <div v-if="lists.length > 0" class="container">
         <el-row class="title">
-          <el-col :span="18">总{{lists.length}}首</el-col>
+          <el-col :span="18">播放排行（总{{lists.length}}首）</el-col>
           <el-col :span="6">
             <el-button-group>
-              <el-button @click="weekOrAll('week')" type="info" size="mini" icon="el-icon-alarm-clock">最近一周</el-button>
+              <el-button
+                @click="weekOrAll('week')"
+                type="info"
+                size="mini"
+                icon="el-icon-alarm-clock"
+              >最近一周</el-button>
               <el-button @click="weekOrAll('all')" type="info" size="mini" icon="el-icon-date">所有时间</el-button>
             </el-button-group>
           </el-col>
@@ -80,7 +85,7 @@ export default {
     this.uid && this.getAll();
   },
   methods: {
-     getWeek() {
+    getWeek() {
       this.$axios
         .get(`${this.$domain}/user/record?uid=${this.uid}&type=1`)
         .then(res => {
@@ -106,8 +111,8 @@ export default {
         });
     },
     //全部排行
-    getAll(){
-        this.$axios
+    getAll() {
+      this.$axios
         .get(`${this.$domain}/user/record?uid=${this.uid}&type=0`)
         .then(res => {
           this.all = res.data.allData;
@@ -121,21 +126,31 @@ export default {
           });
         });
     },
-    weekOrAll(e){
-      if(e == 'week'){
-         this.lists = this.week;
+    weekOrAll(e) {
+      if (e == "week") {
+        this.lists = this.week;
       }
-      if(e == 'all'){
+      if (e == "all") {
         this.lists = this.all;
       }
-    
     },
     //播放音乐
     playSong(id) {
       this.$router.push(`/playDetail?id=${id}`);
       // 更新音乐ID
       this.$store.commit("getMusicId", id);
-       this.$store.commit("getPlayLists", []);
+      let result = [];
+      for (let i = 0; i < this.lists.length; i++) {
+        let song = this.lists[i].song;
+        let obj = {
+          name: song.name,
+          ar: song.ar[0].name,
+          time: song.dt,
+          id: song.id
+        };
+        result.push(obj);
+      }
+      this.$store.commit("getPlayLists", result);
       //关闭fm模式
       this.$store.commit("setFm", false);
       this.reloadPlay();

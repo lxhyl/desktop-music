@@ -219,9 +219,8 @@ export default {
   },
 
   // 在组件销毁前
-   //更新听歌打卡
+  //更新听歌打卡
   beforeDestroy() {
-   
     let id = this.musicid;
     let sourceid = this.$store.state.musicInfo.songs[0].al.id;
     let time = this.$store.state.musicPlayTime;
@@ -245,8 +244,6 @@ export default {
           this.musicUrl = res.data.data[0].url;
           //如果是会员歌曲
           if (!this.musicUrl) {
-           
-
             this.$message({
               showClose: true,
               message: "会员或无版权歌曲🥺",
@@ -276,7 +273,7 @@ export default {
               this.$store.commit("changePlayState", false);
             }
           }
-         
+
           this.getDataOk = true;
           this.oneSecondTime();
         })
@@ -285,13 +282,13 @@ export default {
           // 重新给audio赋值
           if (err.code == 403) {
             this.musicUrl = `https://music.163.com/song/media/outer/url?id=${this.musicid}.mp3`;
-          }else{
-             this.$message({
-                showClose: true,
-                message: `${err}`,
-                type: "warning",
-                duration: 3000
-              });
+          } else {
+            this.$message({
+              showClose: true,
+              message: `${err}`,
+              type: "warning",
+              duration: 3000
+            });
           }
         });
     },
@@ -436,6 +433,7 @@ export default {
         return;
       }
       let id = this.getNextMusic();
+      console.log(id);
       //如果是随机播放，产生一个随机数，重新赋值id;
       if (this.$store.state.randomPlay) {
         let le = this.$store.state.playLists.length;
@@ -533,11 +531,7 @@ export default {
     //私人fm推荐歌曲
     getFmSongs() {
       this.$axios
-        .get(
-          `${
-            this.$domain
-          }/personal_fm?limit=1&timestamp=${new Date().getTime()}`
-        )
+        .get(`${this.$domain}/personal_fm?timestamp=${new Date().getTime()}`)
         .then(res => {
           let songs = res.data.data;
           let result = [];
@@ -552,8 +546,8 @@ export default {
             result.push(obj);
           }
           let id = res.data.data[0].id;
-          if (this.$route.name == "playDetail") {
-            this.$router.replace(`/playDetail?id=${id}`);
+          if (this.$route.path == "/playDetail") {
+            this.$router.push(`/playDetail?id=${id}`);
           }
           // 更新音乐ID
           this.$store.commit("getMusicId", id);

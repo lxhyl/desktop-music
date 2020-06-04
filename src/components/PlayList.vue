@@ -54,6 +54,7 @@
                 </div>
               </el-col>
             </el-row>
+            <el-row v-if="playList.playlist.description" class="header-main-two playlist-des">简介:{{playList.playlist.description}}</el-row>
           </div>
         </div>
       </div>
@@ -159,7 +160,7 @@ export default {
     },
     // 播放组件 id为歌曲id
     playMusic(id) {
-      this.$router.push(`/playDetail?id=${id}`);
+      this.$router.replace(`/playDetail?id=${id}`);
       // 更新音乐ID
       this.$store.commit("getMusicId", id);
       //关闭fm模式
@@ -391,5 +392,10 @@ export default {
   top: 4px;
   text-align: center;
   font-size: 12px;
+}
+.playlist-des{
+   overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 </style>

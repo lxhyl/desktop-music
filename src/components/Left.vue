@@ -136,14 +136,14 @@ export default {
         this.$axios
           .get(`${this.$domain}/personal_fm?timestamp=${new Date().getTime()}`)
           .then(res => {
+            this.$message.closeAll();
             this.$message({
               showClose: false,
               message: "歌曲搜寻成功💃🕺",
               type: "warning",
-              duration: 0
+              duration: 2000
             });
             let songs = res.data.data;
-            this.$message.closeAll();
             let result = [];
             for (let i = 0; i < songs.length; i++) {
               let obj = {

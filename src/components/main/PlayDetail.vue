@@ -59,6 +59,7 @@
       <div class="lyric" id="lyric">
         <div v-if="!nolyric">
           <p
+            class="lyrco-choose"
             v-for="(item,index) in lyric"
             :key="index"
             :id="index"
@@ -156,6 +157,8 @@ export default {
           if (item) {
             item.scrollIntoView();
             item.style.color = "white";
+            //找到歌词就返回，结束遍历 
+            return;
           }
         }
         //最后一句歌词
@@ -288,15 +291,7 @@ export default {
     let storeMusicId = this.$store.state.musicid;
     if (storeMusicId) {
       if (this.musicid != storeMusicId) {
-        this.$router.go(1);
-        if (this.$store.state.musicid) {
-          this.$message({
-            showClose: true,
-            message: "没有内容了！",
-            type: "warning",
-            duration: 2000
-          });
-        }
+        this.$router.replace(-1);
         return;
       }
     }
@@ -702,7 +697,14 @@ export default {
   text-align: center;
   color: rgb(124, 124, 124);
 }
-
+.lyrco-choose{
+    -webkit-touch-callout:text;  /*系统默认菜单被禁用*/   
+	  -webkit-user-select:text; /*webkit浏览器*/   
+	  -khtml-user-select:text; /*早期浏览器*/   
+	  -moz-user-select:text;/*火狐*/   
+	  -ms-user-select:text; /*IE10*/   
+	  user-select:text;   
+}
 .lyric::-webkit-scrollbar {
   display: none;
 }

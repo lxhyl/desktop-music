@@ -14,10 +14,10 @@
             ></el-switch>
           </p>
         </div>
-       
+
         <div class="setting-one-item">
           <p>1.2 顺序播放/随机播放</p>
-           <p style="font-size:11px;">
+          <p style="font-size:11px;">
             <el-switch
               v-model="playRandom"
               inactive-color="rgb(124, 124, 124)"
@@ -27,11 +27,11 @@
         </div>
         <div class="setting-one-item">
           <p>1.3 遇到无版权或会员专属曲目时是否自动切换</p>
-           <el-switch
-              v-model="canNotplayToNext"
-              inactive-color="rgb(124, 124, 124)"
-              active-color="rgb(184, 37, 37)"
-            ></el-switch>
+          <el-switch
+            v-model="canNotplayToNext"
+            inactive-color="rgb(124, 124, 124)"
+            active-color="rgb(184, 37, 37)"
+          ></el-switch>
         </div>
         <div class="setting-one-item">
           <p>1.4 定时停止播放(5-150分钟)</p>
@@ -53,14 +53,14 @@
           <el-tag
             class="br-item"
             v-for="(item,index) in br"
-             effect="dark"
+            effect="dark"
             :type="item.type"
             @click.native="changeBr(item)"
             :key="'br-'+index"
           >{{item.v}}</el-tag>
         </div>
       </div>
-        <el-divider></el-divider>
+      <el-divider></el-divider>
       <p>2. 账号</p>
       <div class="item">
         <el-button
@@ -84,8 +84,8 @@ export default {
       playNextSelf: true,
       timerPlay: 10,
       timer: null,
-      playRandom:false,//是否是随机播放
-      canNotplayToNext:true,//
+      playRandom: false, //是否是随机播放
+      canNotplayToNext: true //
     };
   },
   computed: {
@@ -99,7 +99,7 @@ export default {
         { v: 800, type: "info" },
         { v: 999, type: "info" }
       ];
-   
+
       for (let i = 0; i < brs.length; i++) {
         if (brs[i].v == nowBr / 1000) {
           brs[i].type = "danger";
@@ -113,12 +113,12 @@ export default {
       localStorage.setItem("playNextSelf", n);
     },
     //顺序播放/随机播放
-    playRandom(n){
-      this.$store.commit('changeRandomPlay',n);
+    playRandom(n) {
+      this.$store.commit("changeRandomPlay", n);
     },
     //遇到会员或无版权单曲时是否自动切换下一首
-    canNotplayToNext(n){
-      this.$store.commit('changeCanNotplayToNext',n);
+    canNotplayToNext(n) {
+      this.$store.commit("changeCanNotplayToNext", n);
     }
   },
   created() {},
@@ -151,6 +151,9 @@ export default {
         .then(() => {
           this.$axios.get(`${this.$domain}/logout`).then(() => {
             localStorage.clear();
+            var ex = new Date();
+            ex.setTime(ex.getTime() - 1);
+            document.cookie = "MUSIC_U=; expires=" + ex.toGMTString() + ";path=/";
             this.$message({
               showClose: true,
               message: "已登出",
@@ -205,8 +208,8 @@ input::-webkit-inner-spin-button {
 .br-item {
   margin-right: 10px;
 }
-.setting-one-item{
-  margin-top:20px;
+.setting-one-item {
+  margin-top: 20px;
 }
 </style>
 

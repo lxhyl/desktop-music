@@ -15,6 +15,7 @@ Vue.use(Router)
 import FindMusic from '../components/findMusic/Index.vue'
 import Gxtj from '../components/findMusic/Gxtj.vue'
 import Zbdt from "../components/findMusic/Zbdt.vue"
+import TopList from "../components/findMusic/TopList.vue"
 
 // 用户主页
 import Me from "../components/main/Me.vue"
@@ -49,6 +50,10 @@ export default new Router({
                     path: '/zbdt',
                     name: 'zbdt',
                     component: Zbdt
+                },{
+                    path:'/topList',
+                    name:'topList',
+                    component:TopList,
                 }
             ]
         },

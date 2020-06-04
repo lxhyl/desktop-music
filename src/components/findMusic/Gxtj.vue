@@ -152,7 +152,7 @@ export default {
     //每日推荐歌单
     getRecommendList() {
       this.$axios
-        .get(`${this.$domain}/recommend/resource?limit=14`)
+        .get(`${this.$domain}/recommend/resource`)
         .then(res => {
           this.playList = res.data.recommend;
 
