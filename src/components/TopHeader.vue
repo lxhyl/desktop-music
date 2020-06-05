@@ -247,7 +247,6 @@ export default {
             this.accountInfo = res.data;
             document.title = `${res.data.profile.nickname}的云音乐`;
             document.cookie = res.data.cookie;
-            console.log(this.accountInfo);
             this.isLogin = true;
             this.$store.commit("getUserId", res.data.account.id);
             //如果是第一次登陆  初始化数据

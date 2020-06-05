@@ -12,13 +12,13 @@
             <span class="el-icon-microphone"></span>
             <span class="text">私人FM</span>
           </p>
-          <p class="item">
+          <p class="item" @click="routerToPage('/video')">
             <span class="el-icon-video-camera"></span>
             <span class="text">视频</span>
           </p>
-          <p class="item">
+          <p class="item"  @click="routerToPage('/friends')">
             <span class="el-icon-user"></span>
-            <span class="text">朋友</span>
+            <span class="text">朋友(动态)</span>
           </p>
           <p class="item" @click="routerToPage('/history')">
             <span class="el-icon-notebook-2"></span>

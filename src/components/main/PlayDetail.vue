@@ -157,7 +157,7 @@ export default {
           if (item) {
             item.scrollIntoView();
             item.style.color = "white";
-            //找到歌词就返回，结束遍历 
+            //找到歌词就返回，结束遍历
             return;
           }
         }
@@ -176,13 +176,6 @@ export default {
       if (n.length < this.canvasItemNum) {
         if (this.allComments.length >= 1) {
           this.comments.push(this.allComments.splice(0, 1)[0]);
-        } else {
-          this.$message({
-            showClose: true,
-            message: "拿不到弹幕了！检查下网络吧",
-            type: "warning",
-            duration: 2000
-          });
         }
       }
     },
@@ -192,12 +185,13 @@ export default {
         this.showCanvas = false;
         this.$message({
           showClose: true,
-          message: "拿不到弹幕了！检查下网络吧",
+          message: "所有评论获取完毕",
           type: "warning",
           duration: 2000
         });
+        return;
       }
-
+    
       if (this.getNewComments) {
         //getNewComments决定是否拿新弹幕，
         // 等待每次请求完成，再发新请求
@@ -360,7 +354,9 @@ export default {
           this.musicInfo = res.data;
           this.getDataOk = true;
         })
-        .catch(() => {});
+        .catch(() => {
+          this.$router.replace("404");
+        });
     },
     //获取解析歌词
     getLyric() {
@@ -375,6 +371,7 @@ export default {
           //歌词字符串按行变为数组
           // 分别拿到时间，歌词
           let arr = res.data.lrc.lyric.split("\n");
+
           for (let i = 0; i < arr.length; i++) {
             if (arr[i].length) {
               let right = arr[i].indexOf("]");
@@ -430,6 +427,7 @@ export default {
           this.getNewComments = true;
         })
         .catch(err => {
+          this.$router.replace("/404NotFound");
           this.$message({
             showClose: true,
             message: `获取评论报错:${err}`,
@@ -697,13 +695,13 @@ export default {
   text-align: center;
   color: rgb(124, 124, 124);
 }
-.lyrco-choose{
-    -webkit-touch-callout:text;  /*系统默认菜单被禁用*/   
-	  -webkit-user-select:text; /*webkit浏览器*/   
-	  -khtml-user-select:text; /*早期浏览器*/   
-	  -moz-user-select:text;/*火狐*/   
-	  -ms-user-select:text; /*IE10*/   
-	  user-select:text;   
+.lyrco-choose {
+  -webkit-touch-callout: text; /*系统默认菜单被禁用*/
+  -webkit-user-select: text; /*webkit浏览器*/
+  -khtml-user-select: text; /*早期浏览器*/
+  -moz-user-select: text; /*火狐*/
+  -ms-user-select: text; /*IE10*/
+  user-select: text;
 }
 .lyric::-webkit-scrollbar {
   display: none;

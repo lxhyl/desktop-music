@@ -283,12 +283,14 @@ export default {
           if (err.code == 403) {
             this.musicUrl = `https://music.163.com/song/media/outer/url?id=${this.musicid}.mp3`;
           } else {
+            this.$router.replace('/404NotFound');
             this.$message({
               showClose: true,
               message: `${err}`,
               type: "warning",
               duration: 3000
             });
+
           }
         });
     },
@@ -433,7 +435,6 @@ export default {
         return;
       }
       let id = this.getNextMusic();
-      console.log(id);
       //如果是随机播放，产生一个随机数，重新赋值id;
       if (this.$store.state.randomPlay) {
         let le = this.$store.state.playLists.length;

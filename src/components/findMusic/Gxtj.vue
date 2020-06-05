@@ -4,10 +4,10 @@
       <el-carousel-item
         v-for="(item,index) in banners"
         style="width:540px;left:-80px;"
-        @click.native="openBanner(item.url)"
+        @click.native="openBanner(item)"
         :key="'banner' +index"
       >
-        <img :src="item.imageUrl" loading="lazy" class="banner-img" object-fit="fill" />
+        <img :src="item.pic" loading="lazy" class="banner-img" object-fit="fill" />
       </el-carousel-item>
     </el-carousel>
     <div v-if="this.$store.state.userid">
@@ -90,15 +90,22 @@ export default {
   methods: {
     getBanner() {
       this.$axios
-        .get(`${this.$domain}/banner?type=0`)
+        .get(`${this.$domain}/banner?type=1`)
         .then(res => {
           this.banners = res.data.banners;
         })
         .catch(() => {});
     },
     openBanner(e) {
-      if (e) {
-        window.open(e, "_blank");
+      if (e.song) {
+        // 更新VUEX
+        this.reloadPlay();
+        this.$store.commit("getMusicId", e.song.id);
+        this.$store.commit("getPlayLists", []);
+        this.$store.commit("setFm", false);
+        this.$router.push(`/playDetail?id=${e.song.id}`);
+      }else{
+       window.open(e.url,'_blank')
       }
     },
     //每日推荐歌曲

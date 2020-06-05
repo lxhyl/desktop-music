@@ -47,7 +47,9 @@ Vue.use(Card);
 Vue.use(Dialog);
 Vue.prototype.$message = Message;
 Vue.prototype.$confirm = MessageBox.confirm;
-
+//无限滚动
+import infiniteScroll from 'vue-infinite-scroll'
+Vue.use(infiniteScroll)
 
 
 
@@ -104,8 +106,20 @@ Vue.filter('toChinese', function (e) {
        return '日';
    }
 })
+//错误监控
+Vue.config.errorHandler = function(err, vm, info) {
+  console.log(`错误日志:`,err);
+  console.log(`错误页面:`,vm);
+  console.log('\n')
+  console.log('%c开发者微信：ZPF100523163','background-image: linear-gradient(to right, #eea2a2 0%, #bbc1bf 19%, #57c6e1 42%, #b49fda 79%, #7ac5d8 100%)');
+  Vue.prototype.$message({
+    showClose: true,
+    message: "监控到错误（可按F12打开控制台以查看错误或联系开发者）",
+    type: "error",
+    duration: 0
+  })
 
-
+};
 
 
 new Vue({

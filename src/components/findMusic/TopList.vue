@@ -6,7 +6,7 @@
       :key="'top'+index"
       @click="goToList(item.id)"
       >
-        <img :src="item.coverImgUrl"  loading="lazy"/>
+        <img :src="item.coverImgUrl+'?param=120y120'"  loading="lazy"/>
         <p>{{item.name}}</p>
       </div>
     </div>

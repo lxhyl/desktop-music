@@ -17,6 +17,10 @@ import Gxtj from '../components/findMusic/Gxtj.vue'
 import Zbdt from "../components/findMusic/Zbdt.vue"
 import TopList from "../components/findMusic/TopList.vue"
 
+//视频栏
+import VideoIndex from "../components/video/Index.vue"
+import VideoGroup from "../components/video/VideoGroup.vue"
+import PlayVideo from "../components/video/PlayVideo.vue"
 // 用户主页
 import Me from "../components/main/Me.vue"
 // 播放排行
@@ -58,6 +62,18 @@ export default new Router({
             ]
         },
         {
+          path:'/video',
+          name:'video',
+          component:VideoIndex,
+          children:[
+              {
+                  path:'/video',
+                  name:'videoGroup',
+                  component:VideoGroup
+              },
+          ]
+        },
+        {
             path: '/rank',
             name: 'rank',
             component: PlayRank
@@ -93,7 +109,13 @@ export default new Router({
             component: Setting
         },
         {
+            path:'/playVideo',
+            name:'playVideo',
+            component:PlayVideo
+         },
+        {
             path: '/*',
+            name:'404',
             component: Notfound
         }
 

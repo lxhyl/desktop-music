@@ -23,7 +23,7 @@
     </a>
     <TopHeader />
     <Left v-if="isFirstLogin" class="left-aide" />
-    <keep-alive exclude="playlist,playDetail,searchResult,Me,">
+    <keep-alive exclude="playlist,playDetail,searchResult,Me,playVideo">
       <router-view
         id="style-2"
         v-if="isRouterAlive"
@@ -62,7 +62,14 @@ export default {
       isFirstLogin: true
     };
   },
-  created() {},
+  created() {
+     console.log('---------\n')
+     console.log('🎵🕺💃👯‍♀️💃🏼🎶')
+     console.log('WEB NeteaseCloudMusic  V0.1.0')
+     console.log('%c开发者微信：%cZPF100523163',"font-weight:bold",'background-image: linear-gradient(to right, #eea2a2 0%, #bbc1bf 19%, #57c6e1 42%, #b49fda 79%, #7ac5d8 100%)');
+     console.log("二维码:http://zhangpengfan.xyz/wx_send_img/addWX.jpg")
+    console.log('---------\n')
+ },
   mounted() {
     document.addEventListener("keyup", e => {
       if (e.keyCode === 27) {
