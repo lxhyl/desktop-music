@@ -16,7 +16,7 @@
             <span class="el-icon-video-camera"></span>
             <span class="text">视频</span>
           </p>
-          <p class="item"  @click="routerToPage('/friends')">
+          <p class="item" @click="routerToPage('/friends')">
             <span class="el-icon-user"></span>
             <span class="text">朋友(动态)</span>
           </p>
@@ -50,7 +50,13 @@
             @click="routerToPlayList(item.id)"
           >
             <span :class="item.icon"></span>
-            <span class="text">{{item.name}}</span>
+            <span
+              class="text"
+              :id="item.id"
+              @drop.self="drop"
+              @dragover.self="dropOver"
+              @dragleave.self="dropLeave"
+            >{{item.name}}</span>
           </p>
         </div>
       </div>
@@ -76,7 +82,8 @@ export default {
       //我的歌单
       myList: [],
       //防抖函数
-      timer: null
+      timer: null,
+      flag: false //节流拖动事件
     };
   },
   created() {
@@ -101,7 +108,7 @@ export default {
             this.myList.push(json);
           }
           // 拿到用户歌单
-          this.$store.commit('getUserList',arr);
+          this.$store.commit("getUserList", arr);
         })
         .catch(() => {});
     },
@@ -164,6 +171,66 @@ export default {
           })
           .catch(() => {});
       }, 500);
+    },
+    //拖动事件 触发加入歌单
+    drop(e) {
+      e.preventDefault();
+      let data = e.dataTransfer.getData("text/plain");
+      let listid = e.target.id;
+      this.$axios
+        .get(
+          `${this.$domain}/playlist/tracks?op=add&pid=${listid}&tracks=${data}`
+        )
+        .then(res => {
+          if (res.data.code == 200) {
+            this.$message({
+              showClose: true,
+              message: "添加成功😊",
+              type: "warning",
+              duration: 2000
+            });
+          }
+          if (res.data.code == 502) {
+            this.$message({
+              showClose: true,
+              message: `歌单歌曲重复`,
+              type: "warning",
+              duration: 2000
+            });
+          }
+        })
+        .catch(err => {
+          this.$message({
+            showClose: true,
+            message: `失败,无权限：${err}`,
+            type: "warning",
+            duration: 2000
+          });
+        });
+      this.flag = true;
+    },
+    //进入元素时
+    dropOver(e) {
+      e.preventDefault();
+      if (!this.flag) {
+        this.flag = true;
+        this.$message({
+          showClose: true,
+          message: `松开鼠标加入歌单`,
+          type: "warning",
+          duration: 2000
+        });
+      }
+    },
+    //离开元素时
+    dropLeave(e) {
+      e.preventDefault();
+       this.$message({
+          showClose: true,
+          message: `移入歌单名加入歌单`,
+          type: "warning",
+          duration: 2000
+      });
     }
   }
 };
@@ -185,8 +252,7 @@ p {
   color: rgb(173, 175, 178);
 }
 .item {
-  margin: 10px 0;
-  margin-left: 10px;
+  margin: 10px 5px;
 }
 .text {
   margin-left: 10px;

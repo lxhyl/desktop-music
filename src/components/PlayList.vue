@@ -54,7 +54,10 @@
                 </div>
               </el-col>
             </el-row>
-            <el-row v-if="playList.playlist.description" class="header-main-two playlist-des">简介:{{playList.playlist.description}}</el-row>
+            <el-row
+              v-if="playList.playlist.description"
+              class="header-main-two playlist-des"
+            >简介:{{playList.playlist.description}}</el-row>
           </div>
         </div>
       </div>
@@ -76,11 +79,15 @@
             @click.native="addToPlayList(item.id)"
           >{{item.name}}</el-tag>
         </el-dialog>
+        <!-- 歌单列表 -->
         <el-row
           v-for="(item,index) in computedList"
           :key="index"
+          :id="item.id"
+          :title="item.name"
           @click.native="playMusic(item.id)"
           @contextmenu.prevent.native="openDialog(item.id)"
+          draggable="true"
           class="li-container"
         >
           <el-col :span="1" class="li-num">{{index + 1}}</el-col>
@@ -130,7 +137,19 @@ export default {
     this.playListId = this.$route.query.id;
     this.getPlayListInfo();
   },
-  mounted() {},
+  mounted() {
+    window.addEventListener("dragstart", e => {
+      let name = e.target.title;
+      //定义拖动数据
+      e.dataTransfer.setData("text/plain", e.target.id);
+      this.$message({
+        showClose: true,
+        message: "拖动歌曲到我的歌单！",
+        type: "warning",
+        duration: 2000
+      });
+    });
+  },
   methods: {
     //获取歌单信息
     getPlayListInfo() {
@@ -393,8 +412,8 @@ export default {
   text-align: center;
   font-size: 12px;
 }
-.playlist-des{
-   overflow: hidden;
+.playlist-des {
+  overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }

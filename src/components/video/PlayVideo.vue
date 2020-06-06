@@ -14,21 +14,16 @@
       <el-row class="handle">
         <el-col :span="15" class="title">{{videoDetail.title}}</el-col>
         <el-col :span="3">
-          <button class="share el-icon-star-on"
-          @click="likeVideo"
-          >
-              点赞{{videoInfo.likedCount}}
-          </button>
+          <button class="share el-icon-star-on" @click="likeVideo">点赞{{videoInfo.likedCount}}</button>
         </el-col>
         <el-col :span="3">
-          <button class="share el-icon-folder-opened"
-          @click="scVideo"
+          <button
+            class="share el-icon-folder-opened"
+            @click="scVideo"
           >收藏{{videoDetail.subscribeCount}}</button>
         </el-col>
         <el-col :span="3">
-          <button class="share el-icon-share"
-          @click="share"
-          >分享{{videoInfo.shareCount}}</button>
+          <button class="share el-icon-share" @click="share">分享{{videoInfo.shareCount}}</button>
         </el-col>
       </el-row>
     </div>
@@ -77,6 +72,10 @@
         <p class="border-bottom"></p>
       </div>
     </div>
+    <p class="loading" v-show="loading">
+      <span class="el-icon-loading"></span>
+      加载中
+    </p>
   </div>
 </template>
 
@@ -100,10 +99,10 @@ export default {
       offset: 0, //评论分页
       comments: [], //评论
       commentsNowNum: 0, //以获取的评论总数
-      sc:false,//是否收藏
+      sc: false, //是否收藏
+      loading:false,//
     };
   },
-  watch: {},
   created() {
     this.vid = this.$route.query.vid;
     this.getVideoUrl(); //获取视频地址
@@ -150,15 +149,18 @@ export default {
         .catch(() => {});
     },
     getComments() {
+      this.loading = false;
       if (this.videoInfo) {
         if (this.commentsNowNum < this.videoInfo.commentCount) {
-          this.$axios.get(
-            `${this.$domain}/comment/video?&id=${this.vid}&offset=${this.offset}`
-          )
+          this.$axios
+            .get(
+              `${this.$domain}/comment/video?&id=${this.vid}&offset=${this.offset}`
+            )
             .then(res => {
               this.comments = this.comments.concat(res.data.comments);
               this.offset += 1;
               this.commentsNowNum += 20;
+              this.loading = true;
             })
             .catch(() => {});
         }
@@ -170,7 +172,7 @@ export default {
         .get(
           `${this.$domain}/comment/like?id=${this.vid}&cid=${cid}&type=5&t=1`
         )
-        .then(res => {
+        .then(()=> {
           this.comments[index].liked = true;
           this.comments[index].likedCount += 1;
         })
@@ -189,7 +191,7 @@ export default {
         .get(
           `${this.$domain}/comment/like?id=${this.vid}&cid=${cid}&type=5&t=0`
         )
-        .then(res => {
+        .then(() => {
           this.comments[index].liked = false;
           this.comments[index].likedCount -= 1;
         })
@@ -203,45 +205,47 @@ export default {
         });
     },
     //视频点赞 取消
-    likeVideo(){
-       let t; //取消or点赞 
-       t = this.videoInfo.liked ? 0 : 1;
-       this.$axios.get(`${this.$domain}/resource/like?t=${t}&type=5&id=${this.vid}`)
-       .then(() => {
-           if(t){
-               this.videoInfo.likedCount += 1;
-               this.videoInfo.liked = true;
-           }else{
-                 this.videoInfo.likedCount -= 1;  
-                 this.videoInfo.liked = false;
-           }
-       })
+    likeVideo() {
+      let t; //取消or点赞
+      t = this.videoInfo.liked ? 0 : 1;
+      this.$axios
+        .get(`${this.$domain}/resource/like?t=${t}&type=5&id=${this.vid}`)
+        .then(() => {
+          if (t) {
+            this.videoInfo.likedCount += 1;
+            this.videoInfo.liked = true;
+          } else {
+            this.videoInfo.likedCount -= 1;
+            this.videoInfo.liked = false;
+          }
+        });
     },
     //收藏视频
-    scVideo(){
-        if(this.sc){
-            return;
-        }
-        this.$axios.get(`${this.$domain}/video/sub?id=${this.vid}&t=1`)
-        .then(res => {
-           this.videoDetail.subscribeCount += 1;
-           this.sc = true;
-            this.$message({
+    scVideo() {
+      if (this.sc) {
+        return;
+      }
+      this.$axios
+        .get(`${this.$domain}/video/sub?id=${this.vid}&t=1`)
+        .then(() => {
+          this.videoDetail.subscribeCount += 1;
+          this.sc = true;
+          this.$message({
             showClose: false,
             message: "收藏成功！可在我的收藏查看",
             type: "warning",
-            duration: 2000,
-          });
-        })
-    },
-    //分享到动态
-    share(){
-        this.$message({
-            showClose: true,
-            message: "暂不支持分享",
-            type: "warning",
             duration: 2000
           });
+        });
+    },
+    //分享到动态
+    share() {
+      this.$message({
+        showClose: true,
+        message: "暂不支持分享",
+        type: "warning",
+        duration: 2000
+      });
     }
   }
 };
@@ -336,5 +340,8 @@ video {
 }
 .item-not-liked {
   font-size: 11px;
+}
+.loading{
+    text-align: center;
 }
 </style>

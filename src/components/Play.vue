@@ -28,6 +28,8 @@
           <span
             class="name-arname"
             style="line-height:30px;"
+            draggable="true"
+            :id="this.$store.state.musicInfo.songs[0].id"
           >{{this.$store.state.musicInfo.songs[0].name}}</span>
 
           <p
@@ -216,6 +218,19 @@ export default {
         clearInterval(volumeTimer);
       }
     }, 200);
+
+    // 拖动至歌单
+    window.addEventListener("dragstart", e => {
+      let name = e.target.title;
+      //定义拖动数据
+      e.dataTransfer.setData("text/plain", e.target.id);
+      this.$message({
+        showClose: true,
+        message: "拖动歌曲到我的歌单！",
+        type: "warning",
+        duration: 2000
+      });
+    });
   },
 
   // 在组件销毁前
@@ -283,14 +298,13 @@ export default {
           if (err.code == 403) {
             this.musicUrl = `https://music.163.com/song/media/outer/url?id=${this.musicid}.mp3`;
           } else {
-            this.$router.replace('/404NotFound');
+            this.$router.replace("/404NotFound");
             this.$message({
               showClose: true,
               message: `${err}`,
               type: "warning",
               duration: 3000
             });
-
           }
         });
     },
@@ -456,7 +470,7 @@ export default {
             _this.$store.commit("getMusicInfo", res.data);
             _this.reloadPlay();
             if (this.$route.name == "playDetail") {
-              this.$router.replace(`/playDetail?id=${id}`).catch(err => {});
+              this.$router.replace(`/playDetail?id=${id}`).catch(() => {});
             }
           })
           .catch(() => {
@@ -485,7 +499,7 @@ export default {
             this.$store.commit("getMusicInfo", res.data);
             this.$store.commit("getMusicId", id);
             if (this.$route.name == "playDetail") {
-              this.$router.replace(`/playDetail?id=${id}`).catch(err => {});
+              this.$router.replace(`/playDetail?id=${id}`).catch(() => {});
             }
 
             this.reloadPlay();

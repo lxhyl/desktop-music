@@ -107,7 +107,7 @@ Vue.filter('toChinese', function (e) {
    }
 })
 //错误监控
-Vue.config.errorHandler = function(err, vm, info) {
+Vue.config.errorHandler = function(err, vm) {
   console.log(`错误日志:`,err);
   console.log(`错误页面:`,vm);
   console.log('\n')
