@@ -64,7 +64,7 @@
         <el-col class="item item-icon" style="text-align:right;" :span="2">
           <span
             id="last"
-            v-if="this.$store.state.playLists.length > 1 && !this.$store.state.fm"
+            v-if="this.$store.state.playLists.length > 1"
             @click="debouncePlayLastMusic"
             class="el-icon-caret-left"
           ></span>
@@ -221,15 +221,8 @@ export default {
 
     // 拖动至歌单
     window.addEventListener("dragstart", e => {
-      let name = e.target.title;
       //定义拖动数据
       e.dataTransfer.setData("text/plain", e.target.id);
-      this.$message({
-        showClose: true,
-        message: "拖动歌曲到我的歌单！",
-        type: "warning",
-        duration: 2000
-      });
     });
   },
 
@@ -413,7 +406,11 @@ export default {
       for (let i = 0; i < lists.length; i++) {
         if (lists[i].id == nowId) {
           if (i == 0) {
+            if (this.$store.state.fm) {
+              return false;
+            }else{
             return lists[lists.length - 1].id;
+            }
           } else {
             return lists[i - 1].id;
           }
@@ -482,6 +479,7 @@ export default {
     },
     // 播放上一首音乐
     playLastMusic() {
+      let _this = this;
       if (this.$store.state.playLists.length === 0) {
         this.reloadPlay();
         return;
@@ -491,18 +489,19 @@ export default {
         let le = this.$store.state.playLists.length;
         id = this.$store.state.playLists[Math.floor(Math.random() * le)].id;
       }
-      if (id) {
+
+      if (id !== false) {
         this.$axios
           .get(`${this.$domain}/song/detail?ids=${id}`)
           .then(res => {
             //更新VUEX的音乐信息
-            this.$store.commit("getMusicInfo", res.data);
-            this.$store.commit("getMusicId", id);
+             _this.$store.commit("getMusicId", id);
+            //更新VUEX的音乐信息
+            _this.$store.commit("getMusicInfo", res.data);
+            _this.reloadPlay();
             if (this.$route.name == "playDetail") {
               this.$router.replace(`/playDetail?id=${id}`).catch(() => {});
             }
-
-            this.reloadPlay();
 
             // 更新音乐ID
           })

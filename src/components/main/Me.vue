@@ -28,7 +28,6 @@
                 <span class="lavel">Lv.{{userInfo.level}}</span>
               </el-col>
               <el-col :span="5">
-                <span class="changeUserInfo">&nbsp;编辑个人信息&nbsp;</span>
               </el-col>
             </el-row>
             <p class="boder-bottom"></p>

@@ -101,6 +101,7 @@ export default {
 </script>
 
 <style scoped>
+
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -113,6 +114,7 @@ export default {
   margin: auto;
   background: #222225;
   z-index: -1;
+  filter: initial(100%) hue-rotate(0deg);
 }
 .left-aide {
   width: 200px;

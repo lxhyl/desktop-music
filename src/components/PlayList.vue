@@ -139,15 +139,8 @@ export default {
   },
   mounted() {
     window.addEventListener("dragstart", e => {
-      let name = e.target.title;
       //定义拖动数据
       e.dataTransfer.setData("text/plain", e.target.id);
-      this.$message({
-        showClose: true,
-        message: "拖动歌曲到我的歌单！",
-        type: "warning",
-        duration: 2000
-      });
     });
   },
   methods: {

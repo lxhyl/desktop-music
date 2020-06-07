@@ -7,42 +7,56 @@
   <link rel="icon" href="<%= BASE_URL %>favicon.ico">
   <title>网易云 | by Lxhyl</title>
   <style>
+    * {
+      -webkit-touch-callout: none;
+      /*系统默认菜单被禁用*/
+      -webkit-user-select: none;
+      /*webkit浏览器*/
+      -khtml-user-select: none;
+      /*早期浏览器*/
+      -moz-user-select: none;
+      /*火狐*/
+      -ms-user-select: none;
+      /*IE10*/
+      user-select: none;
+    }
+    body {
+      background-image: linear-gradient(to right, #eea2a2 0%, #bbc1bf 19%, #57c6e1 42%, #b49fda 79%, #7ac5d8 100%);
+    }
 
-    *{  
-	  -webkit-touch-callout:none;  /*系统默认菜单被禁用*/   
-	  -webkit-user-select:none; /*webkit浏览器*/   
-	  -khtml-user-select:none; /*早期浏览器*/   
-	  -moz-user-select:none;/*火狐*/   
-	  -ms-user-select:none; /*IE10*/   
-	  user-select:none;   
-} 
-body{
- background-image: linear-gradient(to right, #eea2a2 0%, #bbc1bf 19%, #57c6e1 42%, #b49fda 79%, #7ac5d8 100%);;
-}
-input{  
-	-webkit-user-select:auto; /*webkit浏览器*/     
-}
-textarea{
-	-webkit-user-select:auto; /*webkit浏览器*/
-}
+    input {
+      -webkit-user-select: auto;
+      /*webkit浏览器*/
+    }
+
+    textarea {
+      -webkit-user-select: auto;
+      /*webkit浏览器*/
+    }
+
     .el-popover {
       background-color: rgb(45, 47, 51) !important;
       border: none !important;
       padding-right: 0 !important;
     }
+
     .el-message {
       background-color: rgb(45, 47, 51) !important;
       border: none !important;
     }
-    .el-dialog{
+
+    .el-dialog {
       background-color: rgb(45, 47, 51) !important;
     }
-    .el-dialog__title{
+
+    .el-dialog__title {
       color: white !important;
     }
-    .el-dialog__body{
+
+    .el-dialog__body {
       padding: 0 !important;
     }
+
     .loading {
       width: 300px;
       font-size: 20px;
@@ -54,41 +68,51 @@ textarea{
       margin: auto;
       text-align: center;
     }
+
     .el-slider {
       position: relative;
       height: 30px;
       line-height: 30px;
       top: 5px;
     }
-    .el-message__content{
-      color:#BDBDBD !important;
+
+    .el-message__content {
+      color: #BDBDBD !important;
     }
-    .el-icon-warning{
-      color:#BDBDBD !important;
+
+    .el-icon-warning {
+      color: #BDBDBD !important;
     }
-    .el-tag--danger{
+
+    .el-tag--danger {
       background-color: rgb(184, 37, 37) !important;
       border: none !important;
     }
-    .el-message-box{
+
+    .el-message-box {
       background-color: rgb(45, 47, 51) !important;
       border: none !important;
     }
+
     .el-slider__runway {
       background-color: rgb(69, 69, 70) !important;
     }
+
     .el-slider__bar {
-      background-color:  rgb(184, 37, 37) !important;
+      background-color: rgb(184, 37, 37) !important;
     }
+
     .el-slider__button {
       width: 10px !important;
       height: 10px !important;
       border-color: white !important;
       color: rgb(184, 37, 37) !important;
     }
-    .el-divider{
+
+    .el-divider {
       background-color: rgb(184, 37, 37) !important;
     }
+
     .gjp {
       position: absolute;
       right: 0;
@@ -112,7 +136,6 @@ textarea{
         opacity: 1.0;
       }
     }
-    
   </style>
 </head>
 

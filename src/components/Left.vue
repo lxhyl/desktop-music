@@ -55,7 +55,7 @@
               :id="item.id"
               @drop.self="drop"
               @dragover.self="dropOver"
-              @dragleave.self="dropLeave"
+
             >{{item.name}}</span>
           </p>
         </div>
@@ -175,6 +175,12 @@ export default {
     //拖动事件 触发加入歌单
     drop(e) {
       e.preventDefault();
+         this.$message({
+            showClose: true,
+            message: `添加中！`,
+            type: "warning",
+            duration: 2000
+          });
       let data = e.dataTransfer.getData("text/plain");
       let listid = e.target.id;
       this.$axios
@@ -207,7 +213,7 @@ export default {
             duration: 2000
           });
         });
-      this.flag = true;
+      this.flag = false;
     },
     //进入元素时
     dropOver(e) {
@@ -216,22 +222,12 @@ export default {
         this.flag = true;
         this.$message({
           showClose: true,
-          message: `松开鼠标加入歌单`,
+          message: `松开鼠标即可加入`,
           type: "warning",
           duration: 2000
         });
       }
     },
-    //离开元素时
-    dropLeave(e) {
-      e.preventDefault();
-       this.$message({
-          showClose: true,
-          message: `移入歌单名加入歌单`,
-          type: "warning",
-          duration: 2000
-      });
-    }
   }
 };
 </script>

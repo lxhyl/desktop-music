@@ -191,7 +191,7 @@ export default {
         });
         return;
       }
-    
+
       if (this.getNewComments) {
         //getNewComments决定是否拿新弹幕，
         // 等待每次请求完成，再发新请求
@@ -605,25 +605,34 @@ export default {
     },
     //喜欢音乐
     likeThisSong() {
-      let id = this.musicid;
-      this.$axios
-        .get(`${this.$domain}/like?id=${id}`)
-        .then(() => {
-          this.$message({
-            showClose: true,
-            message: "已加入至喜欢列表",
-            type: "warning",
-            duration: 2000
+      if (this.$store.state.userid) {
+        let id = this.musicid;
+        this.$axios
+          .get(`${this.$domain}/like?id=${id}`)
+          .then(() => {
+            this.$message({
+              showClose: true,
+              message: "已加入至喜欢列表",
+              type: "warning",
+              duration: 2000
+            });
+          })
+          .catch(() => {
+            this.$message({
+              showClose: true,
+              message: "加入失败,请登录",
+              type: "warning",
+              duration: 2000
+            });
           });
-        })
-        .catch(() => {
+      }else{
           this.$message({
-            showClose: true,
-            message: "加入失败,请登录",
-            type: "warning",
-            duration: 2000
-          });
-        });
+              showClose: true,
+              message: "请登录",
+              type: "warning",
+              duration: 2000
+            });
+      }
     }
   }
 };
