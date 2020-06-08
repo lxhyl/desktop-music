@@ -17,7 +17,6 @@
 <script>
 
 export default {
-  inject: ["reload"],
   data() {
     return {
       defalutId: 59106, //视频组id;
@@ -62,7 +61,6 @@ export default {
     },
     playVideo(id){   
        this.$router.push(`/playVideo?vid=${id}`);
-       this.reload();
     }
   }
 };
@@ -74,7 +72,7 @@ export default {
   flex-wrap: wrap;
 }
 .item {
-  width: 200px;
+  width: 210px;
   height: 200px;
   margin: 10px 30px;
 }

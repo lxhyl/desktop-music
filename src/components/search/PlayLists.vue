@@ -51,9 +51,7 @@ export default {
           this.playLists = res.data.result.playlists;
           this.loading = false;
         })
-           .catch(() => {
-
-        });
+        .catch(() => {});
     },
     openLists(id){
           this.$router.push(`/playlist?id=${id}`);

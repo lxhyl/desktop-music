@@ -31,8 +31,19 @@ import PlayHistory from "../components/main/PlayHistory.vue"
 import PlayList from "../components/PlayList.vue"
 // 播放详情组件
 import PlayDetail from "../components/main/PlayDetail.vue"
+
+
 // 搜索结果
 import SearchResult from "../components/main/SearchResult.vue"
+import SearchSongs from "../components/search/SearchSongs.vue"
+//歌单
+import SearchPlayLists from "../components/search/PlayLists";
+//用户
+import SearchUsers from "../components/search/Users"
+//视频
+import SearchVideo from "../components/search/SearchVideo"
+
+
 //设置
 import Setting from "../components/main/Setting.vue"
 //404
@@ -101,7 +112,26 @@ export default new Router({
         {
             path: '/search',
             name: 'search',
-            component: SearchResult
+            component: SearchResult,
+            children:[
+                {
+                   path:'/search',
+                   component:SearchSongs
+                },
+                {
+                    path:'/search/lists',
+                    component:SearchPlayLists,
+                },
+                {
+                    path:'/search/users',
+                    component:SearchUsers,
+                },
+                {
+                    path:'/search/videos',
+                    component:SearchVideo,
+
+                }
+            ]
         },
         {
             path: '/setting',

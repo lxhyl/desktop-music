@@ -23,7 +23,8 @@ import {
   Col, Row, Image, Button, ButtonGroup, Input, Avatar, Popover,
   Form, FormItem, Link, Message, Tag,Slider,Switch,Divider,
   Carousel,CarouselItem,Tooltip,MessageBox,Card,
-  Dialog
+  Dialog,
+  version
 } from 'element-ui';
 Vue.use(Col);
 Vue.use(Row);
@@ -78,7 +79,6 @@ Vue.filter('toTime', function (e) {
 Vue.filter('toTimeGetOnlyDay',function(e){
  return e.substr(0,10)
 })
-
 //歌曲时长格式化
 Vue.filter('songToTime', function (e) {
   let m = Math.floor(e / 1000 / 60);
@@ -106,6 +106,10 @@ Vue.filter('toChinese', function (e) {
        return '日';
    }
 })
+
+
+
+
 //错误监控
 Vue.config.errorHandler = function(err, vm) {
   console.log(`错误日志:`,err);
@@ -120,6 +124,8 @@ Vue.config.errorHandler = function(err, vm) {
   })
 
 };
+
+Vue.config.performance = true;
 
 
 new Vue({

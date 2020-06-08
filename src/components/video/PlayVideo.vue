@@ -28,7 +28,7 @@
       </el-row>
     </div>
     <p v-else>加载中</p>
-    <el-divider></el-divider>
+    <div class="red-line"></div>
     <p v-if="videoInfo" style="margin:10px 20px;">
       评论({{videoInfo.commentCount}})
       <span class="el-icon-bottom"></span>
@@ -254,13 +254,14 @@ export default {
 <style scoped>
 video {
   z-index: 99;
+  outline: none;
 }
-.danmu {
-  position: absolute;
-  top: 0;
-  z-index: 100;
-  width: 810px;
-  height: 400px;
+.red-line{
+  margin:0 10px;
+  width: 98%;
+  height: 1px;
+  background:rgb(184, 37, 37);
+  
 }
 .share {
   border: none;
@@ -277,7 +278,7 @@ video {
   white-space: nowrap;
 }
 .handle {
-  margin: 0 10px;
+  margin: 10px 10px;
 }
 .comment-container {
   width: 780px;
