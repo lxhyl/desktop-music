@@ -7,7 +7,12 @@
       </el-popover>
 
       <div class="left">
-        <img class="song-pic" :src="musicInfo.songs[0].al.picUrl+'?param=200y200'" />
+        <img
+          class="song-pic"
+          :class="{picContorl:contorlPicMoveOrStop}"
+          id="songImg"
+          :src="musicInfo.songs[0].al.picUrl+'?param=200y200'"
+        />
         <el-tooltip effect="dark" content="单击红心可喜欢音乐">
           <img @click="likeThisSong" class="love-song" src="../../assets/love.png" />
         </el-tooltip>
@@ -33,7 +38,7 @@
             </div>
             <p v-if="sameSongs.length == 0">暂无数据</p>
           </div>
-          <div v-show="getUsersOk" class="user">
+          <div v-show="this.$store.state.userid" class="user">
             <p style="width:300px;height:20px;line-height:20px;font-sie:14px;">喜欢这首歌的人</p>
             <el-row
               style="height:50px;margin-top:5px;"
@@ -53,7 +58,7 @@
             </el-row>
             <p v-if="sameUsers.length == 0">暂无数据</p>
           </div>
-          <p v-show="!getUsersOk">登陆以获取喜欢这首歌的人</p>
+          <p v-show="!this.$store.state.userid">登陆以获取喜欢这首歌的人</p>
         </div>
       </div>
       <div class="lyric" id="lyric">
@@ -139,7 +144,7 @@ export default {
         this.reload();
       }
     },
-    //监听现在播放的时长，歌词跳转
+    //监听现在播放的时长，歌词跳转 是否旋转图片
     nowPlayTime: function(n) {
       let playTime = n * 1000;
       for (let i = 0; i < this.lyric.length - 1; i++) {
@@ -156,6 +161,7 @@ export default {
           let item = document.getElementById(i);
           if (item) {
             item.scrollIntoView();
+            // console.log(item);
             item.style.color = "white";
             //找到歌词就返回，结束遍历
             return;
@@ -240,6 +246,13 @@ export default {
         clearInterval(this.canvasTimer);
         this.canvas = null;
       }
+    },
+    isPlaying(n) {
+      if (n) {
+        this.contorlPicMoveOrStop = true;
+      }else{
+          this.contorlPicMoveOrStop = false;
+      }
     }
   },
   data() {
@@ -268,12 +281,17 @@ export default {
       getSameDataOk: false, //是否获取到音乐或数据
       getUsersOk: false, //是否获取到最近听歌的用户
       link: "", //分享链接
-      getNewComments: true //获取新评论防抖
+      getNewComments: true, //获取新评论防抖
+      imgElement:null,
+      contorlPicMoveOrStop:false,
     };
   },
   computed: {
     nowPlayTime: function() {
       return this.$store.state.musicPlayTime;
+    },
+    isPlaying: function() {
+      return this.$store.state.playing;
     }
   },
   created() {
@@ -331,7 +349,7 @@ export default {
         }
       }, 1000);
     }
-
+    
     // 监听键盘 如果按的是enter键，就发送弹幕
     document.addEventListener("keyup", e => {
       if (e.keyCode == 13) {
@@ -343,6 +361,11 @@ export default {
 
     //  获取相似歌曲
     this.getSameSong();
+  },
+  updated(){
+    this.$nextTick(()=>{
+         this.imgElement = document.getElementById('songImg');
+    })
   },
   methods: {
     getSongDetail() {
@@ -625,13 +648,13 @@ export default {
               duration: 2000
             });
           });
-      }else{
-          this.$message({
-              showClose: true,
-              message: "请登录",
-              type: "warning",
-              duration: 2000
-            });
+      } else {
+        this.$message({
+          showClose: true,
+          message: "请登录",
+          type: "warning",
+          duration: 2000
+        });
       }
     }
   }
@@ -660,8 +683,8 @@ export default {
   height: 200px;
   width: 200px;
   border-radius: 100%;
-  animation: turn 16s linear infinite;
 }
+
 .love-song {
   width: 40px;
   height: 40px;
@@ -669,6 +692,9 @@ export default {
   left: 130px;
   top: 130px;
   outline: none;
+}
+.picContorl {
+  animation: turn 16s linear infinite ;
 }
 @keyframes turn {
   0% {

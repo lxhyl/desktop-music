@@ -17,6 +17,7 @@ const state = {
           value:true, // 是否跳转
           num:0,      // 当前跳转的次数
      },
+     playing:false,//是否在播放中
 }
 export default state
 

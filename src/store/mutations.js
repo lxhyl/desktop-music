@@ -95,5 +95,9 @@ export default {
    changeCanNotplayToNext(state, value) {
       state.canNotplayToNext.value = value;
       state.canNotplayToNext.num += 1;
+   },
+   //是否在播放
+   isplaying(state,value){
+      state.playing = value
    }
 }

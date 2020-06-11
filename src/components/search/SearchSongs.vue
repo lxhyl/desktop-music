@@ -29,6 +29,7 @@
 
 <script>
 export default {
+  inject:['reloadPlay'],
   data() {
     return {
       songsList: [], //音乐列表

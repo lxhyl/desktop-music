@@ -29,7 +29,7 @@ export default {
       this.$axios
         .get(`${this.$domain}/dj/banner`)
         .then(res => {
-          console.log(res);
+          // console.log(res);
           this.banners = res.data.data;
         })
         .catch(() => {});

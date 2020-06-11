@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="container">
+    <div v-if="list.length >0" class="container">
       <div class="item" 
       v-for="(item,index) in list" 
       :key="'top'+index"
@@ -10,6 +10,9 @@
         <p>{{item.name}}</p>
       </div>
     </div>
+     <p v-else class="loading">
+      <span class="el-icon-loading"></span>加载中...
+    </p>
   </div>
 </template>
 
@@ -62,5 +65,9 @@ export default {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+.loading {
+  text-align: center;
+  font-size: 16px;
 }
 </style>

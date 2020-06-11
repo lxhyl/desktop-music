@@ -127,7 +127,10 @@ export default {
         .then(res => {
           this.url = res.data.urls[0].url;
         })
-        .catch();
+        .catch(()=>{
+           //拿不到或发生错误就路由至404页
+           this.$router.replace('/404NotFound');
+        });
     },
     //详情
     getVideoDetail() {
@@ -162,7 +165,9 @@ export default {
               this.commentsNowNum += 20;
               this.loading = true;
             })
-            .catch(() => {});
+            .catch(() => {
+             
+            });
         }
       }
     },

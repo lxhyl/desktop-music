@@ -93,19 +93,24 @@ export default {
         .get(`${this.$domain}/banner?type=1`)
         .then(res => {
           this.banners = res.data.banners;
+        
         })
         .catch(() => {});
     },
     openBanner(e) {
-      if (e.song) {
+      if (e.targetType == 1) {
         // 更新VUEX
         this.reloadPlay();
-        this.$store.commit("getMusicId", e.song.id);
+        this.$store.commit("getMusicId", e.targetId);
         this.$store.commit("getPlayLists", []);
         this.$store.commit("setFm", false);
-        this.$router.push(`/playDetail?id=${e.song.id}`);
-      }else{
-       window.open(e.url,'_blank')
+        this.$router.push(`/playDetail?id=${e.targetId}`);
+      }
+      if (e.targetType == 3000) {
+        window.open(e.url, "_blank");
+      }
+      if (e.targetType == 1004) {
+        this.$router.push(`/playVideo?vid=${e.targetId}`);
       }
     },
     //每日推荐歌曲

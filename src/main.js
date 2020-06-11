@@ -24,7 +24,6 @@ import {
   Form, FormItem, Link, Message, Tag,Slider,Switch,Divider,
   Carousel,CarouselItem,Tooltip,MessageBox,Card,
   Dialog,
-  version
 } from 'element-ui';
 Vue.use(Col);
 Vue.use(Row);
@@ -46,6 +45,7 @@ Vue.use(CarouselItem);
 Vue.use(Tooltip);
 Vue.use(Card);
 Vue.use(Dialog);
+
 Vue.prototype.$message = Message;
 Vue.prototype.$confirm = MessageBox.confirm;
 //无限滚动

@@ -1,11 +1,15 @@
 <template>
   <div>
-    <div class="container" v-infinite-scroll="load" 
-     infinite-scroll-immediate="false">
-      <div class="item" v-for="(item,index) in list" 
-      @click="playVideo(item.data.vid)"
-      :key="'video'+index">
-        <img :src="item.data.coverUrl+'?param=210y140'" loading="lazy" />
+    <div class="container" v-infinite-scroll="load" infinite-scroll-immediate="false">
+      <div
+        class="item"
+        v-for="(item,index) in list"
+        @click="playVideo(item.data.vid)"
+        :key="'video'+index"
+      >
+        <img :src="item.data.coverUrl+'?param=210y140'" 
+        alt="图片加载失败"
+        loading="lazy" />
         <p class="title">{{item.data.title}}</p>
         <p class="creator">By: {{item.data.creator.nickname}}</p>
       </div>
@@ -15,11 +19,10 @@
 </template>
 
 <script>
-
 export default {
   data() {
     return {
-      defalutId: 59106, //视频组id;
+      defalutId: 59106, //默认视频组id;
       list: [], //视频列表
       loadInfo: false //
     };
@@ -38,9 +41,7 @@ export default {
     }
     this.getVideos();
   },
-  mounted() {
-    setTimeout(this.getVideos(),1500);
-  },
+  mounted() {},
   methods: {
     getVideos() {
       this.loadInfo = true;
@@ -59,8 +60,8 @@ export default {
     load() {
       this.getVideos();
     },
-    playVideo(id){   
-       this.$router.push(`/playVideo?vid=${id}`);
+    playVideo(id) {
+      this.$router.push(`/playVideo?vid=${id}`);
     }
   }
 };

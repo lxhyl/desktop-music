@@ -16,6 +16,9 @@ import FindMusic from '../components/findMusic/Index.vue'
 import Gxtj from '../components/findMusic/Gxtj.vue'
 import Zbdt from "../components/findMusic/Zbdt.vue"
 import TopList from "../components/findMusic/TopList.vue"
+import NewSongs from "../components/findMusic/NewSongs.vue"
+import Xgsd from "../components/findMusic/Xgsd.vue"
+import Xdsj from "../components/findMusic/Xdsj.vue"
 
 //视频栏
 import VideoIndex from "../components/video/Index.vue"
@@ -69,6 +72,22 @@ export default new Router({
                     path:'/topList',
                     name:'topList',
                     component:TopList,
+                },{
+                    path:'/newSongs',
+                    name:'newSongs',
+                    component:NewSongs,
+                    children:[
+                       {
+                           path:'/newSongs',
+                           component:Xgsd
+                       },
+                       {
+                           path:'/newSongs/album',
+                           component:Xdsj
+                       }
+
+                       
+                    ]
                 }
             ]
         },

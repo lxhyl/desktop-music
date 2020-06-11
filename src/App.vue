@@ -101,14 +101,13 @@ export default {
 </script>
 
 <style scoped>
-
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   color: #dcdde3;
   right: 0;
-  left:0;
+  left: 0;
   width: 1020px;
   height: 620px;
   margin: auto;
@@ -176,9 +175,9 @@ export default {
   z-index: 1;
 }
 .github-corner svg {
-    color: #fff;
-    fill: var(--theme-color, #42b983);
-    height: 80px;
-    width: 80px;
+  color: #fff;
+  fill: var(--theme-color, #42b983);
+  height: 80px;
+  width: 80px;
 }
 </style>

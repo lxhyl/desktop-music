@@ -8,7 +8,7 @@
        @click="playVideo(item.vid)"
        >
        <div class="item-img">
-           <img :src="item.coverUrl" />
+           <img :src="item.coverUrl+'?param=210y140'" loading="lazy" />
        </div>
        <p class="title">{{item.title}}</p>
        <p class="creator">{{item.creator[0].userName}}</p>
@@ -37,10 +37,12 @@ export default {
         .get(`${this.$domain}/search?keywords=${e}&type=1014`)
         .then(res => {
           this.lists = res.data.result.videos;
+    
         })
         .catch();
     },
     playVideo(e){
+      
            this.$router.push(`/playVideo?vid=${e}`);
     }
   }

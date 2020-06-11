@@ -24,6 +24,7 @@
               slot="reference"
               v-model="searchKey"
               @focus="openSearchPopover"
+              @blur="closeSearchPopover"
               @keyup.enter="search"
               placeholder="搜索音乐，视频，歌词，电台"
               class="search-input"
@@ -325,6 +326,9 @@ export default {
     //路由至设置
     routerToSetting() {
       this.$router.push("/setting");
+    },
+    closeSearchPopover(){
+       this.$store.commit("changeSearchPopover", false);
     }
   }
 };

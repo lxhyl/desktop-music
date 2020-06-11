@@ -64,7 +64,7 @@
         <el-col class="item item-icon" style="text-align:right;" :span="2">
           <span
             id="last"
-            v-if="this.$store.state.playLists.length > 1"
+            v-if="this.$store.state.playLists.length > 1 && !this.$store.state.fm"
             @click="debouncePlayLastMusic"
             class="el-icon-caret-left"
           ></span>
@@ -160,6 +160,9 @@ export default {
         this.$refs.audio.volume = n;
         this.$store.commit("setMusicVolume", n);
       }
+    },
+    isPlaying:function(n){
+      this.$store.commit('isplaying',n);
     }
   },
   created() {
@@ -197,8 +200,11 @@ export default {
       }
       // 上一曲
       if (e.keyCode === 38) {
+        //不是fm模式时
+        if(!this.$store.state.fm){
         let last = document.getElementById("last");
         last.click();
+        }
       }
       if (e.keyCode === 40) {
         let next = document.getElementById("next");
