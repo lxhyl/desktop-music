@@ -130,6 +130,9 @@ export default {
 .song-item {
   width: 100%;
 }
+.song-item:nth-child(2n+1) {
+  background-color: #222225;
+}
 .song-item-index {
   font-size: 10px;
   line-height: 60px;

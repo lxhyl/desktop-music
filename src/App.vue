@@ -23,7 +23,7 @@
     </a>
     <TopHeader />
     <Left v-if="isFirstLogin" class="left-aide" />
-    <keep-alive exclude="playlist,playDetail,searchResult,Me,playVideo">
+    <keep-alive exclude="playlist,playDetail,searchResult,Me,album,playVideo">
       <router-view
         id="style-2"
         v-if="isRouterAlive"

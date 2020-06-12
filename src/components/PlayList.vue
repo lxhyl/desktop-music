@@ -3,7 +3,7 @@
     <div v-if="getDataOk">
       <div class="header">
         <div class="header-avatar">
-          <img :src="playList.playlist.coverImgUrl" />
+          <img :src="playList.playlist.coverImgUrl+'?param=180y180'" />
         </div>
         <div class="header-main">
           <div class="header-main-children">

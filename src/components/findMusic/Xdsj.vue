@@ -1,7 +1,10 @@
 <template>
   <div>
     <div class="container">
-      <div class="item" v-for="(item,index) in list" :key="'al'+index">
+      <div class="item" 
+      v-for="(item,index) in list"
+      @click="openAlbum(item.id)" 
+      :key="'al'+index">
         <img :src="item.picUrl+'?param=150y150'" loading="lazy" />
         <p>{{item.name}}</p>
         <p style="color:rgb(124, 124, 124)">{{item.artist.name}}</p>
@@ -23,15 +26,20 @@ export default {
   methods: {
     getAlbum() {
       this.$axios
-        .get(`${this.$domain}/top/album?offset=0&limit=50`)
+        .get(`${this.$domain}/top/album?offset=0&limit=60`)
         .then(res => {
-          console.log(res);
           this.list = res.data.albums;
         })
         .catch();
+    },
+    openAlbum(id){
+     
+      this.$router.push(`/album?id=${id}`)
     }
   }
 };
+
+
 </script>
 
 <style scoped>

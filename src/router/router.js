@@ -34,7 +34,8 @@ import PlayHistory from "../components/main/PlayHistory.vue"
 import PlayList from "../components/PlayList.vue"
 // 播放详情组件
 import PlayDetail from "../components/main/PlayDetail.vue"
-
+//专辑
+import Album from "../components/Album.vue"
 
 // 搜索结果
 import SearchResult from "../components/main/SearchResult.vue"
@@ -122,6 +123,12 @@ export default new Router({
             path: '/playlist',
             name: "playlist",
             component: PlayList,
+        },
+        {
+            path:'/album',
+            name:'album',
+            component:Album
+
         },
         {
             path: '/playDetail',
