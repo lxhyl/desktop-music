@@ -45,7 +45,27 @@
         </div>
       </div>
       <div v-if="userid">
-        <p class="tuijian">我的歌单</p>
+        <p class="tuijian">
+          我的歌单
+          <el-popover
+            trigger="manual"
+            v-model="controlNewListsPopover"
+            width="200"
+            placement="right-start"
+          >
+            <p style="margin-bottom:10px;">新建歌单</p>
+            <p style="width:190px;">
+              <el-input placeholder="输入歌单名" size="mini" v-model="newSongLists">
+                <el-button @click="getNewLists" slot="append">创建</el-button>
+              </el-input>
+            </p>
+            <span
+              @click="controlNewListsPopover = true"
+              slot="reference"
+              class="el-icon-circle-plus-outline"
+            ></span>
+          </el-popover>
+        </p>
         <div class="tuijian-main">
           <p
             class="item"
@@ -53,6 +73,7 @@
             :key="index"
             style="line-height:20px;"
             @click="routerToPlayList(item.id)"
+            @contextmenu.prevent="deleteSongList(item.id,item.name)"
           >
             <span :class="item.icon"></span>
             <span
@@ -74,7 +95,7 @@
 <script>
 export default {
   name: "left",
-  inject: ["reloadPlay"],
+  inject: ["reloadPlay", "reloadLeft"],
   data() {
     return {
       userid: null, //用户id判断是否登陆,
@@ -87,7 +108,9 @@ export default {
       myList: [],
       //防抖函数
       timer: null,
-      flag: false //节流拖动事件
+      flag: false, //节流拖动事件
+      newSongLists: "", //新建歌单名
+      controlNewListsPopover: false
     };
   },
   created() {
@@ -100,7 +123,7 @@ export default {
   methods: {
     getMusciList() {
       this.$axios
-        .get(`${this.$domain}/user/playlist?uid=${this.userid}`)
+        .get(`${this.$domain}/user/playlist?uid=${this.userid}&timestamp=${new Date().getTime()}`)
         .then(res => {
           let arr = res.data.playlist;
           for (let i = 0; i < arr.length; i++) {
@@ -118,11 +141,11 @@ export default {
     },
     //路由至 e 页面
     routerToPage(e) {
-      if (this.$store.state.userid) {
-        this.$router.push(e);
-      } else {
+      if (e === "/video" && !this.$store.state.userid) {
         this.$message("请登录☹️");
+        return;
       }
+      this.$router.push(e);
     },
     // 跳转歌单详情页 参数e为歌单id
     routerToPlayList(e) {
@@ -235,6 +258,49 @@ export default {
           duration: 2000
         });
       }
+    },
+    //新建歌单
+    getNewLists() {
+      if (this.newSongLists != "") {
+        this.$axios
+          .get(`${this.$domain}/playlist/create?name=${this.newSongLists}`)
+          .then(res => {
+            this.$message({
+              showClose: true,
+              message: `已新建歌单${this.newSongLists}`,
+              type: "warning",
+              duration: 2000
+            });
+            this.newSongLists = '';
+          });
+      }
+      this.reloadLeft();
+    },
+    //删除歌单
+    deleteSongList(id, name) {
+      console.log(name);
+      this.$confirm("此操作将永久删除该歌单, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(() => {
+          this.$axios
+            .get(`${this.$domain}/playlist/delete?id=${id}`)
+            .then(() => {
+              this.$message({
+                type: "info",
+                message: `已删除歌单${name}`
+              });
+              this.reloadLeft();
+            });
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消删除"
+          });
+        });
     }
   }
 };
@@ -249,6 +315,12 @@ p {
   font-size: 11px;
   text-indent: 10px;
   color: rgb(124, 124, 124);
+  position: relative;
+}
+.tuijian > span {
+  position: absolute;
+  right: 10px;
+  font-size: 16px;
 }
 .tuijian-main {
   font-size: 11px;
@@ -258,6 +330,7 @@ p {
 .item {
   margin: 10px 5px;
 }
+
 .text {
   margin-left: 10px;
 }
