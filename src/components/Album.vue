@@ -21,10 +21,12 @@
               <span>发布日期:</span>
               {{albumInfo.publishTime | toTime | toTimeGetOnlyDay}}
             </p>
-            <p class="album-des">
-              <span>描述:</span>
-              {{albumInfo.description}}
-            </p>
+          
+           
+              <p class="album-des">
+                <span>描述:</span>
+                {{albumInfo.description}}
+              </p>
           </div>
         </div>
       </div>
@@ -53,6 +55,9 @@
         </el-row>
       </div>
     </div>
+     <p v-else class="loading">
+      <span class="el-icon-loading"></span>加载中...
+    </p>
   </div>
 </template>
 
@@ -86,7 +91,6 @@ export default {
       this.$axios
         .get(`${this.$domain}/album?id=${id}`)
         .then(res => {
-          console.log(res);
           this.albumInfo = res.data.album;
           this.songs = res.data.songs;
           this.isok = true;
@@ -182,6 +186,10 @@ export default {
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
 }
+.description {
+  font-size: 12px;
+  line-height: 30px;
+}
 .album-des > span {
   color: rgb(124, 124, 124);
 }
@@ -207,5 +215,9 @@ export default {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+.loading {
+  text-align: center;
+  font-size: 16px;
 }
 </style>

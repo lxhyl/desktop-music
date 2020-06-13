@@ -9,8 +9,6 @@
       <div class="left">
         <img
           class="song-pic"
-          :class="{picContorl:contorlPicMoveOrStop}"
-          id="songImg"
           :src="musicInfo.songs[0].al.picUrl+'?param=200y200'"
         />
         <el-tooltip effect="dark" content="单击红心可喜欢音乐">
@@ -247,13 +245,6 @@ export default {
         this.canvas = null;
       }
     },
-    isPlaying(n) {
-      if (n) {
-        this.contorlPicMoveOrStop = true;
-      }else{
-          this.contorlPicMoveOrStop = false;
-      }
-    }
   },
   data() {
     return {
@@ -693,7 +684,7 @@ export default {
   top: 130px;
   outline: none;
 }
-.picContorl {
+.song-pic  {
   animation: turn 16s linear infinite ;
 }
 @keyframes turn {

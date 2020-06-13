@@ -29,7 +29,12 @@
       <div v-if="userid">
         <p class="tuijian">我的音乐</p>
         <div class="tuijian-main">
-          <p class="item" v-for="(item,index) in myMusic" :key="index">
+          <p
+            class="item"
+            v-for="(item,index) in myMusic"
+            @click="routerToPage(item.router)"
+            :key="index"
+          >
             <span :class="item.icon"></span>
             <span class="text">{{item.text}}</span>
           </p>
@@ -55,7 +60,6 @@
               :id="item.id"
               @drop.self="drop"
               @dragover.self="dropOver"
-
             >{{item.name}}</span>
           </p>
         </div>
@@ -77,7 +81,7 @@ export default {
       // 我的音乐
       myMusic: [
         { icon: "el-icon-mic", text: "我的电台", router: "/myDT" },
-        { icon: "el-icon-star-on", text: "我的收藏", router: "/mySC" }
+        { icon: "el-icon-star-on", text: "我的收藏", router: "/mycollect" }
       ],
       //我的歌单
       myList: [],
@@ -114,7 +118,11 @@ export default {
     },
     //路由至 e 页面
     routerToPage(e) {
-      this.$router.push(e);
+      if (this.$store.state.userid) {
+        this.$router.push(e);
+      } else {
+        this.$message("请登录☹️");
+      }
     },
     // 跳转歌单详情页 参数e为歌单id
     routerToPlayList(e) {
@@ -175,12 +183,12 @@ export default {
     //拖动事件 触发加入歌单
     drop(e) {
       e.preventDefault();
-         this.$message({
-            showClose: true,
-            message: `添加中！`,
-            type: "warning",
-            duration: 2000
-          });
+      this.$message({
+        showClose: true,
+        message: `添加中！`,
+        type: "warning",
+        duration: 2000
+      });
       let data = e.dataTransfer.getData("text/plain");
       let listid = e.target.id;
       this.$axios
@@ -227,7 +235,7 @@ export default {
           duration: 2000
         });
       }
-    },
+    }
   }
 };
 </script>

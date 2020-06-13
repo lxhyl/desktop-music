@@ -30,6 +30,8 @@ import Me from "../components/main/Me.vue"
 import PlayRank from "../components/main/PlayRank.vue"
 //播放历史
 import PlayHistory from "../components/main/PlayHistory.vue"
+//我的收藏
+import MyCollect from "../components/main/MyCollect.vue"
 // 歌单列表
 import PlayList from "../components/PlayList.vue"
 // 播放详情组件
@@ -113,6 +115,10 @@ export default new Router({
             path: '/history',
             name: 'history',
             component: PlayHistory
+        },
+        {
+           path:'/mycollect',
+           component:MyCollect,
         },
         {
             path: '/me',

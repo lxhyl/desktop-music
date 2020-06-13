@@ -93,11 +93,12 @@ export default {
         .get(`${this.$domain}/banner?type=1`)
         .then(res => {
           this.banners = res.data.banners;
-        
+          
         })
         .catch(() => {});
     },
     openBanner(e) {
+      //单曲
       if (e.targetType == 1) {
         // 更新VUEX
         this.reloadPlay();
@@ -106,9 +107,15 @@ export default {
         this.$store.commit("setFm", false);
         this.$router.push(`/playDetail?id=${e.targetId}`);
       }
+      //专辑
+      if(e.targetType == 10){
+        this.$router.push(`/album?id=${e.targetId}`)
+      }
+      //链接
       if (e.targetType == 3000) {
         window.open(e.url, "_blank");
       }
+      //视频
       if (e.targetType == 1004) {
         this.$router.push(`/playVideo?vid=${e.targetId}`);
       }

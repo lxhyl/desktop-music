@@ -223,7 +223,8 @@ export default {
             this.videoInfo.likedCount -= 1;
             this.videoInfo.liked = false;
           }
-        });
+        })
+        .catch()
     },
     //收藏视频
     scVideo() {
@@ -241,7 +242,8 @@ export default {
             type: "warning",
             duration: 2000
           });
-        });
+        })
+        .catch()
     },
     //分享到动态
     share() {
