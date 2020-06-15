@@ -28,7 +28,7 @@ export default {
       //将新值于老值比较，如果不相等再更新
       let o =JSON.stringify(state.musicInfo);
       let n = JSON.stringify(value);
-      if(o == n){
+      if(o === n){
         return;
       }
       if (state.musicid == value.privileges[0].id) {
