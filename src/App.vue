@@ -66,13 +66,14 @@ export default {
   },
   computed: {
     imgUrl: function() {
-     
       return this.$store.state.musicInfo;
     }
   },
   watch: {
     imgUrl: function(n, o) {
-      this.changeImg = false;
+      if (n != o) {
+        this.changeImg = false;
+      }
     }
   },
   data() {
@@ -187,6 +188,7 @@ export default {
   z-index: -100;
   filter: blur(5px);
   opacity: 0;
+   object-fit:cover;
 }
 .imgchange {
   animation: imgIn 1s;
@@ -196,11 +198,20 @@ export default {
   25% {
     opacity: 0.25;
   }
+  40%{
+    opacity: 0.4;
+  }
   50% {
     opacity: 0.5;
   }
+  60%{
+    opacity: 0.6;
+  }
   75% {
     opacity: 0.75;
+  }
+  85%{
+    opacity: 0.85;
   }
   100% {
     opacity: 1;

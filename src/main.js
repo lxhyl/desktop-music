@@ -22,7 +22,7 @@ import 'element-ui/lib/theme-chalk/index.css';
 import {
   Col, Row, Image, Button, ButtonGroup, Input, Avatar, Popover,
   Form, FormItem, Link, Message, Tag,Slider,Switch,Divider,
-  Carousel,CarouselItem,Tooltip,MessageBox,Card,
+  Carousel,CarouselItem,Tooltip,MessageBox,Card,Select,Option,
   Dialog,
 } from 'element-ui';
 Vue.use(Col);
@@ -45,7 +45,8 @@ Vue.use(CarouselItem);
 Vue.use(Tooltip);
 Vue.use(Card);
 Vue.use(Dialog);
-
+Vue.use(Select);
+Vue.use(Option);
 Vue.prototype.$message = Message;
 Vue.prototype.$confirm = MessageBox.confirm;
 //无限滚动
