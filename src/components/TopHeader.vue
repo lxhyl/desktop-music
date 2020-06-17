@@ -222,7 +222,7 @@ export default {
     document.addEventListener('keyup',(e)=>{
       if(e.keyCode === 83){
         let input = document.getElementById('search-input');
-        if(input){
+        if(input && !this.$store.state.commentFocus){
           input.focus();
         }
       }

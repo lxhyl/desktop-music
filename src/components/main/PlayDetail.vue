@@ -120,6 +120,8 @@
               type="text"
               class="send-pinglun"
               v-on:keyup.enter="send"
+              @focus="changeFocusOrBlur(true)"
+              @blur="changeFocusOrBlur(false)"
               placeholder="请输入"
             />
           </el-col>
@@ -265,7 +267,7 @@ export default {
       canvasItemV: 30, //弹幕速度
       itemVMin: 10, //最快速度
       itemVMax: 40, //最慢速度
-      pinglun: "", //评论内容
+      pinglun: "", //发送的评论（弹幕）内容
       showCanvas: null, //是否显示弹幕
       sameSongs: [], //相似音乐
       sameUsers: [], //最近听过这首歌的用户
@@ -647,6 +649,10 @@ export default {
           duration: 2000
         });
       }
+    },
+    //弹幕框是否对焦
+    changeFocusOrBlur(e){
+       this.$store.commit('getcommentFocus',e)
     }
   }
 };
@@ -684,7 +690,7 @@ export default {
   top: 130px;
   outline: none;
 }
-.song-pic  {
+.song-pic{
   animation: turn 16s linear infinite ;
 }
 @keyframes turn {

@@ -264,7 +264,7 @@ export default {
       if (this.newSongLists != "") {
         this.$axios
           .get(`${this.$domain}/playlist/create?name=${this.newSongLists}`)
-          .then(res => {
+          .then(() => {
             this.$message({
               showClose: true,
               message: `已新建歌单${this.newSongLists}`,

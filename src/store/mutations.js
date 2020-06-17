@@ -99,5 +99,8 @@ export default {
    //是否在播放
    isplaying(state,value){
       state.playing = value
+   },
+   getcommentFocus(state,value){
+      state.commentFocus = value;
    }
 }
