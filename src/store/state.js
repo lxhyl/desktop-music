@@ -18,6 +18,8 @@ const state = {
           num:0,      // 当前跳转的次数
      },
      playing:false,//是否在播放中
+     commentFocus:false,//发送弹幕输入框是否对焦
+     showMain:true,//是否显示主界面
 }
 export default state
 

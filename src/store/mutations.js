@@ -102,5 +102,9 @@ export default {
    },
    getcommentFocus(state,value){
       state.commentFocus = value;
+   },
+   //是否显示主界面
+   getshowMain(state,value){
+      state.showMain = value
    }
 }

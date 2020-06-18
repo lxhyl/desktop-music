@@ -50,6 +50,12 @@ import SearchUsers from "../components/search/Users"
 import SearchVideo from "../components/search/SearchVideo"
 
 
+// 电台
+// 我的收藏电台
+import Myfm from "../components/fm/Myfm.vue"
+// 电台列表
+import DjList from "../components/fm/FmLists.vue"
+
 //设置
 import Setting from "../components/main/Setting.vue"
 //404
@@ -93,6 +99,14 @@ export default new Router({
                     ]
                 }
             ]
+        },
+        {
+           path:'/myfm',
+           component:Myfm
+        },
+        {
+          path:'/djlists',
+          component:DjList
         },
         {
           path:'/video',

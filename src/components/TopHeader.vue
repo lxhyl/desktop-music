@@ -124,7 +124,7 @@
         ></span>
       </el-col>
       <el-col class="row-header" :span="2" style="text-align:center">
-        <span @click="close" class="el-icon-close" style="font-size:16px;line-height:50px;"></span>
+        <span @click="close" class="el-icon-minus" style="font-size:16px;line-height:50px;"></span>
       </el-col>
     </el-row>
   </div>
@@ -275,8 +275,11 @@ export default {
     },
     //关闭页面
     close() {
-      window.opener = null;
-      window.open("about:blank", "_top").close();
+       if(this.$store.state.isPlaying){
+       this.$store.commit('getshowMain',false);
+       }else{
+         this.$message("请先播放音乐");
+       }
     },
     //打开搜索弹出框
     openSearchPopover() {
@@ -335,6 +338,7 @@ export default {
 </script>
 <style scoped>
 .top-header {
+   background: #222225;
   width: 1020px;
   height: 50px;
   z-index: 999;

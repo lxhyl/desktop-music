@@ -93,7 +93,6 @@ export default {
         .get(`${this.$domain}/banner?type=1`)
         .then(res => {
           this.banners = res.data.banners;
-          
         })
         .catch(() => {});
     },
@@ -108,8 +107,8 @@ export default {
         this.$router.push(`/playDetail?id=${e.targetId}`);
       }
       //专辑
-      if(e.targetType == 10){
-        this.$router.push(`/album?id=${e.targetId}`)
+      if (e.targetType == 10) {
+        this.$router.push(`/album?id=${e.targetId}`);
       }
       //链接
       if (e.targetType == 3000) {
@@ -154,6 +153,8 @@ export default {
           });
           this.$router.push(`/playDetail?id=${id}`);
           // 更新音乐ID
+          //关闭fm模式
+          this.$store.commit("setFm", false);
           this.$store.commit("changePlayState", true);
           this.$store.commit("getMusicId", id);
           this.$store.commit("getPlayLists", result);

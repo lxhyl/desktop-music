@@ -516,7 +516,7 @@ export default {
           });
       }
     },
-    //防抖下一曲函数
+    //下一曲函数
     debouncePlayNextMusic() {
       if (this.nextMusicTimer !== null) {
         clearTimeout(this.nextMusicTimer);
@@ -546,6 +546,7 @@ export default {
     //点击图片 显示音乐详情
     openDetail() {
       let id = this.musicid;
+     this.$store.commit('getshowMain',true);
       this.$router.push(`/playDetail?id=${id}`);
     },
     //私人fm推荐歌曲

@@ -48,19 +48,19 @@
         <p class="tuijian">
           我的歌单
           <el-popover
-            trigger="manual"
+            trigger="click"
             v-model="controlNewListsPopover"
             width="200"
             placement="right-start"
           >
             <p style="margin-bottom:10px;">新建歌单</p>
             <p style="width:190px;">
-              <el-input placeholder="输入歌单名" size="mini" v-model="newSongLists">
+              <el-input placeholder="输入歌单名" 
+              size="mini" v-model="newSongLists">
                 <el-button @click="getNewLists" slot="append">创建</el-button>
               </el-input>
             </p>
             <span
-              @click="controlNewListsPopover = true"
               slot="reference"
               class="el-icon-circle-plus-outline"
             ></span>
@@ -101,7 +101,7 @@ export default {
       userid: null, //用户id判断是否登陆,
       // 我的音乐
       myMusic: [
-        { icon: "el-icon-mic", text: "我的电台", router: "/myDT" },
+        { icon: "el-icon-mic", text: "我的电台", router: "/myfm" },
         { icon: "el-icon-star-on", text: "我的收藏", router: "/mycollect" }
       ],
       //我的歌单
@@ -301,7 +301,7 @@ export default {
             message: "已取消删除"
           });
         });
-    }
+    },
   }
 };
 </script>
