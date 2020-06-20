@@ -49,6 +49,8 @@ import SearchUsers from "../components/search/Users"
 //视频
 import SearchVideo from "../components/search/SearchVideo"
 
+//动态
+import Event from "../components/main/Event.vue"
 
 // 电台
 // 我的收藏电台
@@ -99,6 +101,10 @@ export default new Router({
                     ]
                 }
             ]
+        },
+        {
+           path:'/event',
+           component:Event
         },
         {
            path:'/myfm',

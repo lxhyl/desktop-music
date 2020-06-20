@@ -16,7 +16,7 @@
             <span class="el-icon-video-camera"></span>
             <span class="text">视频</span>
           </p>
-          <p class="item" @click="routerToPage('/friends')">
+          <p class="item" @click="routerToPage('/event')">
             <span class="el-icon-user"></span>
             <span class="text">朋友(动态)</span>
           </p>
