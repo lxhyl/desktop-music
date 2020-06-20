@@ -1,13 +1,13 @@
 <template>
   <div v-infinite-scroll="getEvent" infinite-scroll-immediate="false">
-    <div v-if="lists">
+    <div v-if="lists" class="page">
       <div class="event-item" v-for="(item,index) in lists" :key="'event'+index">
         <div class="item-header">
           <div class="item-header-pic">
             <img :src="item.user.picUrl+'?param=40y40'" />
           </div>
           <div class="item-header-main">
-            <p class="item-header-main-name">{{item.user.name}}</p>
+            <p class="item-header-main-name" @click="goTouserPage(item.user.id)">{{item.user.name}}</p>
             <p class="item-header-main-time">{{item.time | toTime}}</p>
           </div>
         </div>
@@ -39,6 +39,15 @@
         </div>
         <p class="line"></p>
       </div>
+      <div class="right">
+          <p>热门话题</p>
+          <p v-for="(item,index) in hot"
+          class="hot"
+          :key="'hot-'+index"
+          >
+          #{{item.title}}#
+          </p> 
+      </div>
     </div>
     <p v-else>暂无数据</p>
   </div>
@@ -47,18 +56,22 @@
 <script>
 export default {
   inject: ["reloadPlay"],
+  components:{
+ 
+  },
   data() {
     return {
       lists: null,
       lasttime: -1, //动态分页时间
+      hot:[],//热门话题
     };
   },
   created() {
     this.getEvent();
+    this.getHotComment();
   },
   methods: {
     getEvent() {
-     
       this.$axios
         .get(`${this.$domain}/event?pagesize=10&lasttime=${this.lasttime}`)
         .then(res => {
@@ -81,10 +94,9 @@ export default {
                 pics,
                 json,
                 time
-              })
+              });
             }
           });
-
         })
         .catch();
     },
@@ -98,6 +110,19 @@ export default {
       this.$store.commit("getPlayLists", []);
       // 刷新PLAY组件
       this.reloadPlay();
+    },
+    goTouserPage(id) {
+      localStorage.setItem("anotherUserId", id);
+      this.$router.push(`/me?id=${id}`);
+    },
+    //热评
+    getHotComment(){
+        this.$axios.get(`${this.$domain}/hot/topic?limit=10`)
+        .then(res => {
+            console.log(res);
+            this.hot = res.data.hot;
+        })
+        .catch()
     }
   }
 };
@@ -107,11 +132,11 @@ export default {
 p {
   margin: 0;
 }
-.loading{
-    margin:20px;
-    line-height: 30px;
-    height: 30px;
-    text-align: center;
+.loading {
+  margin: 20px;
+  line-height: 30px;
+  height: 30px;
+  text-align: center;
 }
 .line {
   height: 1px;
@@ -119,9 +144,19 @@ p {
   transform: scaleY(0.1);
   margin: 5px 25px 5px 0px;
 }
+
 .event-item {
   width: 550px;
   margin: 20px;
+  float: left;
+}
+.right{
+    margin-left:550px;
+}
+.hot{
+    margin:5px 0;
+    font-size: 12px;
+    color: rgb(124, 124, 124);
 }
 .item-header {
   height: 60px;

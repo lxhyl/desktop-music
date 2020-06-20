@@ -55,15 +55,11 @@
           >
             <p style="margin-bottom:10px;">新建歌单</p>
             <p style="width:190px;">
-              <el-input placeholder="输入歌单名" 
-              size="mini" v-model="newSongLists">
+              <el-input placeholder="输入歌单名" size="mini" v-model="newSongLists">
                 <el-button @click="getNewLists" slot="append">创建</el-button>
               </el-input>
             </p>
-            <span
-              slot="reference"
-              class="el-icon-circle-plus-outline"
-            ></span>
+            <span slot="reference" class="el-icon-circle-plus-outline"></span>
           </el-popover>
         </p>
         <div class="tuijian-main">
@@ -123,7 +119,11 @@ export default {
   methods: {
     getMusciList() {
       this.$axios
-        .get(`${this.$domain}/user/playlist?uid=${this.userid}&timestamp=${new Date().getTime()}`)
+        .get(
+          `${this.$domain}/user/playlist?uid=${
+            this.userid
+          }&timestamp=${new Date().getTime()}`
+        )
         .then(res => {
           let arr = res.data.playlist;
           for (let i = 0; i < arr.length; i++) {
@@ -142,6 +142,10 @@ export default {
     //路由至 e 页面
     routerToPage(e) {
       if (e === "/video" && !this.$store.state.userid) {
+        this.$message("请登录☹️");
+        return;
+      }
+      if (e === "/event" && !this.$store.state.userid) {
         this.$message("请登录☹️");
         return;
       }
@@ -271,7 +275,7 @@ export default {
               type: "warning",
               duration: 2000
             });
-            this.newSongLists = '';
+            this.newSongLists = "";
           });
       }
       this.reloadLeft();
@@ -301,7 +305,7 @@ export default {
             message: "已取消删除"
           });
         });
-    },
+    }
   }
 };
 </script>
