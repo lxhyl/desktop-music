@@ -11,7 +11,7 @@
     <div id="app">
       <div v-show="this.$store.state.showMain">
         <a
-          href="https://github.com/zpfnb/desktop-music"
+          href="https://github.com/lxhyl/desktop-music"
           target="_blank"
           class="github-corner"
           aria-label="View source on Github"
