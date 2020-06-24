@@ -49,7 +49,7 @@
           </p> 
       </div>
     </div>
-    <p v-else>暂无数据</p>
+    <p v-else class="loading">暂无数据</p>
   </div>
 </template>
 

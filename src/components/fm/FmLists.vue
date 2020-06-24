@@ -31,6 +31,25 @@
         </div>
       </div>
     </div>
+    <div>
+      <el-row class="album-item-title">
+        <el-col :span="14" style="text-align:center;">题目</el-col>
+        <el-col :span="6">播放数</el-col>
+        <el-col :span="4">赞</el-col>
+      </el-row>
+      <el-row v-for="(item,index) in djlist" 
+      :key="'album'+index" class="album-item">
+        <el-col :span="2" class="album-item-pic">
+          <img :src="item.blurCoverUrl+'?param=40y40'" loading="lazy" />
+        </el-col>
+        <el-col class="album-item-name" :span="12">{{item.name}}</el-col>
+        <el-col class="album-item-art" :span="6">{{item.listenerCount}}</el-col>
+        <el-col class="album-item-art" :span="3">{{item.likedCount}}</el-col>
+        <el-col :span="1" class="album-item-art">
+          <span class="el-icon-arrow-right"></span>
+        </el-col>
+      </el-row>
+    </div>
   </div>
 </template>
 
@@ -41,7 +60,8 @@ export default {
   data() {
     return {
       rid: 0, //电台id
-      djInfo: null //电台详情
+      djInfo: null, //电台详情
+      djlist: []
     };
   },
   // 监听路由  刷新组件
@@ -57,17 +77,26 @@ export default {
   },
   mounted() {
     this.rid && this.getDjDetail(this.rid);
+    this.rid && this.getDjLists(this.rid);
   },
   methods: {
     getDjDetail(rid) {
       this.$axios
         .get(`${this.$domain}/dj/detail?rid=${rid}`)
         .then(res => {
-          console.log(res);
           this.djInfo = res.data.djRadio;
         })
         .catch();
-    }
+    },
+    getDjLists(rid) {
+      this.$axios
+        .get(`${this.$domain}/dj/program?rid=${rid}&limit=50`)
+        .then(res => {
+          console.log(res);
+          this.djlist = res.data.programs;
+        })
+        .catch();
+    },
   }
 };
 </script>
@@ -130,5 +159,40 @@ export default {
   word-break: break-all;
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
+}
+.album {
+  margin: 20px;
+}
+.album-item {
+  height: 60px;
+  position: relative;
+  line-height: 60px;
+  margin-left: 20px;
+}
+.album-item:nth-child(2n + 1) {
+  background-color: #222225;
+}
+.album-item-pic {
+  height: 60px;
+}
+.album-item-pic > img {
+  height: 40px;
+  width: 40px;
+  position: absolute;
+  top: 10px;
+}
+.album-item-name {
+  font-size: 12px;
+}
+.album-item-art {
+  font-size: 12px;
+  color: rgb(124, 124, 124);
+}
+.album-item-title {
+  font-size: 12px;
+  height: 30px;
+  line-height: 30px;
+  color: rgb(124, 124, 124);
+  background-color: #222225;
 }
 </style>

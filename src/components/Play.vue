@@ -109,7 +109,14 @@
       </el-row>
     </div>
     <div v-else>刷新下吧</div>
-    <audio ref="audio" v-if="getDataOk" autoplay :src="musicUrl" style="width:0;height:0;"></audio>
+    <audio
+      ref="audio"
+      v-if="getDataOk"
+      autoplay
+      :src="musicUrl"
+      crossorigin="anonymous"
+      style="width:0;height:0;"
+    ></audio>
   </div>
 </template>
 
@@ -161,8 +168,8 @@ export default {
         this.$store.commit("setMusicVolume", n);
       }
     },
-    isPlaying:function(n){
-      this.$store.commit('isplaying',n);
+    isPlaying: function(n) {
+      this.$store.commit("isplaying", n);
     }
   },
   created() {
@@ -201,9 +208,9 @@ export default {
       // 上一曲
       if (e.keyCode === 38) {
         //不是fm模式时
-        if(!this.$store.state.fm){
-        let last = document.getElementById("last");
-        last.click();
+        if (!this.$store.state.fm) {
+          let last = document.getElementById("last");
+          last.click();
         }
       }
       if (e.keyCode === 40) {
@@ -248,6 +255,27 @@ export default {
       .catch(() => {});
   },
   methods: {
+    // getAudioData() {
+    //   let audioElement = this.$refs.audio;
+    //   let audioCtx = new AudioContext();
+    //   //利用接口得到分析器
+    //   let analyser = audioCtx.createAnalyser();
+    //   //得到音源
+    //   let source = audioCtx.createMediaElementSource(audioElement);
+    //   // source=>middle
+    //   source.connect(analyser);
+    //   //middle=>termial
+    //   analyser.connect(audioCtx.destination);
+    //   // 设置傅里叶变化的参数,用来设置分析范围
+    //   analyser.fftSize = 128;
+    //   //根据范围得到不同音频的数量的长度
+    //   let bufferLength = analyser.frequencyBinCount;
+    //   //生成8位为一个item,长度为bufferLength的array
+    //   let dataArray = new Uint8Array(bufferLength);
+    //   //  将频率导入到该array
+    //   analyser.getByteFrequencyData(dataArray);
+    //   console.log(dataArray);
+    // },
     //获取音乐存储地址
     getSongUrl() {
       this.$axios
@@ -414,8 +442,8 @@ export default {
           if (i == 0) {
             if (this.$store.state.fm) {
               return false;
-            }else{
-            return lists[lists.length - 1].id;
+            } else {
+              return lists[lists.length - 1].id;
             }
           } else {
             return lists[i - 1].id;
@@ -501,7 +529,7 @@ export default {
           .get(`${this.$domain}/song/detail?ids=${id}`)
           .then(res => {
             //更新VUEX的音乐信息
-             _this.$store.commit("getMusicId", id);
+            _this.$store.commit("getMusicId", id);
             //更新VUEX的音乐信息
             _this.$store.commit("getMusicInfo", res.data);
             _this.reloadPlay();
@@ -546,7 +574,7 @@ export default {
     //点击图片 显示音乐详情
     openDetail() {
       let id = this.musicid;
-     this.$store.commit('getshowMain',true);
+      this.$store.commit("getshowMain", true);
       this.$router.push(`/playDetail?id=${id}`);
     },
     //私人fm推荐歌曲

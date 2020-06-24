@@ -1,7 +1,10 @@
 
-
+function changeState(state,oldValue,newValue){
+    state[oldValue] = newValue;
+}
 
 export default {
+   changeState,
    getUserId(state, id) {
       state.userid = id;
    },
