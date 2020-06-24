@@ -1,6 +1,6 @@
 
 function changeState(state,value,){
-    state[value.oldValue] = value.newValue;
+    state[value.key] = value.newValue;
 }
 
 export default {
