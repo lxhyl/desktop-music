@@ -1,6 +1,6 @@
 
-function changeState(state,oldValue,newValue){
-    state[oldValue] = newValue;
+function changeState(state,value,){
+    state[value.oldValue] = value.newValue;
 }
 
 export default {
@@ -67,7 +67,8 @@ export default {
       state.musicPlayTime = value;
    },
    //改变音量
-   setMusicVolume(state, value) {
+   setMusicVolume(state, value,test) {
+      console.log(test);
       state.musicVolume = value
    },
    // 更新音乐列表
